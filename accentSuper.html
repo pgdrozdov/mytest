@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Тест: литературное произношение (ударные гласные)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #fef9e6 0%, #f3efdf 100%);
+      margin: 0;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .test-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255, 253, 245, 0.96);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .left-col {
+      flex: 2.5;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .right-col {
+      flex: 1.4;
+      min-width: 260px;
+    }
+
+    .theory-card {
+      background: #fffef7;
+      border-radius: 1.8rem;
+      border: 1px solid #f0e2c5;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem 1.3rem;
+      backdrop-filter: blur(2px);
+    }
+
+    .theory-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #3b2a1f;
+      margin-bottom: 1rem;
+      border-left: 5px solid #b87c4f;
+      padding-left: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theory-card h3::before {
+      content: "🎙️";
+      font-size: 1.4rem;
+    }
+
+    .theory-content {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      color: #2f241b;
+    }
+
+    .theory-content p {
+      margin-bottom: 0.9rem;
+    }
+
+    .pron-table {
+      width: 100%;
+      background: #fef7e8;
+      border-radius: 1rem;
+      margin: 0.8rem 0;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .pron-table th, .pron-table td {
+      border: 1px solid #eadbbe;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .pron-table th {
+      background: #f5e7d3;
+      color: #6b3f1c;
+    }
+
+    .theory-content strong {
+      color: #9b5e2c;
+    }
+
+    .theory-content hr {
+      margin: 1rem 0;
+      border: none;
+      height: 1px;
+      background: #efe1cc;
+    }
+
+    .top-bar {
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      border: 1px solid rgba(255, 248, 225, 0.8);
+    }
+
+    #timer {
+      font-size: 1.7rem;
+      font-weight: 800;
+      background: #4a2e1e;
+      color: #fff0dd;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-family: monospace;
+      letter-spacing: 1px;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .fio-block {
+      flex: 2;
+      min-width: 200px;
+    }
+
+    .fio-block label {
+      font-weight: 700;
+      color: #7a4a26;
+      margin-right: 0.5rem;
+    }
+
+    .fio-block input {
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: 1.5px solid #eddbbc;
+      background: white;
+      font-size: 0.9rem;
+      width: 220px;
+      transition: 0.2s;
+    }
+
+    .fio-block input:focus {
+      border-color: #b87c4f;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(184,124,79,0.2);
+    }
+
+    .error, .info-message {
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .error {
+      background: #ffe6e3;
+      color: #b13b2a;
+      border-left: 6px solid #c0392b;
+    }
+    .info-message {
+      background: #fdf3e0;
+      border-left: 6px solid #e6a157;
+      color: #8a561f;
+    }
+
+    .test-header {
+      background: #6f4e2e;
+      padding: 1.2rem 1.8rem;
+      color: white;
+      border-radius: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .test-header h1 {
+      margin: 0 0 0.35rem 0;
+      font-weight: 600;
+      font-size: 1.7rem;
+      letter-spacing: -0.3px;
+    }
+    .test-header p {
+      margin: 0;
+      opacity: 0.85;
+      font-size: 0.9rem;
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 1.2rem;
+      margin-bottom: 1rem;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border: 1px solid #f0e2cf;
+      transition: all 0.1s;
+    }
+
+    .question-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 1rem;
+      justify-content: space-between;
+      row-gap: 0.8rem;
+    }
+
+    .word-display {
+      flex: 2;
+      min-width: 180px;
+    }
+
+    .word-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #3b2a1f;
+      background: #fef1e2;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+      letter-spacing: 0.5px;
+    }
+
+    .task-badge {
+      font-size: 0.7rem;
+      background: #e9dccc;
+      display: inline-block;
+      margin-left: 0.8rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #6f4e2e;
+      vertical-align: middle;
+    }
+
+    .options-area {
+      flex: 2;
+      min-width: 260px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1.2rem;
+      align-items: center;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #fef9f0;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      border: 1px solid #e7d8c4;
+      transition: 0.1s;
+      cursor: pointer;
+    }
+    .radio-option:hover {
+      background: #f7e9db;
+    }
+    .radio-option input {
+      margin: 0;
+      accent-color: #b87c4f;
+      width: 18px;
+      height: 18px;
+    }
+    .radio-option label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #2c241b;
+      font-family: monospace;
+      letter-spacing: 0.3px;
+    }
+
+    .feedback {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding-left: 0.2rem;
+      color: #2f6b3c;
+    }
+
+    .score-area {
+      background: #fcf5ea;
+      border-radius: 1.8rem;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .score-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: #fff3e6;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    button {
+      border: none;
+      background: #6f4e2e;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    button:hover {
+      background: #4f3620;
+      transform: scale(0.97);
+    }
+    button.reset-btn { background: #9b6a42; }
+    button.reset-btn:hover { background: #7b4f2e; }
+
+    .footer-note {
+      padding: 0.8rem 0 0.2rem;
+      font-size: 0.75rem;
+      color: #8f7359;
+      border-top: 1px solid #efe1ce;
+      margin-top: 0.6rem;
+    }
+
+    #results {
+      margin-top: 1.5rem;
+      background: #fffdf7;
+      border-radius: 2rem;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border: 1px solid #f0e2cf;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 1rem;
+      font-size: 0.85rem;
+    }
+    th {
+      background: #efe3d3;
+      color: #4f331d;
+      padding: 8px;
+    }
+    td, th {
+      border: 1px solid #e2d0bb;
+      padding: 6px 8px;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin: 0.5rem 0 0.8rem 0;
+      color: #9b5e2c;
+      background: #fcf2e4;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 860px) {
+      body { padding: 1rem; }
+      .test-container { flex-direction: column; }
+      .top-bar { flex-direction: column; align-items: stretch; }
+      .fio-block input { width: 100%; }
+      .radio-group { flex-direction: column; align-items: flex-start; }
+      .options-area { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div style="width:100%; max-width:1400px; margin:0 auto;">
+  <div class="top-bar">
+    <div id="timer">⏱️ Время: 0 сек</div>
+    <div class="fio-block">
+     <label for="fio">📝 ФИО / Имя:</label>
+      <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="Выберите или введите имя" required>
+      <datalist id="lift">
+        <option>Егор</option>
+		<option>Ксюша</option>
+		<option>Анюта</option>
+		<option>Даня</option>
+      </datalist
+    </div>
+  </div>
+
+  <div id="errorMessage" class="error" style="display: none;"></div>
+  <div id="infoMsg" class="info-message" style="display: none;"></div>
+
+  <div class="test-container" id="quizRoot">
+    <div class="left-col">
+      <div class="test-header">
+        <h1>🎙️ Тренировка произношения: ударные гласные [а] и [о]</h1>
+        <p>Выберите правильную транскрипцию слова (в соответствии с литературной нормой). Опирайтесь на правила высокого / нейтрального стиля.</p>
+      </div>
+      <div id="questionsArea" class="test-words"></div>
+      <div class="score-area">
+        <div class="score-text" id="scoreDisplay">🎯 0 / 0</div>
+        <div class="button-group">
+          <button id="checkAndFinishBtn">✅ ЗАВЕРШИТЬ ТЕСТ</button>
+          <button id="resetAnswersBtn" class="reset-btn">⟳ СБРОСИТЬ ВСЕ</button>
+        </div>
+      </div>
+      <div class="footer-note">
+        ★ Выберите вариант произношения, который соответствует правильному ударному гласному и звучанию.<br>
+        ☆ В словах с буквами Е, Ё, Я, Ю под ударением учитывайте йотированный или нейотированный вариант согласно образцам.
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="theory-card">
+        <h3>Правила произношения</h3>
+        <div class="theory-content">
+          <p><strong>📢 Три стиля литературного произношения:</strong><br>
+          🔹 <strong>Высокий</strong> (ораторский, поэтический) – тщательное, полное произношение.<br>
+          🔹 <strong>Нейтральный</strong> – повседневная речь, стилистически не окрашен.<br>
+          🔹 <strong>Разговорный</strong> – сниженный, менее внимательный к звуковому составу.<br>
+          <em>Все стили допустимы в разных ситуациях, но тест проверяет нормативное (нейтрально-литературное) произношение.</em>
+          </p>
+          <table class="pron-table">
+            <thead><tr><th>Буква под ударением</th><th>Произношение (МФА / упрощ.)</th><th>Примеры из заданий</th></tr></thead>
+            <tbody>
+              <tr><td>а, я (после мягких)</td><td>[а́] (чёткий гласный)</td><td>август [а́]вгуст, поля по[ла́], вянуть [ва́]нуть</td></tr>
+              <tr><td>я в начале / после гласной</td><td>[йа́]</td><td>ясность [йа́]сность, друзья дру[зйа́]</td></tr>
+              <tr><td>о, ё</td><td>[о́] (после твёрдых) / [йо́] в начале</td><td>облик [о́]блик, ёлка [йо́]лка, полёт по[л'о́]т</td></tr>
+              <tr><td>ё после мягких</td><td>[‘о́]</td><td>начнём нач[н’о́]м, Гётеборг [Го́]теборг (твёрдый)</td></tr>
+            </tbody>
+          </table>
+          <p><strong>🎯 Важно:</strong> буквы «а» и «о» под ударением произносятся отчётливо, без редукции. Буква «ё» всегда ударная, даёт звук [о] с йотацией или мягкостью предыдущего.</p>
+          <hr>
+          <p>✅ Примеры из эталонов:<br>
+          «чита́ть» → чи[та́]ть, «Чайко́вский» → Чай[ко́]вский, «Дриго́» → Дри[го́], «Кя́хта» → [Ка́]хта.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="results" style="display: none;"></div>
+</div>
+
+<script>
+  // ---------- МАССИВ ВОПРОСОВ: слово + варианты транскрипции + правильный ----------
+  const pronunciationQuestions = [
+    { word: "август", correct: "[а́]вгуст", variants: ["[а́]вгуст", "[о́]вгуст", "[а́]вгуст (с редукцией)", "[ы́]вгуст"] },
+    { word: "автор", correct: "[а́]втор", variants: ["[а́]втор", "[о́]втор", "[а́]фтор"] },
+    { word: "адрес", correct: "[а́]дрес", variants: ["[а́]дрес", "[о́]дрес", "[а́]дрэс"] },
+    { word: "гладкий", correct: "г[ла́]дкий", variants: ["г[ла́]дкий", "г[ло́]дкий", "г[лы́]дкий", "г[ла́]ткий"] },
+    { word: "читать", correct: "чи[та́]ть", variants: ["чи[та́]ть", "чи[то́]ть", "чи[тá]ть (с мягким т)", "че[та́]ть"] },
+    { word: "часто", correct: "[ча́]сто", variants: ["[ча́]сто", "[чо́]сто", "[чы́]сто", "[ч’а́]сто"] },
+    { word: "Адрия", correct: "[а́]дрия", variants: ["[а́]дрия", "[о́]дрия", "[а́]др’ия"] },
+    { word: "Гавана", correct: "га[ва́]на", variants: ["га[ва́]на", "га[во́]на", "г[а́]вана", "га[вá]на (долгий)"] },
+    { word: "ясность", correct: "[йа́]сность", variants: ["[йа́]сность", "[а́]сность", "[я́]сность (без йота)", "[йи́]сность"] },
+    { word: "яркий", correct: "[йа́]ркий", variants: ["[йа́]ркий", "[а́]ркий", "[йо́]ркий", "[йа́]ркый"] },
+    { word: "вянуть", correct: "[ва́]нуть", variants: ["[ва́]нуть", "[в’а́]нуть", "[вя́]нуть", "[ви́]нуть"] },
+    { word: "поля", correct: "по[ла́]", variants: ["по[ла́]", "по[л’а́]", "по[ло́]", "па[ла́]"] },
+    { word: "друзья", correct: "дру[зйа́]", variants: ["дру[зйа́]", "дру[за́]", "дру[з’а́]", "дру[зйо́]"] },
+    { word: "Кяхта", correct: "[Ка́]хта", variants: ["[Ка́]хта", "[К’а́]хта", "[Кя́]хта", "[Ко́]хта"] },
+    { word: "Няндома", correct: "[На́]ндома", variants: ["[На́]ндома", "[Н’а́]ндома", "[Ня́]ндома", "[Но́]ндома"] },
+    { word: "Золя", correct: "Зо[ла́]", variants: ["Зо[ла́]", "Зо[л’а́]", "Зо[ля́]", "Зо[ло́]"] },
+    { word: "облик", correct: "[о́]блик", variants: ["[о́]блик", "[а́]блик", "[о́]бл’ик", "[ы́]блик"] },
+    { word: "обжиг", correct: "[о́]бжиг", variants: ["[о́]бжиг", "[а́]бжиг", "[о́]бжыг", "[о́]бжек"] },
+    { word: "новый", correct: "[но́]вый", variants: ["[но́]вый", "[на́]вый", "[нó]вый (средний)", "[ны́]вый"] },
+    { word: "строить", correct: "ст[ро́]ить", variants: ["ст[ро́]ить", "ст[ра́]ить", "стр[о́]ить (с твёрдым р)", "[стро́]ить"] },
+    { word: "Обручев", correct: "[о́]бручев", variants: ["[о́]бручев", "[а́]бручев", "[о́]бруч’ев", "Обру[чо́]в"] },
+    { word: "Чайковский", correct: "Чай[ко́]вский", variants: ["Чай[ко́]вский", "Чай[ка́]вский", "Чай[кó]вский (с о)", "[ч’айко́]вский"] },
+    { word: "Дриго", correct: "Дри[го́]", variants: ["Дри[го́]", "Дри[га́]", "Дри[гó] (долгий)", "[Др’и́]го"] },
+    { word: "ёлка", correct: "[йо́]лка", variants: ["[йо́]лка", "[йа́]лка", "[о́]лка", "[йо́]лька"] },
+    { word: "ёмкий", correct: "[йо́]мкий", variants: ["[йо́]мкий", "[йа́]мкий", "[о́]мкий", "[йо́]мкый"] },
+    { word: "полёт", correct: "по[л’о́]т", variants: ["по[л’о́]т", "по[ло́]т", "па[л’о́]т", "по[л’а́]т"] },
+    { word: "начнём", correct: "нач[н’о́]м", variants: ["нач[н’о́]м", "нач[но́]м", "на[чн’о́]м", "нач[н’а́]м"] },
+    { word: "Ёдарма", correct: "[йо́]дарма", variants: ["[йо́]дарма", "[йа́]дарма", "[о́]дарма", "[йо́]дарма (с тв.д)"] },
+    { word: "Гётеборг", correct: "[Го́]теборг", variants: ["[Го́]теборг", "[Г’о́]теборг", "[Ге́]теборг", "[Гё́]теборг"] }
+  ];
+
+  const TOTAL = pronunciationQuestions.length;
+  let startTime = null;
+  let timerInterval = null;
+  let isTestFinished = false;
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      if (isTestFinished) return;
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const timerDiv = document.getElementById('timer');
+      if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+    }, 200);
+  }
+
+  function stopTimerAndGetSeconds() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+    return 0;
+  }
+
+  function getCurrentDateTime() {
+    const now = new Date();
+    const Y = now.getFullYear();
+    const M = String(now.getMonth() + 1).padStart(2,'0');
+    const D = String(now.getDate()).padStart(2,'0');
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // подсчёт текущих правильных ответов
+  function computeCurrentScore() {
+    let correct = 0;
+    for (let i = 0; i < TOTAL; i++) {
+      const selected = document.querySelector(`input[name="q_${i}"]:checked`);
+      if (selected && selected.value === pronunciationQuestions[i].correct) {
+        correct++;
+      }
+    }
+    return correct;
+  }
+
+  function updateScoreDisplay() {
+    const correct = computeCurrentScore();
+    const scoreSpan = document.getElementById("scoreDisplay");
+    if (scoreSpan) scoreSpan.innerHTML = `🎯 ${correct} / ${TOTAL}`;
+  }
+
+  function evaluateAllAnswers() {
+    let wrongCount = 0;
+    let detailed = {};
+    for (let i = 0; i < TOTAL; i++) {
+      const selectedRadio = document.querySelector(`input[name="q_${i}"]:checked`);
+      const userAnswer = selectedRadio ? selectedRadio.value : "не выбран";
+      const correctAns = pronunciationQuestions[i].correct;
+      const isCorrect = (userAnswer === correctAns);
+      if (!isCorrect) wrongCount++;
+      detailed[i] = {
+        word: pronunciationQuestions[i].word,
+        userAnswer: userAnswer,
+        correctAnswer: correctAns,
+        isCorrect: isCorrect
+      };
+    }
+    const correctCount = TOTAL - wrongCount;
+    const percent = (correctCount / TOTAL) * 100;
+    let grade = 2;
+    if (percent >= 90) grade = 5;
+    else if (percent >= 70) grade = 4;
+    else if (percent >= 50) grade = 3;
+    else grade = 2;
+    return { wrongCount, correctCount, percent, grade, detailed };
+  }
+
+  function renderResultsTable(fio, timeSec, correct, wrong, percent, grade, detailedMap) {
+    let html = `<div><h3>📊 РЕЗУЛЬТАТЫ ТЕСТА (произношение)</h3>
+      <p><strong>👤 Участник:</strong> ${escapeHtml(fio)}</p>
+      <p><strong>⏱️ Время:</strong> ${timeSec} секунд</p>
+      <p><strong>✅ Верно:</strong> ${correct} из ${TOTAL}</p>
+      <p><strong>❌ Ошибок:</strong> ${wrong}</p>
+      <p><strong>📈 Процент:</strong> ${percent.toFixed(1)}%</p>
+      <p><strong>🎓 ОЦЕНКА:</strong> <span style="font-size:1.5rem;">${grade}</span></p>
+      <h4>Детализация ответов:</h4><div style="overflow-x:auto;"><table>
+      <thead><tr><th>Слово</th><th>Ваш вариант</th><th>Правильная транскрипция</th><th>Результат</th></tr></thead><tbody>`;
+    for (let idx = 0; idx < TOTAL; idx++) {
+      const data = detailedMap[idx];
+      const status = data.isCorrect ? '✔ Верно' : '✘ Ошибка';
+      const color = data.isCorrect ? '#1f7a3b' : '#c0392b';
+      html += `<tr>
+        <td><strong>${escapeHtml(data.word)}</strong></td>
+        <td>${escapeHtml(data.userAnswer)}</td>
+        <td>${escapeHtml(data.correctAnswer)}</td>
+        <td style="color:${color};">${status}</td>
+      </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function finishTest() {
+    if (isTestFinished) return;
+    const fioInput = document.getElementById('fio');
+    const userFio = fioInput.value.trim();
+    if (!userFio) {
+      const errDiv = document.getElementById('errorMessage');
+      errDiv.textContent = '❗ Пожалуйста, введите ваше имя перед завершением теста.';
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 4000);
+      return;
+    }
+
+    const spentSeconds = stopTimerAndGetSeconds();
+    isTestFinished = true;
+
+    const { wrongCount, correctCount, percent, grade, detailed } = evaluateAllAnswers();
+    renderResultsTable(userFio, spentSeconds, correctCount, wrongCount, percent, grade, detailed);
+    
+    // показать информационное сообщение без отправки на сервер (автономный режим)
+    const infoDiv = document.getElementById('infoMsg');
+    infoDiv.innerHTML = `✨ Тест завершён! Ваши результаты отображены ниже. ✨`;
+    infoDiv.style.display = 'block';
+    setTimeout(() => { if(infoDiv) infoDiv.style.display = 'none'; }, 5000);
+  }
+
+  function resetAllSelections() {
+    if (isTestFinished) return;
+    for (let i = 0; i < TOTAL; i++) {
+      const radios = document.querySelectorAll(`input[name="q_${i}"]`);
+      radios.forEach(radio => radio.checked = false);
+    }
+    updateScoreDisplay();
+    const resultsDiv = document.getElementById('results');
+    if (resultsDiv) resultsDiv.style.display = 'none';
+    const infoDiv = document.getElementById('infoMsg');
+    if(infoDiv) infoDiv.style.display = 'none';
+  }
+
+  function renderTest() {
+    const container = document.getElementById("questionsArea");
+    if (!container) return;
+    container.innerHTML = "";
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "section-title";
+    titleDiv.innerHTML = "🔊 Выберите правильную транскрипцию (ударный гласный)";
+    container.appendChild(titleDiv);
+
+    for (let idx = 0; idx < pronunciationQuestions.length; idx++) {
+      const q = pronunciationQuestions[idx];
+      const card = document.createElement("div");
+      card.className = "question-card";
+      
+      const row = document.createElement("div");
+      row.className = "question-row";
+      
+      // слово
+      const wordBlock = document.createElement("div");
+      wordBlock.className = "word-display";
+      wordBlock.innerHTML = `<div class="word-text">📖 ${escapeHtml(q.word)}</div><div class="task-badge">выберите вариант произношения</div>`;
+      
+      // варианты radio
+      const optionsBlock = document.createElement("div");
+      optionsBlock.className = "options-area";
+      const radioGroup = document.createElement("div");
+      radioGroup.className = "radio-group";
+      
+      q.variants.forEach((variant, optIdx) => {
+        const radioId = `q_${idx}_opt_${optIdx}`;
+        const radioWrapper = document.createElement("label");
+        radioWrapper.className = "radio-option";
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q_${idx}`;
+        radio.value = variant;
+        radio.addEventListener('change', () => updateScoreDisplay());
+        const span = document.createElement("span");
+        span.textContent = variant;
+        radioWrapper.appendChild(radio);
+        radioWrapper.appendChild(span);
+        radioGroup.appendChild(radioWrapper);
+      });
+      optionsBlock.appendChild(radioGroup);
+      
+      row.appendChild(wordBlock);
+      row.appendChild(optionsBlock);
+      card.appendChild(row);
+      container.appendChild(card);
+    }
+    updateScoreDisplay();
+  }
+
+  function initEventListeners() {
+    const finishBtn = document.getElementById("checkAndFinishBtn");
+    const resetBtn = document.getElementById("resetAnswersBtn");
+    if (finishBtn) finishBtn.addEventListener("click", finishTest);
+    if (resetBtn) resetBtn.addEventListener("click", resetAllSelections);
+  }
+
+  function initPage() {
+    renderTest();
+    initEventListeners();
+    startTimer();
+    isTestFinished = false;
+    updateScoreDisplay();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPage);
+  else initPage();
+</script>
+</body>
+</html>

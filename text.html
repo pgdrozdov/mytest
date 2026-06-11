@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Тест: свойства текста | Случайный порядок + сохранение результатов</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+        }
+
+        body {
+            background: #f0f7ff;
+            margin: 0;
+            padding: 24px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .test-container {
+            max-width: 1300px;
+            width: 100%;
+            background: rgba(255,255,255,0.96);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .left-col {
+            flex: 2.5;
+            min-width: 260px;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .right-col {
+            flex: 1.4;
+            min-width: 260px;
+        }
+
+        .theory-card {
+            background: #ffffffea;
+            border-radius: 1.8rem;
+            border: 1px solid #dce5f0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem 1.3rem;
+            height: auto;
+            transition: 0.2s;
+            backdrop-filter: blur(2px);
+        }
+
+        .theory-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            border-left: 5px solid #1e3a5f;
+            padding-left: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theory-card h3::before {
+            content: "📖";
+            font-size: 1.4rem;
+        }
+
+        .theory-content {
+            font-size: 0.96rem;
+            line-height: 1.5;
+            color: #1e2f3e;
+        }
+
+        .theory-content p {
+            margin-bottom: 0.9rem;
+        }
+
+        .theory-content .rule-list {
+            background: #f8fafd;
+            padding: 0.6rem 1rem;
+            border-radius: 1rem;
+            margin: 0.8rem 0;
+            border-left: 3px solid #1e3a5f;
+        }
+
+        .theory-content strong {
+            color: #1f3a5f;
+            font-weight: 600;
+        }
+
+        .theory-content hr {
+            margin: 1rem 0;
+            border: none;
+            height: 1px;
+            background: #e2edf2;
+        }
+
+        .top-bar {
+            background: #ffffffcc;
+            backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        #timer {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: #0b2b3f;
+            color: #f0fcff;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-family: monospace;
+            letter-spacing: 1px;
+            text-align: center;
+            min-width: 180px;
+        }
+        .fio-block {
+            flex: 2;
+            min-width: 200px;
+        }
+        .fio-block label {
+            font-weight: 700;
+            color: #144e6b;
+            margin-right: 0.5rem;
+        }
+        .fio-block input {
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            border: 1.5px solid #bdd4e8;
+            background: white;
+            font-size: 0.9rem;
+            width: 220px;
+            transition: 0.2s;
+        }
+        .fio-block input:focus {
+            border-color: #2c7da0;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+        }
+        .error, .server-response {
+            border-radius: 60px;
+            padding: 10px 20px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .error {
+            background: #ffe8e6;
+            color: #b12a1f;
+            border-left: 6px solid #c0392b;
+        }
+        .server-response {
+            background: #eaf6ff;
+            border-left: 6px solid #2c7da0;
+            color: #155f7c;
+        }
+        .test-header {
+            background: #1e3a5f;
+            color: white;
+            padding: 1.2rem 1.8rem;
+            border-radius: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .test-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.7rem;
+            font-weight: 600;
+        }
+        .test-header p {
+            margin: 0;
+            opacity: 0.85;
+            font-size: 0.9rem;
+        }
+        .task-card {
+            background: #ffffff;
+            border-radius: 28px;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2edf7;
+        }
+        .task-title {
+            background: #f8fafc;
+            padding: 1rem 1.8rem;
+            border-bottom: 2px solid #dce7f2;
+            border-radius: 28px 28px 0 0;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #0c4e6e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .task-title span {
+            background: #1e3a5f;
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .task-body {
+            padding: 1.5rem 1.8rem;
+        }
+        .sentences-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .sentence-item {
+            background: #fefdf8;
+            border-radius: 20px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #e9eef3;
+        }
+        .sentence-text {
+            flex: 3;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #1f2f3e;
+            background: #ffffff;
+            padding: 0.4rem 0;
+        }
+        .sentence-order {
+            flex: 1;
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .sentence-order label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c5a7a;
+            background: #eef3fc;
+            padding: 4px 10px;
+            border-radius: 60px;
+        }
+        select {
+            background: white;
+            border: 1px solid #cbdde9;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            outline: none;
+            font-family: monospace;
+        }
+        select:focus {
+            border-color: #1e6f9f;
+            box-shadow: 0 0 0 2px rgba(30, 111, 159, 0.2);
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin: 1rem 0;
+            background: #fafcff;
+            padding: 1rem 1.2rem;
+            border-radius: 24px;
+            border: 1px solid #e4edf5;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e6f9f;
+            cursor: pointer;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #1e6f9f;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button:hover {
+            background: #0f567f;
+            transform: translateY(-2px);
+        }
+        button.secondary {
+            background: #eef2f7;
+            color: #1e3a5f;
+            border: 1px solid #cbdde9;
+            box-shadow: none;
+        }
+        button.secondary:hover {
+            background: #e2e9f0;
+            transform: translateY(-1px);
+        }
+        .task-feedback {
+            background: #f9fbfe;
+            border-radius: 20px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            border-left: 4px solid #1e6f9f;
+            margin-top: 12px;
+        }
+        .correct-highlight {
+            color: #0f6e3f;
+            background: #e0f3e8;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+        .wrong-highlight {
+            color: #b13b2d;
+            background: #ffe6e3;
+            padding: 2px 8px;
+            border-radius: 40px;
+        }
+        .explanation {
+            font-size: 0.9rem;
+            color: #2c6280;
+            margin-top: 8px;
+        }
+        hr {
+            margin: 16px 0;
+            border-color: #e2edf7;
+        }
+        .score-area {
+            background: #f1f5f9;
+            border-radius: 1.8rem;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0 0.5rem;
+        }
+        .score-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #ffffffcc;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+        }
+        .menu-button {
+            background: #3a6b47;
+            color: white;
+            padding: 0.6rem 1.4rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .menu-button:hover {
+            background: #2c5539;
+            transform: scale(0.97);
+        }
+        #results {
+            margin-top: 1.5rem;
+            background: #ffffffec;
+            border-radius: 2rem;
+            padding: 1rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid #d4e2f0;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+        th {
+            background: #e3f0fa;
+            color: #1a4c74;
+            padding: 8px;
+        }
+        td, th {
+            border: 1px solid #cde0ef;
+            padding: 6px 8px;
+        }
+        @media (max-width: 860px) {
+            body { padding: 1rem; }
+            .test-container { flex-direction: column; }
+            .top-bar { flex-direction: column; align-items: stretch; }
+            .fio-block input { width: 100%; }
+            .sentence-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .sentence-order {
+                justify-content: flex-start;
+            }
+            .task-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="test-container">
+    <!-- ЛЕВАЯ КОЛОНКА: тест с раздельными проверками -->
+    <div class="left-col">
+        <!-- Блок таймера и ФИО (из второго файла) -->
+        <div class="top-bar">
+            <div id="timer">⏱️ Время: 0 сек</div>
+            <div class="fio-block">
+                <label for="fio">📝 ФИО / Имя:</label>
+                <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="Выберите или введите имя" required>
+                <datalist id="lift">
+                    <option>Егор</option><option>Ксюша</option><option>Анюта</option><option>Даня</option>
+                </datalist>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;"></div>
+        <div id="serverResponse" class="server-response" style="display: none;"></div>
+
+        <!-- Скрытая форма для отправки на save.php -->
+        <form id="myForm" method="POST" action="save.php">
+            <input type="hidden" name="predmet" value="русский язык">
+            <input type="hidden" name="tdate" id="tdate">
+            <input type="hidden" name="nazv" value="Свойства текста (порядок + тип)">
+            <input type="hidden" name="time" id="time_input" value="0">
+            <input type="hidden" name="grade" id="grade_input" value="">
+            <!-- ответы будут добавлены динамически -->
+        </form>
+
+        <div class="test-header">
+            <h1>📖 Свойства текста</h1>
+            <p>Проверь, как ты понимаешь связность, последовательность и типологию текста</p>
+        </div>
+
+        <!-- ЗАДАНИЕ 1: порядок предложений (случайный порядок, без цифр) -->
+        <div class="task-card">
+            <div class="task-title">
+                <span>1</span> Расставь предложения по порядку
+            </div>
+            <div class="task-body">
+                <p style="margin-top: 0; margin-bottom: 1rem; color: #2c5a7a;">
+                    📌 Предложения показаны в случайном порядке. Укажи для каждого цифру (от 1 до 5) так, чтобы получился связный текст. 
+                    Каждый номер используется строго один раз.
+                </p>
+                <div class="sentences-list" id="sentencesList">
+                    <!-- Сюда динамически подставляются предложения в перемешанном виде -->
+                </div>
+                <div class="explanation" style="margin-top: 8px;">
+                    💡 Подсказка: обрати внимание на слова «утром», «днём», «вечером», «ночью» — это поможет восстановить хронологию.
+                </div>
+                <div style="margin-top: 24px;">
+                    <button id="checkTask1Btn" style="background:#1e6f9f;">✅ Проверить порядок предложений</button>
+                    <div id="task1Feedback" class="task-feedback">
+                        👆 Нажми «Проверить порядок предложений», чтобы оценить расстановку.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ЗАДАНИЕ 2: тип текста -->
+        <div class="task-card">
+            <div class="task-title">
+                <span>2</span> Определи тип текста
+            </div>
+            <div class="task-body">
+                <p style="margin-top: 0;">Прочитай получившийся текст (или представь его логику). К какому типу он относится?</p>
+                <div class="radio-group" id="typeRadioGroup">
+                    <label class="radio-option">
+                        <input type="radio" name="textType" value="narration"> 1) повествование
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="textType" value="description"> 2) описание
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="textType" value="reasoning"> 3) рассуждение
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="textType" value="notText"> 4) это не текст, а набор не связанных между собою предложений
+                    </label>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button id="checkTask2Btn" style="background:#1e6f9f;">📖 Проверить тип текста</button>
+                    <div id="task2Feedback" class="task-feedback">
+                        👆 Нажми «Проверить тип текста», чтобы узнать правильный ответ.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Общие кнопки управления + новая кнопка завершения -->
+        <div class="score-area">
+            <div class="score-text" id="scoreDisplay">✅ 0 / 6</div>
+            <div class="button-group">
+                <button id="finishTestBtn">🏁 ЗАВЕРШИТЬ ТЕСТ И ОТПРАВИТЬ</button>
+                <button id="resetBtn" class="secondary">🔄 Сбросить ответы</button>
+                <a href="javascript:void(0);" id="viewDataLink" class="menu-button">🔍 Мои данные</a>
+            </div>
+        </div>
+        <div class="button-group" style="justify-content: space-between;">
+            <button id="showAnswersBtn" class="secondary">🔍 Показать правильные ответы</button>
+        </div>
+    </div>
+
+    <!-- ПРАВАЯ КОЛОНКА: теория -->
+    <div class="right-col">
+        <div class="theory-card">
+            <h3>Теория: текст и его типы</h3>
+            <div class="theory-content">
+                <p><strong>Текст</strong> — это высказывание, состоящее из двух или нескольких предложений. Предложения в тексте объединены общей темой и связаны по смыслу. Текст имеет свою тему и главную мысль. Его можно озаглавить.</p>
+                <div class="rule-list">
+                    <p><strong>📖 Повествование</strong><br>Рассказывается, сообщается о чём-либо. Отвечает на вопросы: <em>что? где? как? когда произошло?</em><br>Пример: «Утром я проснулся, умылся и пошёл в школу».</p>
+                </div>
+                <div class="rule-list">
+                    <p><strong>🖼️ Описание</strong><br>Описывается внешний вид человека, животного, картина природы, событие. Отвечает на вопросы: <em>какой? какая? какое? какие?</em></p>
+                </div>
+                <div class="rule-list">
+                    <p><strong>🤔 Рассуждение</strong><br>Объясняется, доказывается что-либо; говорится о причинах явлений, событий. Отвечает на вопрос: <em>почему?</em></p>
+                </div>
+                <hr>
+                <p><strong>💡 Важно:</strong> В связном тексте предложения расположены в логической последовательности (часто по времени, месту или причине). Нарушение порядка разрушает смысл.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="results" style="display: none;"></div>
+
+<script>
+    // ---------- ОРИГИНАЛЬНЫЕ ДАННЫЕ ПЕРВОГО ТЕСТА ----------
+    const originalSentences = [
+        { text: "Меня зовут Вася.", correctOrder: 1 },
+        { text: "Сегодня утром я спал на диване.", correctOrder: 2 },
+        { text: "Днём я пил молоко.", correctOrder: 3 },
+        { text: "Вечером — гонял мяч по квартире.", correctOrder: 4 },
+        { text: "А ночью гулял, я же кот!", correctOrder: 5 }
+    ];
+
+    let displaySentences = [];
+    let selectElements = [];
+
+    // Перемешивание
+    function shuffleArray(arr) {
+        const shuffled = [...arr];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+    function reshuffleDisplay() {
+        displaySentences = shuffleArray(originalSentences);
+    }
+
+    // Отрисовка задания 1
+    function renderTask1() {
+        const container = document.getElementById('sentencesList');
+        if (!container) return;
+        container.innerHTML = '';
+        selectElements = [];
+        displaySentences.forEach((sentence, idx) => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'sentence-item';
+            const textSpan = document.createElement('div');
+            textSpan.className = 'sentence-text';
+            textSpan.textContent = sentence.text;
+            const orderDiv = document.createElement('div');
+            orderDiv.className = 'sentence-order';
+            const label = document.createElement('label');
+            label.textContent = 'Порядок (1–5):';
+            const select = document.createElement('select');
+            select.id = `orderSelect_${idx}`;
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '— выбери номер —';
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            select.appendChild(defaultOption);
+            for (let i = 1; i <= 5; i++) {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = i;
+                select.appendChild(opt);
+            }
+            orderDiv.appendChild(label);
+            orderDiv.appendChild(select);
+            itemDiv.appendChild(textSpan);
+            itemDiv.appendChild(orderDiv);
+            container.appendChild(itemDiv);
+            selectElements.push(select);
+        });
+    }
+
+    // Получить выбранные порядки
+    function getUserOrder() {
+        const orders = [];
+        let allSelected = true;
+        for (let i = 0; i < selectElements.length; i++) {
+            const val = selectElements[i].value;
+            if (val === "") {
+                allSelected = false;
+                orders.push(null);
+            } else {
+                orders.push(parseInt(val, 10));
+            }
+        }
+        return { orders, allSelected };
+    }
+    function isUniqueOrder(orders) {
+        if (orders.includes(null)) return false;
+        const set = new Set(orders);
+        if (set.size !== 5) return false;
+        for (let i = 1; i <= 5; i++) if (!set.has(i)) return false;
+        return true;
+    }
+
+    // Проверка задания 1 (для обратной связи)
+    function checkTask1() {
+        const { orders, allSelected } = getUserOrder();
+        if (!allSelected) return { error: "Выбери порядок для КАЖДОГО предложения (от 1 до 5)." };
+        if (!isUniqueOrder(orders)) return { error: "Порядковые номера должны быть уникальными (каждое число от 1 до 5 используется ровно один раз)." };
+        let correctCount = 0;
+        const details = [];
+        for (let i = 0; i < displaySentences.length; i++) {
+            const isCorrect = (orders[i] === displaySentences[i].correctOrder);
+            if (isCorrect) correctCount++;
+            details.push(isCorrect);
+        }
+        return { correctCount, details, perfect: correctCount === 5, orders, noError: true };
+    }
+    function updateTask1Feedback() {
+        const feedbackDiv = document.getElementById('task1Feedback');
+        const result = checkTask1();
+        if (result.error) { feedbackDiv.innerHTML = `<div><strong>⚠️ Ошибка:</strong> ${result.error}</div>`; return; }
+        let html = `<div><strong>📌 Результат расстановки:</strong> ${result.correctCount} из 5 правильно.</div>`;
+        html += `<div style="margin-top: 12px;">`;
+        for (let i = 0; i < displaySentences.length; i++) {
+            const isOk = result.details[i];
+            const mark = isOk ? '✅' : '❌';
+            const styleClass = isOk ? 'correct-highlight' : 'wrong-highlight';
+            html += `<div style="margin-bottom: 8px;">${displaySentences[i].text}<br><span class="${styleClass}">${mark} Твой порядок: ${result.orders[i]} | Правильный: ${displaySentences[i].correctOrder}</span></div>`;
+        }
+        html += `</div>`;
+        if (result.perfect) html += `<div>🎉 Превосходно!</div>`;
+        else {
+            const correctSequence = [...originalSentences].sort((a,b)=>a.correctOrder-b.correctOrder).map(s=>s.text);
+            html += `<div>💡 Правильная хронология: 1. ${correctSequence[0]}<br>2. ${correctSequence[1]}<br>3. ${correctSequence[2]}<br>4. ${correctSequence[3]}<br>5. ${correctSequence[4]}</div>`;
+        }
+        feedbackDiv.innerHTML = html;
+    }
+
+    // Задание 2: проверка типа
+    function checkTask2() {
+        const radios = document.querySelectorAll('input[name="textType"]');
+        let selected = null;
+        for (let r of radios) if (r.checked) { selected = r.value; break; }
+        if (!selected) return { error: "Выбери вариант типа текста." };
+        return { isCorrect: (selected === "narration"), selected, noError: true };
+    }
+    function updateTask2Feedback() {
+        const feedbackDiv = document.getElementById('task2Feedback');
+        const result = checkTask2();
+        if (result.error) { feedbackDiv.innerHTML = `<div>⚠️ ${result.error}</div>`; return; }
+        const mark = result.isCorrect ? '✅' : '❌';
+        let msg = `<div>${mark} Твой выбор: ${result.selected}.</div>`;
+        if (result.isCorrect) msg += `<div>✔ Отлично! Это повествование (цепочка событий).</div>`;
+        else msg += `<div>❌ Неправильно. Верный ответ — повествование.</div>`;
+        feedbackDiv.innerHTML = msg;
+    }
+
+    // ---------- ФУНКЦИИ ДЛЯ ТАЙМЕРА И СОХРАНЕНИЯ (из второго файла) ----------
+    let startTime = null;
+    let timerInterval = null;
+    let isTestFinished = false;
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+            if (isTestFinished) return;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const timerDiv = document.getElementById('timer');
+            if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+        }, 200);
+    }
+    function stopTimerAndGetSeconds() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+        return 0;
+    }
+    function getCurrentDateTime() {
+        const now = new Date();
+        const Y = now.getFullYear(), M = String(now.getMonth()+1).padStart(2,'0'), D = String(now.getDate()).padStart(2,'0');
+        const h = String(now.getHours()).padStart(2,'0'), m = String(now.getMinutes()).padStart(2,'0'), s = String(now.getSeconds()).padStart(2,'0');
+        return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+    }
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; });
+    }
+
+    // Оценка всех ответов (6 вопросов: 5 позиций порядка + 1 тип)
+    function evaluateAllAnswers() {
+        // 1) порядок предложений
+        const orderRes = checkTask1();
+        let orderScore = 0;
+        let orderDetails = [];
+        let validOrder = true;
+        if (orderRes.error) { validOrder = false; orderScore = 0; }
+        else {
+            orderScore = orderRes.correctCount;
+            orderDetails = orderRes.details;
+        }
+        // 2) тип текста
+        const typeRes = checkTask2();
+        let typeCorrect = false;
+        if (!typeRes.error && typeRes.isCorrect) typeCorrect = true;
+        const typeScore = typeCorrect ? 1 : 0;
+        const totalScore = orderScore + typeScore; // максимум 6
+        const percent = (totalScore / 6) * 100;
+        let grade = 2;
+        if (percent >= 90) grade = 5;
+        else if (percent >= 70) grade = 4;
+        else if (percent >= 50) grade = 3;
+        else grade = 2;
+        return { totalScore, orderScore, typeScore, percent, grade, validOrder, orderDetails, typeCorrect, orderRes: orderRes.noError ? orderRes : null };
+    }
+
+    // Таблица результатов
+    function renderResultsTable(fio, timeSec, totalScore, percent, grade, orderDetailsRaw, typeCorrect, orderRes) {
+        let html = `<div><h3>📊 РЕЗУЛЬТАТЫ ТЕСТА (Свойства текста)</h3>
+        <p><strong>👤 Участник:</strong> ${escapeHtml(fio)}</p>
+        <p><strong>⏱️ Время:</strong> ${timeSec} секунд</p>
+        <p><strong>✅ Баллы:</strong> ${totalScore} из 6</p>
+        <p><strong>📈 Процент:</strong> ${percent.toFixed(1)}%</p>
+        <p><strong>🎓 ОЦЕНКА:</strong> <span style="font-size:1.5rem;">${grade}</span></p>
+        <h4>Детализация:</h4><div style="overflow-x:auto;">`;
+        html += `<table><thead><tr><th>Задание</th><th>Ваш ответ</th><th>Правильный ответ</th><th>Результат</th></tr></thead><tbody>`;
+        // Задание 1: каждое предложение
+        for (let i = 0; i < displaySentences.length; i++) {
+            const sent = displaySentences[i];
+            let userNum = "не выбран";
+            if (selectElements[i] && selectElements[i].value) userNum = selectElements[i].value;
+            const correctNum = sent.correctOrder;
+            const isOk = (orderRes && orderRes.details && orderRes.details[i]) ? true : false;
+            const status = isOk ? '✔ Верно' : '✘ Ошибка';
+            const color = isOk ? '#1f7a3b' : '#c0392b';
+            html += `<tr><td>Порядок: «${escapeHtml(sent.text)}»</td><td>${userNum}</td><td>${correctNum}</td><td style="color:${color};">${status}</td></tr>`;
+        }
+        // Задание 2
+        let userType = "не выбран";
+        const typeRadio = document.querySelector('input[name="textType"]:checked');
+        if (typeRadio) userType = typeRadio.value;
+        const typeCorrectAnswer = "повествование (narration)";
+        const typeStatus = typeCorrect ? '✔ Верно' : '✘ Ошибка';
+        const typeColor = typeCorrect ? '#1f7a3b' : '#c0392b';
+        html += `<tr><td>Тип текста</td><td>${userType}</td><td>${typeCorrectAnswer}</td><td style="color:${typeColor};">${typeStatus}</td></tr>`;
+        html += `</tbody></table></div></div>`;
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = html;
+        resultsDiv.style.display = 'block';
+        resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function sendToServer(formData) {
+        try {
+            const response = await fetch('save.php', { method: 'POST', body: formData });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const serverDiv = document.getElementById('serverResponse');
+            serverDiv.innerHTML = `<strong>✅ Результаты успешно сохранены на сервере.</strong>`;
+            serverDiv.style.display = 'block';
+            setTimeout(() => { if(serverDiv) serverDiv.style.display = 'none'; }, 5000);
+        } catch (err) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `⚠️ Ошибка отправки: ${escapeHtml(err.message)}. Данные сохранены локально.`;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { if(errorDiv) errorDiv.style.display = 'none'; }, 6000);
+        }
+    }
+
+    let isProcessing = false;
+    async function finishTest() {
+        if (isTestFinished || isProcessing) return;
+        const fioInput = document.getElementById('fio');
+        const userFio = fioInput.value.trim();
+        if (!userFio) {
+            const errDiv = document.getElementById('errorMessage');
+            errDiv.textContent = '❗ Введите ваше ФИО / имя перед завершением теста!';
+            errDiv.style.display = 'block';
+            setTimeout(() => errDiv.style.display = 'none', 4000);
+            return;
+        }
+        // Валидация заполнения порядка и уникальности
+        const { orders, allSelected } = getUserOrder();
+        if (!allSelected || !isUniqueOrder(orders)) {
+            const errDiv = document.getElementById('errorMessage');
+            errDiv.textContent = '❗ Задание 1: выберите уникальные номера (1-5) для каждого предложения.';
+            errDiv.style.display = 'block';
+            setTimeout(() => errDiv.style.display = 'none', 5000);
+            return;
+        }
+        const typeRad = document.querySelector('input[name="textType"]:checked');
+        if (!typeRad) {
+            const errDiv = document.getElementById('errorMessage');
+            errDiv.textContent = '❗ Задание 2: выберите тип текста.';
+            errDiv.style.display = 'block';
+            setTimeout(() => errDiv.style.display = 'none', 5000);
+            return;
+        }
+
+        const spentSeconds = stopTimerAndGetSeconds();
+        isTestFinished = true;
+        document.getElementById('time_input').value = spentSeconds;
+        document.getElementById('tdate').value = getCurrentDateTime();
+
+        const { totalScore, percent, grade, orderDetails, typeCorrect, orderRes } = evaluateAllAnswers();
+        document.getElementById('grade_input').value = grade;
+
+        renderResultsTable(userFio, spentSeconds, totalScore, percent, grade, orderDetails, typeCorrect, orderRes);
+
+        const formElement = document.getElementById('myForm');
+        const formData = new FormData(formElement);
+        formData.set('fio', userFio);
+        // Добавляем ответы
+        for (let i = 0; i < displaySentences.length; i++) {
+            const selectedVal = selectElements[i] ? selectElements[i].value : '';
+            formData.append(`answer_order_${i}`, selectedVal);
+            formData.append(`word_order_${i}`, displaySentences[i].text);
+        }
+        const selectedType = typeRad ? typeRad.value : '';
+        formData.append('answer_text_type', selectedType);
+        formData.append('total_score', totalScore);
+        formData.append('max_score', 6);
+        formData.append('percent', percent.toFixed(2));
+
+        isProcessing = true;
+        await sendToServer(formData);
+        isProcessing = false;
+    }
+
+    function resetAllSelections() {
+        if (isTestFinished) return;
+        // Сброс select в задании 1
+        for (let i = 0; i < selectElements.length; i++) {
+            if (selectElements[i]) selectElements[i].value = '';
+        }
+        // Сброс радио-кнопок типа текста
+        const radios = document.querySelectorAll('input[name="textType"]');
+        radios.forEach(radio => radio.checked = false);
+        // Очистка обратной связи
+        const task1Feedback = document.getElementById('task1Feedback');
+        const task2Feedback = document.getElementById('task2Feedback');
+        if (task1Feedback) task1Feedback.innerHTML = '✨ Порядок сброшен. Расставьте номера и проверьте.';
+        if (task2Feedback) task2Feedback.innerHTML = '✨ Тип текста сброшен. Выберите вариант.';
+        updateLiveScore();
+    }
+
+    function updateLiveScore() {
+        const { totalScore } = evaluateAllAnswers();
+        document.getElementById('scoreDisplay').innerHTML = `🎯 ${totalScore} / 6`;
+    }
+
+    function showCorrectAnswers() {
+        const task1Feedback = document.getElementById('task1Feedback');
+        const correctSequence = [...originalSentences].sort((a,b)=>a.correctOrder-b.correctOrder).map(s=>s.text);
+        task1Feedback.innerHTML = `<div><strong>📖 Правильный порядок:</strong><br>1. ${correctSequence[0]}<br>2. ${correctSequence[1]}<br>3. ${correctSequence[2]}<br>4. ${correctSequence[3]}<br>5. ${correctSequence[4]}</div><div>🔍 Тип текста: повествование.</div>`;
+        const task2Feedback = document.getElementById('task2Feedback');
+        task2Feedback.innerHTML = `<div>✅ Правильный тип текста: повествование.</div>`;
+    }
+
+    function init() {
+        reshuffleDisplay();
+        renderTask1();
+        startTimer();
+        isTestFinished = false;
+        document.getElementById('tdate').value = getCurrentDateTime();
+        document.getElementById('checkTask1Btn').addEventListener('click', () => { updateTask1Feedback(); updateLiveScore(); });
+        document.getElementById('checkTask2Btn').addEventListener('click', () => { updateTask2Feedback(); updateLiveScore(); });
+        document.getElementById('resetBtn').addEventListener('click', resetAllSelections);
+        document.getElementById('showAnswersBtn').addEventListener('click', showCorrectAnswers);
+        document.getElementById('finishTestBtn').addEventListener('click', finishTest);
+        document.getElementById('viewDataLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            const fioVal = document.getElementById('fio').value.trim();
+            if (!fioVal) {
+                const errDiv = document.getElementById('errorMessage');
+                errDiv.textContent = '❗ Введите имя, чтобы посмотреть свои результаты.';
+                errDiv.style.display = 'block';
+                setTimeout(() => errDiv.style.display = 'none', 4000);
+                return;
+            }
+            window.location.href = `show.php?fio=${encodeURIComponent(fioVal)}`;
+        });
+        document.querySelectorAll('select, input[name="textType"]').forEach(el => el.addEventListener('change', updateLiveScore));
+        updateLiveScore();
+    }
+    init();
+</script>
+</body>
+</html>

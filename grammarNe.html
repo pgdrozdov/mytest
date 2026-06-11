@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Грамматика: НЕ слитно / раздельно</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.2;
+        margin: 0;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    h3.zag3 {
+        text-align: center;
+        margin: 0 0 10px 0;
+        padding: 15px;
+        background: #4CAF50;
+        color: white;
+        border-radius: 8px;
+        width: 100%;
+        max-width: 1200px;
+        box-sizing: border-box;
+    }
+    .instructions {
+        font-family: 'Times New Roman', serif;
+        font-style: italic;
+        font-size: 16px; 
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto 20px auto;
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        text-align: center;
+    }
+  
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    li {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    } 
+    label {
+        display: flex;
+        width: 30em;
+        align-items: center;
+        font-size: 16px;
+        line-height: 1;
+        padding: 1px 0;
+        white-space: nowrap;
+    }
+
+    select {
+        width: 20em;
+        height: 2em;
+        font-size: 1em;
+        margin-left: 10px;
+        position: relative;
+        top: 0.1em;
+        text-align: center;
+        outline: none;
+        background: transparent;
+    }
+	
+    select:focus {
+        border-bottom: 1px solid #4CAF50;
+    }
+    
+    button {
+        margin-top: 20px;
+        background-color: green;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* стили для колонок */
+    #columns-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 50px;
+        margin: auto;
+        max-width: 1200px;
+        width: 100%;
+    }
+    
+    #col2, #col3 {
+        width: 500px;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+    
+    .center {
+        width: 17%;
+        padding: 1.5%;
+        margin: auto;
+        margin-top: 10px;
+    }
+    
+    /* Стили для модального окна */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 800px;
+        border-radius: 8px;
+    }
+    
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .close:hover {
+        color: black;
+    }
+    
+    #resultsTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    
+    #resultsTable th, #resultsTable td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    
+    #resultsTable th {
+        background-color: #4CAF50;
+        color: white;
+    }
+    
+    #resultsTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    
+    .rule-link {
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+    
+    .correct {
+        color: green;
+        font-weight: bold;
+    }
+	
+	/* контейнер для ФИО — всё на одной строке */
+	.fio-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+	
+	.fio-container label {
+      font-size: 18px;
+      margin-left: 0px; 
+	  padding-right: 0px;
+      white-space: nowrap;
+    } 
+    .fio-container input {
+      width: 450px;
+	   height: 2em;
+      padding-left: 0px;
+	   margin-right: 0px;
+      font-size: 22px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+	
+    
+		
+    #timer {
+        text-align: center;
+        font-size: 24px;
+        margin: 20px 0;
+    }
+    .error {
+        color: red;
+        text-align: center;
+        margin: 0px 0;
+    }
+    .server-response {
+    margin: 20px auto;
+    width: 80%;
+    padding: 10px;
+    border: 1px solid transparent;  /* теперь граница бесцветная */
+    background: #f0f8ff;
+    border-radius: 8px;
+    text-align: center;
+}
+    .success {
+        color: green;
+        font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<h3 class="zag3">Написание НЕ слитно / раздельно (часть 2)</h3>
+<div class="instructions">
+    Не пишется слитно с существительными, с краткими и полными прилагательными и наречиями на -о(-е), если: а) слово не употребляется без не, б) существительное, прилагательное и наречие с не может быть заменено синонимом без не или близким выражением. Не пишется раздельно, если: а) есть противопоставление с союзом а, б) к наречию относятся слова далеко, вовсе, ничуть, нисколько, никогда, в) с наречиями не на -о(-е) (например, не по-товарищески).<br>
+    <span id="rule1" class="rule-link">Правило 1</span>,
+    <span id="rule2" class="rule-link">правило 2</span>,
+    <span id="rule3" class="rule-link">правило 3</span>,
+    <span id="rule4" class="rule-link">правило 4</span>,
+    <span id="rule5" class="rule-link">правило 5</span>.
+</div>
+  
+<div id="timer">Время: 0 сек</div>
+<div id="errorMessage" class="error"></div> 
+<div id="serverResponse" class="server-response"></div> 
+
+<form action="save.php" method="POST" id="myForm">
+    <!-- Скрытые поля -->
+    <input type="hidden" name="predmet" value="Русский язык">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="Не слитно - раздельно">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+
+    <!-- ФИО -->
+    <div class="fio-container">
+	 <ul>
+         <li><label for="fio">ВВЕДИТЕ ФИО:</label> 
+        <input type="text" id="fio" name="fio" list="lift" autocomplete="off" 
+               placeholder="наведите курсор и выберите свою фамилию" required>
+        <datalist  id="lift">
+            <option>Егор</option>
+            <option>Ксюша</option>
+            <option>Анюта</option>
+            <option>Даня</option>
+        </datalist>
+		</li>
+	</ul>	
+    </div>
+
+    <!-- Две колонки с вопросами -->
+    <div id="columns-container">
+        <div id="col2">
+            <ul> 
+                <li><label>1. Ваш выбор
+                    <select id='word1' name="test1">
+                        <option value="0">нелепый поступок</option>
+                        <option value="1">не лепый поступок</option>
+                    </select></label>
+                </li>
+                <li><label>2. Ваш выбор
+                    <select id='word2' name="test2">
+                        <option value="1">не высоко взлететь</option>
+                        <option value="0">невысоко взлететь</option>
+                    </select></label>
+                </li> 
+                <li><label>3. Ваш выбор
+                    <select id='word3' name="test3">
+                        <option value="0">поступить не по-товарищески</option>
+                        <option value="1">поступить непо-товарищески</option>
+                    </select></label>
+                </li>
+                <li><label>4. Ваш выбор
+                    <select id='word4' name="test4">
+                        <option value="1">почуять недоброе</option>
+                        <option value="0">почуять не доброе</option>
+                    </select></label>
+                </li>
+                <li><label>5. Ваш выбор
+                    <select id='word5' name="test5">
+                        <option value="0">неряшливый вид</option>
+                        <option value="1">не ряшливый вид</option>
+                    </select></label>
+                </li>
+                <li><label>6. Ваш выбор
+                    <select id='word6' name="test6">
+                        <option value="1">вести себя не принужденно</option>
+                        <option value="0">вести себя непринужденно</option>
+                    </select></label>
+                </li>
+                <li><label>7. Ваш выбор
+                    <select id='word7' name="test7">
+                        <option value="0">вовсе не трудовые доходы</option>
+                        <option value="1">вовсе нетрудовые доходы</option>
+                    </select></label>
+                </li>
+                <li><label>8. Ваш выбор
+                    <select id='word8' name="test8">
+                        <option value="1">невеселый, а грустный вид</option>
+                        <option value="0">не веселый, а грустный вид</option>
+                    </select></label>
+                </li>
+                <li><label>9. Ваш выбор
+                    <select id='word9' name="test9">
+                        <option value="1">перейти не глубокую, но широкую реку</option>
+                        <option value="0">перейти неглубокую, но широкую реку</option>
+                    </select></label>
+                </li>
+                <li><label>10. Ваш выбор
+                    <select id='word10' name="test10">
+                        <option value="1">устать с не привычки,</option>
+                        <option value="0">устать с непривычки,</option>
+                    </select></label>
+                </li>
+            </ul>
+        </div>
+        <div id="col3">
+            <ul> 
+                <li><label>11. Ваш выбор
+                    <select id='word11' name="test11">
+                        <option value="1">бормотать что-то не внятное</option>
+                        <option value="0">бормотать что-то невнятное</option>
+                    </select></label>
+                </li>
+                <li><label>12. Ваш выбор
+                    <select id='word12' name="test12">
+                        <option value="1">далеко нелегкое дело</option>
+                        <option value="0">далеко не легкое дело</option>
+                    </select></label>
+                </li>
+                <li><label>13. Ваш выбор
+                    <select id='word13' name="test13">
+                        <option value="1">река была неширока</option>
+                        <option value="0">река была не широка</option>
+                    </select></label>
+                </li>
+                <li><label>14. Ваш выбор
+                    <select id='word14' name="test14">
+                        <option value="1">не противление злу</option>
+                        <option value="0">непротивление злу</option>
+                    </select></label>
+                </li>
+                <li><label>15. Ваш выбор
+                    <select id='word15' name="test15">
+                        <option value="1">юноша крайне не вежлив</option>
+                        <option value="0">юноша крайне невежлив</option>
+                    </select></label>
+                </li>
+                <li><label>16. Ваш выбор
+                    <select id='word16' name="test16">
+                        <option value="1">не навистный человек</option>
+                        <option value="0">ненавистный человек</option>
+                    </select></label>
+                </li>
+                <li><label>17. Ваш выбор
+                    <select id='word17' name="test17">
+                        <option value="1">не движимость</option>
+                        <option value="0">недвижимость</option>
+                    </select></label>
+                </li>
+                <li><label>18. Ваш выбор
+                    <select id='word18' name="test18">
+                        <option value="0">некоммерческое, а государственное предприятие</option>
+                        <option value="1">не коммерческое, а государственное предприятие</option>
+                    </select></label>
+                </li>
+                <li><label>19. Ваш выбор
+                    <select id='word19' name="test19">
+                        <option value="0">несчастный случай</option>
+                        <option value="1">не счастный случай</option>
+                    </select></label>
+                </li>
+                <li><label>20. Ваш выбор
+                    <select id='word20' name="test20">
+                        <option value="1">не трудоспособность</option>
+                        <option value="0">нетрудоспособность</option>
+                    </select></label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="center">
+        <button type="submit">Завершить тест</button>
+    </div>
+</form>
+
+<!-- Модальное окно для результатов -->
+<div id="resultsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Результаты теста</h2>
+        <p><strong>Оценка :</strong> <span id="finalGrade"></span></p>
+        <p><strong>Время выполнения:</strong> <span id="timeTaken">0</span> сек.</p>
+        <div id="resultsContainer"></div>
+        <p id="serverStatus" style="text-align: center; font-weight: bold;"></p>
+        <!-- Кнопки в одну строку (исправлено) -->
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
+            <button onclick="window.location.href='index.html'">Переход в меню</button>
+            <button onclick="window.location.href='show.php?fio=' + encodeURIComponent(document.getElementById('fio').value)">Просмотр базы данных</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== Таймер ==========
+let globalStartTime = Date.now();   // момент загрузки страницы
+let timerInterval;
+let timerStopped = false;          // флаг, чтобы не останавливать дважды
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        if (!timerStopped) {
+            const now = Date.now();
+            const elapsed = Math.floor((now - globalStartTime) / 1000);
+            document.getElementById('timer').textContent = `Время: ${elapsed} сек`;
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    if (!timerStopped) {
+        timerStopped = true;
+        clearInterval(timerInterval);
+        return Math.floor((Date.now() - globalStartTime) / 1000);
+    }
+    return Math.floor((Date.now() - globalStartTime) / 1000); // если уже остановлен
+}
+
+// Текущая дата и время для поля tdate
+function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+// Запуск таймера при загрузке
+window.addEventListener('load', startTimer);
+
+// ========== Правила (alert) ==========
+document.getElementById('rule1').addEventListener('click', () => alert("Не пишется слитно с существительными, краткими и полными прилагательными и наречиями на -о(-е), если:\n\n1) слово не употребляется без не\n2) можно заменить синонимом без не.\n\nРаздельно, если:\n1) противопоставление с а\n2) слова далеко, вовсе, ничуть, нисколько, никогда\n3) наречия не на -о(-е)."));
+document.getElementById('rule2').addEventListener('click', () => alert("Не с глаголами и деепричастиями пишется раздельно. Слитно – только если без не не употребляются."));
+document.getElementById('rule3').addEventListener('click', () => alert("В отрицательных местоимениях не пишется слитно, если нет предлога, и раздельно, если предлог есть."));
+document.getElementById('rule4').addEventListener('click', () => alert("Не пишется слитно в неопределённых местоимениях и отрицательных наречиях."));
+document.getElementById('rule5').addEventListener('click', () => alert("Не с причастиями: слитно – без зависимых слов и противопоставления; раздельно – краткие формы, зависимые слова, противопоставление с а."));
+
+// ========== Класс для подсчёта ==========
+class TestTaker {
+    constructor(ball, userWord) {
+        this.ball = ball;           // массив 0/1 (0 – верно, 1 – ошибка)
+        this.userWord = userWord;
+    }
+    
+    calculateGrade() {
+        const totalErrors = this.ball.reduce((a, b) => a + b, 0);
+        const percentage = (totalErrors / this.ball.length) * 100; // процент ошибок
+        // Шкала: 5 (отлично) если ошибок <30%, 4 (хорошо) <50%, 3 (удовл.) <70%, иначе 2 (неуд.)
+        if (percentage < 30) return 5;
+        if (percentage < 50) return 4;
+        if (percentage < 70) return 3;
+        return 2;
+    }
+}
+
+// ========== Функция отправки данных на сервер (save.php) ==========
+async function sendFormData(form) {
+    // Заполняем скрытые поля перед отправкой
+    document.getElementById('tdate').value = getCurrentDateTime();
+    // время уже установлено в обработчике, но на всякий случай обновим
+    const elapsed = stopTimer();                
+    document.getElementById('time_input').value = elapsed;
+    
+    // Оценка уже установлена в обработчике
+
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch('save.php', {
+            method: 'POST',
+            body: formData
+        });
+        const text = await response.text();     // предполагаем, что save.php возвращает текст/JSON
+        return { ok: response.ok, message: text };
+    } catch (error) {
+        return { ok: false, message: error.message };
+    }
+}
+
+// ========== Основной обработчик отправки формы ==========
+document.getElementById('myForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Скрываем старые сообщения
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+    document.getElementById('serverResponse').innerHTML = '';
+
+    // Проверка ФИО
+    const userFio = document.getElementById('fio').value.trim();
+    if (!userFio) {
+        errorDiv.textContent = 'Пожалуйста, введите ваше ФИО!';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    // Собираем ответы
+    const ball = [];
+    const userWord = [];
+    for (let i = 1; i <= 20; i++) {
+        const select = document.querySelector(`select[name="test${i}"]`);
+        if (select) {
+            const val = parseInt(select.value);
+            ball.push(val);
+            const txt = select.options[select.selectedIndex].text;
+            userWord.push(txt);
+        }
+    }
+
+    const testTaker = new TestTaker(ball, userWord);
+    const finalGrade = testTaker.calculateGrade();
+
+    // Заполняем скрытые поля
+    document.getElementById('grade_input').value = finalGrade;
+    document.getElementById('time_input').value = stopTimer();
+    document.getElementById('tdate').value = getCurrentDateTime();
+
+    // Отправляем данные на сервер (асинхронно)
+    const serverResponseDiv = document.getElementById('serverResponse');
+    serverResponseDiv.innerHTML = 'Сохраняем результаты...';
+    
+    const result = await sendFormData(this);
+    
+    if (result.ok) {
+        serverResponseDiv.innerHTML = '<span class="success">✅ Результаты успешно сохранены на сервере.</span>';
+    } else {
+        serverResponseDiv.innerHTML = `<span class="error">❌ Ошибка при сохранении: ${result.message}</span>`;
+    }
+
+    // Формируем таблицу для модального окна
+    let resultsHTML = `<p><strong>Количество ошибок:</strong> ${ball.reduce((a,b)=>a+b,0)} из ${ball.length}</p>`;
+    resultsHTML += '<table id="resultsTable"><tr><th>Вопрос</th><th>Ваш выбор</th><th>Результат</th></tr>';
+    ball.forEach((score, idx) => {
+        const evaluation = score === 0 ? 'Верно' : 'Ошибка';
+        const cls = score === 0 ? 'correct' : 'error';
+        resultsHTML += `<tr><td>${idx+1}</td><td>${userWord[idx]}</td><td class="${cls}">${evaluation}</td></tr>`;
+    });
+    resultsHTML += '</table>';
+
+    // Заполняем модальное окно
+    document.getElementById('finalGrade').textContent = finalGrade;
+    // Подсветка оценки: если 2 (неуд.) – красным, иначе зелёным
+    document.getElementById('finalGrade').className = finalGrade === 2 ? 'error' : 'correct';
+
+    document.getElementById('timeTaken').textContent = document.getElementById('time_input').value;
+    document.getElementById('resultsContainer').innerHTML = resultsHTML;
+    
+    // Показываем модальное окно
+    document.getElementById('resultsModal').style.display = 'block';
+});
+
+// ========== Закрытие модального окна ==========
+document.querySelector('.close').addEventListener('click', () => {
+    document.getElementById('resultsModal').style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('resultsModal');
+    if (event.target === modal) modal.style.display = 'none';
+});
+
+</script>
+</body>
+</html>

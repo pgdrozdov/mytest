@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Тест: гласные звуки и буквы — русский язык</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #fef9e6 0%, #f4efe0 100%);
+      margin: 0;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .test-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255,255,245,0.94);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: all 0.2s;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .left-col {
+      flex: 2.5;
+      min-width: 260px;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .right-col {
+      flex: 1.4;
+      min-width: 260px;
+    }
+
+    .theory-card {
+      background: #fffff5ea;
+      border-radius: 1.8rem;
+      border: 1px solid #f0e5cf;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem 1.3rem;
+      height: auto;
+      transition: 0.2s;
+      backdrop-filter: blur(2px);
+    }
+
+    .theory-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4a3b1c;
+      margin-bottom: 1rem;
+      border-left: 5px solid #d4a373;
+      padding-left: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theory-card h3::before {
+      content: "🔊";
+      font-size: 1.4rem;
+    }
+
+    .theory-content {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      color: #2c2b26;
+    }
+
+    .theory-content p {
+      margin-bottom: 0.9rem;
+    }
+
+    .vowels-table {
+      width: 100%;
+      background: #fffcf0;
+      border-radius: 1rem;
+      margin: 0.8rem 0;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .vowels-table th, .vowels-table td {
+      border: 1px solid #ecd9b4;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .vowels-table th {
+      background: #f7ebd0;
+      color: #6b4c2c;
+    }
+
+    .theory-content strong {
+      color: #a56b2f;
+      font-weight: 600;
+    }
+
+    .theory-content hr {
+      margin: 1rem 0;
+      border: none;
+      height: 1px;
+      background: #eedfc5;
+    }
+
+    .top-bar {
+      background: #ffffffcc;
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      border: 1px solid rgba(255,245,200,0.7);
+    }
+    #timer {
+      font-size: 1.7rem;
+      font-weight: 800;
+      background: #5e3a1f;
+      color: #ffefcf;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-family: monospace;
+      letter-spacing: 1px;
+      text-align: center;
+      min-width: 180px;
+    }
+    .fio-block {
+      flex: 2;
+      min-width: 200px;
+    }
+    .fio-block label {
+      font-weight: 700;
+      color: #7a531f;
+      margin-right: 0.5rem;
+    }
+    .fio-block input {
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: 1.5px solid #ecd9b4;
+      background: white;
+      font-size: 0.9rem;
+      width: 220px;
+      transition: 0.2s;
+    }
+    .fio-block input:focus {
+      border-color: #d4a373;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.2);
+    }
+    .error, .server-response {
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .error {
+      background: #ffe8e6;
+      color: #b12a1f;
+      border-left: 6px solid #c0392b;
+    }
+    .server-response {
+      background: #eaf6ff;
+      border-left: 6px solid #2c7da0;
+      color: #155f7c;
+    }
+    .test-header {
+      background: #9c6e42;
+      padding: 1.2rem 1.8rem;
+      color: white;
+      border-radius: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .test-header h1 {
+      margin: 0 0 0.35rem 0;
+      font-weight: 600;
+      font-size: 1.7rem;
+      letter-spacing: -0.3px;
+    }
+    .test-header p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+    .question-card {
+      background: white;
+      border-radius: 1.2rem;
+      margin-bottom: 1rem;
+      padding: 0.9rem 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border: 1px solid #efe3cf;
+      transition: all 0.1s ease;
+    }
+    .question-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+      row-gap: 0.6rem;
+    }
+    .question-text-block {
+      flex: 3;
+      min-width: 200px;
+    }
+    .question-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+      color: #3f2c16;
+      background: #fef8ed;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+    }
+    .task-badge {
+      font-size: 0.7rem;
+      background: #f3e5ce;
+      display: inline-block;
+      margin-left: 0.8rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #7b4a2a;
+      vertical-align: middle;
+    }
+    .options {
+      flex: 1.2;
+      min-width: 200px;
+      text-align: right;
+    }
+    .case-select {
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      border: 1.5px solid #e2d0b6;
+      background: white;
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 260px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+    .case-select:focus {
+      border-color: #b97f44;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(185,127,68,0.2);
+    }
+    .case-select:disabled {
+      background: #f7f2e6;
+      cursor: not-allowed;
+      color: #6b5a42;
+      border-color: #dacfb8;
+    }
+    .feedback {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding-left: 0.2rem;
+      color: #2b6e3c;
+    }
+    .score-area {
+      background: #fdf7ed;
+      border-radius: 1.8rem;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .score-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: #ffffffcc;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+    }
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      background: #9c6e42;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    button:hover {
+      background: #7a542f;
+      transform: scale(0.97);
+    }
+    button.reset-btn { background: #a57c54; }
+    button.reset-btn:hover { background: #7a5c3b; }
+    button.restart-btn { background: #548b6f; }
+    button.restart-btn:hover { background: #3f6b54; }
+    .menu-button {
+      background: #6f9e6f;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      text-align: center;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .menu-button:hover {
+      background: #538b53;
+      transform: scale(0.97);
+    }
+    .footer-note {
+      padding: 0.8rem 0 0.2rem;
+      font-size: 0.75rem;
+      color: #8b6f47;
+      border-top: 1px solid #eedfc5;
+      margin-top: 0.6rem;
+    }
+    #results {
+      margin-top: 1.5rem;
+      background: #fffff5ec;
+      border-radius: 2rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border: 1px solid #eadbbc;
+      overflow-x: auto;
+    }
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 1rem;
+      font-size: 0.9rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .results-table th {
+      background: #f3e5ce;
+      color: #5e3a1f;
+      padding: 12px 10px;
+      font-weight: 700;
+      text-align: center;
+      border: 1px solid #e2cfb0;
+    }
+    .results-table td {
+      border: 1px solid #e2cfb0;
+      padding: 10px 10px;
+      vertical-align: top;
+    }
+    .results-table tr.correct-row {
+      background-color: #eaf9e6;
+    }
+    .results-table tr.wrong-row {
+      background-color: #ffe6e5;
+    }
+    .status-badge {
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 40px;
+      display: inline-block;
+      font-size: 0.8rem;
+    }
+    .status-correct {
+      background: #2c7a47;
+      color: white;
+    }
+    .status-wrong {
+      background: #b12a1f;
+      color: white;
+    }
+    .section-title {
+      font-weight: 700;
+      margin: 0.5rem 0 0.8rem 0;
+      color: #8b5a2b;
+      background: #fef3e0;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 860px) {
+      body { padding: 1rem; }
+      .test-container { flex-direction: column; }
+      .top-bar { flex-direction: column; align-items: stretch; }
+      .fio-block input { width: 100%; }
+      .question-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .options {
+        width: 100%;
+        text-align: left;
+      }
+      .case-select {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div style="width:100%; max-width:1400px; margin:0 auto;">
+  <div class="top-bar">
+    <div id="timer">⏱️ Время: 0 сек</div>
+    <div class="fio-block">
+      <label for="fio">📝 Имя / Фамилия:</label>
+      <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="Введите имя" required>
+      <datalist id="lift">
+        <option>Анна</option>
+		<option>Даня</option>
+		<option>Егор</option>
+		<option>Ксения</option>
+		</datalist>
+    </div>
+  </div>
+
+  <div id="errorMessage" class="error" style="display: none;"></div>
+  <div id="serverResponse" class="server-response" style="display: none;"></div>
+
+  <form id="myForm" method="POST" action="save.php">
+    <input type="hidden" name="predmet" value="русский язык">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="Гласные звуки и буквы">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+  </form>
+
+  <div class="test-container" id="quizRoot">
+    <div class="left-col">
+      <div class="test-header">
+        <h1>🎧 Гласные звуки и буквы</h1>
+        <p>Проверь знание гласных звуков, рядов, йотированных букв и правил чтения. Выбери верный вариант.</p>
+      </div>
+      <div id="questionsArea" class="test-words"></div>
+      <div class="score-area">
+        <div class="score-text" id="scoreDisplay">✅ 0 / 0</div>
+        <div class="button-group">
+          <button id="checkAndFinishBtn">✅ ЗАВЕРШИТЬ ТЕСТ ✅</button>
+          <button id="resetAnswersBtn" class="reset-btn">⟳ СБРОСИТЬ ВСЕ</button>
+          <button id="restartTestBtn" class="restart-btn">🔄 НОВЫЙ ТЕСТ</button>
+          <a href="javascript:void(0);" class="menu-button" id="viewDataLink">🔍 Мои результаты</a>
+        </div>
+      </div>
+      <div class="footer-note">
+        ★ Гласных звуков 6, а букв — 10. Йотированные буквы (Я, Ё, Ю, Е) могут давать 1 или 2 звука.<br>
+        ☆ I ряд → твёрдая команда, II ряд → мягкая команда.
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="theory-card">
+        <h3>📣 Теория: гласные</h3>
+        <div class="theory-content">
+          <p><strong>🎵 Гласные звуки (6):</strong> [а], [о], [у], [ы], [э], [и].<br>
+          <strong>📖 Гласные буквы (10):</strong> А, Я, О, Ё, У, Ю, Ы, И, Э, Е.</p>
+          <table class="vowels-table">
+            <thead><tr><th>Ряд</th><th>Буквы</th><th>Команда согласному</th></tr></thead>
+            <tbody>
+              <tr><td><strong>I ряд</strong></td><td>А, О, У, Ы, Э</td><td>«Читайся ТВЁРДО!»</td></tr>
+              <tr><td><strong>II ряд</strong></td><td>Я, Ё, Ю, И, Е</td><td>«Читайся МЯГКО!»</td></tr>
+            </tbody>
+          </table>
+          <p><strong>✨ Йотированные буквы:</strong> Я, Ё, Ю, Е.<br>
+          ➜ <strong>После согласной</strong> → 1 звук: Я → [а], Ё → [о], Ю → [у], Е → [э].<br>
+          ➜ <strong>В начале слова, после гласной, Ъ или Ь</strong> → 2 звука: [йа], [йо], [йу], [йэ].</p>
+          <hr>
+          <p><strong>🔎 Примеры:</strong><br>
+          • «мяч» — Я после М → [а] (1 звук)<br>
+          • «ёжик» — Ё в начале → [йо] (2 звука)<br>
+          • «поют» — Ю после гласной → [йу] (2 звука)<br>
+          • «семья» — Я после Ь → [йа] (2 звука)</p>
+          <p><strong>📌 Запомни:</strong> Буквы И, Ы, Э не йотированные, но И относится ко II ряду (смягчает).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="results" style="display: none;"></div>
+</div>
+
+<script>
+  // ---------- МАССИВ ВОПРОСОВ (ГЛАСНЫЕ) ----------
+  const questionsList = [
+    { question: "Сколько гласных ЗВУКОВ в русском языке?", options: ["5", "6", "10", "12"], correct: "6" },
+    { question: "Сколько гласных БУКВ в русском алфавите?", options: ["6", "8", "10", "12"], correct: "10" },
+    { question: "Какие буквы относятся к I ряду (дают команду «читайся твёрдо»)?", options: ["Я, Ё, Ю, И, Е", "А, О, У, Ы, Э", "А, Я, О, Ё, У", "И, Э, Ы, А, О"], correct: "А, О, У, Ы, Э" },
+    { question: "Какие буквы относятся ко II ряду (дают команду «читайся мягко»)?", options: ["А, О, У, Ы, Э", "Я, Ю, Е, И, Ё", "Э, Ы, А, О, У", "Я, Ё, Ю, И, Е"], correct: "Я, Ё, Ю, И, Е" },
+    { question: "Выберите йотированную гласную букву:", options: ["А", "Ы", "Ю", "Э"], correct: "Ю" },
+    { question: "Какая из этих букв НЕ является йотированной?", options: ["Е", "Ё", "И", "Ю"], correct: "И" },
+    { question: "Сколько звуков обозначает буква «Е» после согласного (например, в слове «лес»)?", options: ["1", "2", "0", "3"], correct: "1" },
+    { question: "Сколько звуков даёт буква «Ё» в начале слова (например, «ёлка»)?", options: ["1", "2", "3", "0"], correct: "2" },
+    { question: "Какой звук (или звуки) передаёт буква «Я» после согласного?", options: ["[йа]", "[а]", "[я]", "[й]"], correct: "[а]" },
+    { question: "В слове «юла» буква «Ю» стоит в начале. Сколько звуков она обозначает?", options: ["1", "2", "3", "0"], correct: "2" },
+    { question: "Какая гласная буква всегда даёт команду мягкости предшествующему согласному?", options: ["О", "Ы", "И", "У"], correct: "И" },
+    { question: "Выберите слово, в котором буква «Ё» даёт ОДИН звук (после согласного):", options: ["ёж", "пёс", "ёлка", "съёжился"], correct: "пёс" },
+    { question: "В слове «поезд» буква «Е» стоит после гласной «о». Сколько звуков она образует?", options: ["1 ([э])", "2 ([йэ])", "3", "0"], correct: "2 ([йэ])" },
+    { question: "Какой звук произносится на месте буквы «Я» в слове «мясо»?", options: ["[а]", "[йа]", "[я]", "[и]"], correct: "[а]" },
+    { question: "Буква «Ю» в слове «вьюга» (после Ь) даёт:", options: ["1 звук [у]", "2 звука [йу]", "звук [ю]", "ничего"], correct: "2 звука [йу]" },
+    { question: "В каком ряду перечислены только гласные I ряда?", options: ["А, Я, О, Ё", "У, Ю, Ы, И", "А, О, У, Ы, Э", "Э, Е, И, Ы"], correct: "А, О, У, Ы, Э" },
+    { question: "В каком ряду перечислены только гласные II ряда?", options: ["Я, Ё, Ю, И, Е", "А, О, У, Ы, Э", "Я, Ю, Е, Э, Ы", "Ё, И, О, У"], correct: "Я, Ё, Ю, И, Е" },
+    { question: "Сколько звуков в слове «якорь»? (подсказка: йотированная в начале)", options: ["4", "5", "6", "3"], correct: "5" },
+    { question: "Какая буква обозначает гласный звук [ы]?", options: ["И", "Ы", "Э", "Ю"], correct: "Ы" },
+    { question: "Буква «Е» в слове «ехать» (в начале) даёт:", options: ["один звук [э]", "два звука [йэ]", "звук [е]", "три звука"], correct: "два звука [йэ]" },
+    { question: "Выберите верное утверждение о букве «И»:", options: ["Она йотированная", "Относится к I ряду", "Даёт команду мягкости", "Всегда твёрдая"], correct: "Даёт команду мягкости" },
+    { question: "В слове «берёза» буква «Ё» стоит после согласного «р». Сколько звуков она передаёт?", options: ["1 ([о])", "2 ([йо])", "0", "[ё]"], correct: "1 ([о])" },
+    { question: "Какой звук даёт буква «Е» в слове «сестра»?", options: ["[э]", "[йэ]", "[е]", "[и]"], correct: "[э]" },
+    { question: "Какие буквы могут обозначать два звука в определённой позиции?", options: ["А, О, У, Ы", "Я, Ё, Ю, Е", "И, Э, Ы", "Только Ъ и Ь"], correct: "Я, Ё, Ю, Е" },
+    { question: "В каком слове звуков больше, чем букв? (за счёт йотированной в начале)", options: ["лук", "юг", "сон", "дом"], correct: "юг" }
+  ];
+
+  const TOTAL_QUESTIONS = questionsList.length;
+  let startTime = null;
+  let timerInterval = null;
+  let isTestFinished = false;
+
+  // ---- ТАЙМЕР ----
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      if (isTestFinished) return;
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const timerDiv = document.getElementById('timer');
+      if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+    }, 200);
+  }
+
+  function stopTimerAndGetSeconds() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+    return 0;
+  }
+
+  function getCurrentDateTime() {
+    const now = new Date();
+    const Y = now.getFullYear();
+    const M = String(now.getMonth() + 1).padStart(2,'0');
+    const D = String(now.getDate()).padStart(2,'0');
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // ---- ПОДСЧЁТ БАЛЛОВ ----
+  function computeCurrentScore() {
+    let correct = 0;
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      if (select && select.value && select.value === questionsList[i].correct) correct++;
+    }
+    return correct;
+  }
+
+  function updateScoreDisplay(count = null) {
+    const correct = (count !== null) ? count : computeCurrentScore();
+    const scoreSpan = document.getElementById("scoreDisplay");
+    if (scoreSpan) scoreSpan.innerHTML = `🎯 ${correct} / ${TOTAL_QUESTIONS}`;
+  }
+
+  function refreshLiveScore() {
+    updateScoreDisplay(computeCurrentScore());
+  }
+
+  function evaluateAllAnswers() {
+    let detailed = {};
+    let correctCount = 0;
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      const selected = select ? select.value : "";
+      const correctAns = questionsList[i].correct;
+      const isCorrect = (selected === correctAns);
+      if (isCorrect) correctCount++;
+      detailed[i] = {
+        question: questionsList[i].question,
+        userAnswer: selected || "не выбран",
+        correctAnswer: correctAns,
+        isCorrect: isCorrect
+      };
+    }
+    const wrongCount = TOTAL_QUESTIONS - correctCount;
+    const percent = (correctCount / TOTAL_QUESTIONS) * 100;
+    let grade = 2;
+    if (percent >= 90) grade = 5;
+    else if (percent >= 70) grade = 4;
+    else if (percent >= 50) grade = 3;
+    else grade = 2;
+    return { wrongCount, correctCount, percent, grade, detailed };
+  }
+
+  // ---- ТАБЛИЦА ДЕТАЛИЗАЦИИ (улучшенная) ----
+  function renderResultsTable(fio, timeSec, correct, wrong, percent, grade, detailedMap) {
+    let html = `<div><h3>📊 РЕЗУЛЬТАТЫ ТЕСТА «Гласные звуки и буквы»</h3>
+      <p><strong>👤 Участник:</strong> ${escapeHtml(fio)}</p>
+      <p><strong>⏱️ Время:</strong> ${timeSec} секунд</p>
+      <p><strong>✅ Правильно:</strong> ${correct} из ${TOTAL_QUESTIONS}</p>
+      <p><strong>❌ Ошибок:</strong> ${wrong}</p>
+      <p><strong>📈 Процент:</strong> ${percent.toFixed(1)}%</p>
+      <p><strong>🎓 ОЦЕНКА:</strong> <span style="font-size:1.5rem; font-weight:bold;">${grade}</span></p>
+      <h4>📋 Детализация ответов:</h4>
+      <div style="overflow-x:auto;">
+        <table class="results-table">
+          <thead>
+            <tr><th>№</th><th>Вопрос</th><th>Ваш ответ</th><th>Правильный ответ</th><th>Результат</th></tr>
+          </thead>
+          <tbody>`;
+    for (let idx = 0; idx < TOTAL_QUESTIONS; idx++) {
+      const data = detailedMap[idx];
+      const rowClass = data.isCorrect ? 'correct-row' : 'wrong-row';
+      const statusBadge = data.isCorrect 
+        ? '<span class="status-badge status-correct">✔ Верно</span>' 
+        : '<span class="status-badge status-wrong">✘ Ошибка</span>';
+      html += `<tr class="${rowClass}">
+        <td style="text-align:center;">${idx+1}</td>
+        <td>${escapeHtml(data.question)}</td>
+        <td>${escapeHtml(data.userAnswer)}</td>
+        <td>${escapeHtml(data.correctAnswer)}</td>
+        <td style="text-align:center;">${statusBadge}</td>
+      </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ---- БЛОКИРОВКА/РАЗБЛОКИРОВКА SELECT ----
+  function setSelectsEnabled(enabled) {
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      if (select) select.disabled = !enabled;
+    }
+  }
+
+  // ---- ОТПРАВКА НА СЕРВЕР ----
+  async function sendToServer(formData) {
+    try {
+      const response = await fetch('save.php', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const serverDiv = document.getElementById('serverResponse');
+      serverDiv.innerHTML = `<strong>✅ Результаты успешно сохранены на сервере.</strong>`;
+      serverDiv.style.display = 'block';
+      setTimeout(() => { if(serverDiv) serverDiv.style.display = 'none'; }, 5000);
+    } catch (err) {
+      console.warn(err);
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.innerHTML = `⚠️ Ошибка отправки: ${escapeHtml(err.message)}. Данные сохранены локально.`;
+      errorDiv.style.display = 'block';
+      setTimeout(() => { if(errorDiv) errorDiv.style.display = 'none'; }, 6000);
+    }
+  }
+
+  let isProcessing = false;
+  async function finishTest() {
+    if (isTestFinished || isProcessing) return;
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('serverResponse').style.display = 'none';
+    
+    const fioInput = document.getElementById('fio');
+    const userFio = fioInput.value.trim();
+    if (!userFio) {
+      const errDiv = document.getElementById('errorMessage');
+      errDiv.textContent = '❗ Введите ваше имя перед завершением теста!';
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 4000);
+      return;
+    }
+
+    const spentSeconds = stopTimerAndGetSeconds();
+    isTestFinished = true;
+    document.getElementById('time_input').value = spentSeconds;
+    document.getElementById('tdate').value = getCurrentDateTime();
+
+    const { wrongCount, correctCount, percent, grade, detailed } = evaluateAllAnswers();
+    document.getElementById('grade_input').value = grade;
+
+    // блокируем выбор ответов после завершения
+    setSelectsEnabled(false);
+    
+    renderResultsTable(userFio, spentSeconds, correctCount, wrongCount, percent, grade, detailed);
+
+    const formElement = document.getElementById('myForm');
+    const formData = new FormData(formElement);
+    formData.set('fio', userFio);
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      const answer = select ? select.value : '';
+      formData.append(`answer_${i}`, answer);
+      formData.append(`question_${i}`, questionsList[i].question);
+    }
+    formData.append('total_correct', correctCount);
+    formData.append('total_questions', TOTAL_QUESTIONS);
+    formData.append('percent', percent.toFixed(2));
+
+    isProcessing = true;
+    await sendToServer(formData);
+    isProcessing = false;
+  }
+
+  // ---- СБРОС ВСЕХ ОТВЕТОВ (только до завершения) ----
+  function resetAllSelections() {
+    if (isTestFinished) {
+      const errDiv = document.getElementById('errorMessage');
+      errDiv.textContent = '⚠️ Тест уже завершён. Нажмите «НОВЫЙ ТЕСТ», чтобы начать заново.';
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 3000);
+      return;
+    }
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      if (select) select.value = "";
+      const fb = document.getElementById(`fb_${i}`);
+      if (fb) { fb.innerHTML = ""; fb.className = "feedback"; }
+    }
+    updateScoreDisplay(0);
+    // скрываем старые результаты если были видны
+    const resultsDiv = document.getElementById('results');
+    if (resultsDiv) resultsDiv.style.display = 'none';
+  }
+
+  // ---- ПОЛНЫЙ ПЕРЕЗАПУСК ТЕСТА (релоад) ----
+  function fullRestart() {
+    location.reload();
+  }
+
+  // ---- РЕНДЕР ВОПРОСОВ ----
+  function renderTest() {
+    const container = document.getElementById("questionsArea");
+    if (!container) return;
+    container.innerHTML = "";
+    const mainTitle = document.createElement("div");
+    mainTitle.className = "section-title";
+    mainTitle.innerHTML = "✍️ Выберите правильный вариант для каждого вопроса";
+    container.appendChild(mainTitle);
+
+    for (let idx = 0; idx < questionsList.length; idx++) {
+      const q = questionsList[idx];
+      const card = document.createElement("div");
+      card.className = "question-card";
+      
+      const row = document.createElement("div");
+      row.className = "question-row";
+      
+      const textBlock = document.createElement("div");
+      textBlock.className = "question-text-block";
+      const questionSpan = document.createElement("div");
+      questionSpan.className = "question-text";
+      questionSpan.innerHTML = `📢 ${escapeHtml(q.question)}`;
+      textBlock.appendChild(questionSpan);
+      
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      
+      const selectEl = document.createElement("select");
+      selectEl.id = `select_${idx}`;
+      selectEl.className = "case-select";
+      selectEl.innerHTML = `<option value="">— выбери ответ —</option>`;
+      for (let opt of q.options) {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        selectEl.appendChild(option);
+      }
+      selectEl.addEventListener('change', () => refreshLiveScore());
+      optionsDiv.appendChild(selectEl);
+      
+      row.appendChild(textBlock);
+      row.appendChild(optionsDiv);
+      
+      const feedbackDiv = document.createElement("div");
+      feedbackDiv.className = "feedback";
+      feedbackDiv.id = `fb_${idx}`;
+      
+      card.appendChild(row);
+      card.appendChild(feedbackDiv);
+      container.appendChild(card);
+    }
+    refreshLiveScore();
+  }
+
+  function initEventListeners() {
+    const finishBtn = document.getElementById("checkAndFinishBtn");
+    const resetBtn = document.getElementById("resetAnswersBtn");
+    const restartBtn = document.getElementById("restartTestBtn");
+    const viewLink = document.getElementById("viewDataLink");
+
+    if (finishBtn) finishBtn.addEventListener("click", finishTest);
+    if (resetBtn) resetBtn.addEventListener("click", resetAllSelections);
+    if (restartBtn) restartBtn.addEventListener("click", fullRestart);
+    if (viewLink) {
+      viewLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        const fioVal = document.getElementById('fio').value.trim();
+        if (!fioVal) {
+          const errDiv = document.getElementById('errorMessage');
+          errDiv.textContent = '❗ Введите имя, чтобы посмотреть свои результаты.';
+          errDiv.style.display = 'block';
+          setTimeout(() => errDiv.style.display = 'none', 4000);
+          return;
+        }
+        window.location.href = `show.php?fio=${encodeURIComponent(fioVal)}`;
+      });
+    }
+    document.getElementById('myForm')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+  }
+
+  function initPage() {
+    renderTest();
+    initEventListeners();
+    startTimer();
+    isTestFinished = false;
+    if (!document.getElementById('tdate').value) {
+      document.getElementById('tdate').value = getCurrentDateTime();
+    }
+    refreshLiveScore();
+    // гарантируем, что select активны
+    setSelectsEnabled(true);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPage);
+  else initPage();
+</script>
+</body>
+</html>

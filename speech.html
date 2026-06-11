@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Тест: понятия и культура речи</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f7f4 0%, #e2ede7 100%);
+      margin: 0;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .test-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255, 253, 248, 0.96);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .left-col {
+      flex: 2.5;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .right-col {
+      flex: 1.4;
+      min-width: 260px;
+    }
+
+    .theory-card {
+      background: #fffef7;
+      border-radius: 1.8rem;
+      border: 1px solid #cfe3db;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem 1.3rem;
+      backdrop-filter: blur(2px);
+    }
+
+    .theory-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e4a3b;
+      margin-bottom: 1rem;
+      border-left: 5px solid #2c7a5e;
+      padding-left: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theory-card h3::before {
+      content: "📖";
+      font-size: 1.4rem;
+    }
+
+    .theory-content {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      color: #2c3e2f;
+    }
+
+    .theory-content p {
+      margin-bottom: 0.9rem;
+    }
+
+    .pron-table {
+      width: 100%;
+      background: #f3faf7;
+      border-radius: 1rem;
+      margin: 0.8rem 0;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .pron-table th, .pron-table td {
+      border: 1px solid #cce3db;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .pron-table th {
+      background: #dff0ea;
+      color: #1e5a48;
+    }
+
+    .theory-content strong {
+      color: #2c7a5e;
+    }
+
+    .theory-content hr {
+      margin: 1rem 0;
+      border: none;
+      height: 1px;
+      background: #d4e6df;
+    }
+
+    .top-bar {
+      background: #ffffffdd;
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      border: 1px solid rgba(230, 245, 240, 0.8);
+    }
+
+    #timer {
+      font-size: 1.7rem;
+      font-weight: 800;
+      background: #1e4a3b;
+      color: #f0faf5;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-family: monospace;
+      letter-spacing: 1px;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .fio-block {
+      flex: 2;
+      min-width: 200px;
+    }
+
+    .fio-block label {
+      font-weight: 700;
+      color: #2c6a55;
+      margin-right: 0.5rem;
+    }
+
+    .fio-block input {
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: 1.5px solid #cce3db;
+      background: white;
+      font-size: 0.9rem;
+      width: 220px;
+      transition: 0.2s;
+    }
+
+    .fio-block input:focus {
+      border-color: #2c7a5e;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44,122,94,0.2);
+    }
+
+    .error, .server-response, .info-message {
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .error {
+      background: #ffe6e3;
+      color: #b13b2a;
+      border-left: 6px solid #c0392b;
+    }
+    .server-response {
+      background: #e0f2ed;
+      border-left: 6px solid #2c7a5e;
+      color: #1e5a48;
+    }
+    .info-message {
+      background: #eaf6ff;
+      border-left: 6px solid #2c7da0;
+      color: #155f7c;
+    }
+
+    .test-header {
+      background: #2c6a55;
+      padding: 1.2rem 1.8rem;
+      color: white;
+      border-radius: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .test-header h1 {
+      margin: 0 0 0.35rem 0;
+      font-weight: 600;
+      font-size: 1.7rem;
+      letter-spacing: -0.3px;
+    }
+    .test-header p {
+      margin: 0;
+      opacity: 0.85;
+      font-size: 0.9rem;
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 1.2rem;
+      margin-bottom: 1rem;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border: 1px solid #dfeee8;
+      transition: all 0.1s;
+    }
+
+    .question-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 1rem;
+      justify-content: space-between;
+      row-gap: 0.8rem;
+    }
+
+    .word-display {
+      flex: 2;
+      min-width: 200px;
+    }
+
+    .word-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e4a3b;
+      background: #e9f4ef;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+    }
+
+    .task-badge {
+      font-size: 0.7rem;
+      background: #e0ede7;
+      display: inline-block;
+      margin-left: 0.8rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #2c6a55;
+      vertical-align: middle;
+    }
+
+    .options-area {
+      flex: 2.2;
+      min-width: 260px;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1.2rem;
+      align-items: center;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #fafdfb;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      border: 1px solid #d4e6df;
+      transition: 0.1s;
+      cursor: pointer;
+    }
+    .radio-option:hover {
+      background: #eef6f2;
+    }
+    .radio-option input {
+      margin: 0;
+      accent-color: #2c7a5e;
+      width: 18px;
+      height: 18px;
+    }
+    .radio-option label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #2c3e2f;
+    }
+
+    .feedback {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding-left: 0.2rem;
+      color: #2f6b3c;
+    }
+
+    .score-area {
+      background: #f0f9f5;
+      border-radius: 1.8rem;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .score-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: #ffffff;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      color: #1e5a48;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+    }
+
+    button {
+      border: none;
+      background: #2c6a55;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    button:hover {
+      background: #1e4a3b;
+      transform: scale(0.97);
+    }
+    button.reset-btn { background: #7f8c8d; }
+    button.reset-btn:hover { background: #5d6e6e; }
+
+    /* Стиль кнопки "Мои данные" (из второго файла) */
+    .menu-button {
+      background: #3a6b47;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      text-align: center;
+      transition: 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+    .menu-button:hover {
+      background: #2c5539;
+      transform: scale(0.97);
+    }
+
+    .footer-note {
+      padding: 0.8rem 0 0.2rem;
+      font-size: 0.75rem;
+      color: #5c7c6b;
+      border-top: 1px solid #d4e6df;
+      margin-top: 0.6rem;
+    }
+
+    #results {
+      margin-top: 1.5rem;
+      background: #fffdf7;
+      border-radius: 2rem;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border: 1px solid #d4e6df;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 1rem;
+      font-size: 0.85rem;
+    }
+    th {
+      background: #e2f0ea;
+      color: #1e5a48;
+      padding: 8px;
+    }
+    td, th {
+      border: 1px solid #cde0d9;
+      padding: 6px 8px;
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin: 0.5rem 0 0.8rem 0;
+      color: #2c7a5e;
+      background: #e9f4ef;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 860px) {
+      body { padding: 1rem; }
+      .test-container { flex-direction: column; }
+      .top-bar { flex-direction: column; align-items: stretch; }
+      .fio-block input { width: 100%; }
+      .radio-group { flex-direction: column; align-items: flex-start; }
+      .options-area { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div style="width:100%; max-width:1400px; margin:0 auto;">
+  <div class="top-bar">
+    <div id="timer">⏱️ Время: 0 сек</div>
+    <div class="fio-block">
+      <label for="fio">📝 ФИО / Имя:</label>
+      <input type="text" id="fio" name="fio" list="speech-list" autocomplete="off" placeholder="Введите имя" required>
+      <datalist id="speech-list">
+        <option>Егор</option>
+        <option>Ксюша</option>
+        <option>Анюта</option>
+        <option>Даня</option>
+        <option>Мария</option>
+        <option>Артём</option>
+      </datalist>
+    </div>
+  </div>
+
+  <div id="errorMessage" class="error" style="display: none;"></div>
+  <div id="serverResponse" class="server-response" style="display: none;"></div>
+  <div id="infoMsg" class="info-message" style="display: none;"></div>
+
+  <!-- Скрытая форма для отправки данных в save.php (аналогично первому файлу) -->
+  <form id="myForm" method="POST" action="save.php">
+    <input type="hidden" name="predmet" value="русский язык">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="Понятия и культура речи">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+  </form>
+
+  <div class="test-container" id="quizRoot">
+    <div class="left-col">
+      <div class="test-header">
+        <h1>📖 Речь и культура общения</h1>
+        <p>Проверьте свои знания: устная, письменная, внутренняя речь, диалог, монолог, речевой этикет и пословицы.</p>
+      </div>
+      <div id="questionsArea" class="test-words"></div>
+      <div class="score-area">
+        <div class="score-text" id="scoreDisplay">🎯 0 / 0</div>
+        <div class="button-group">
+          <button id="checkAndFinishBtn">✅ ЗАВЕРШИТЬ ТЕСТ</button>
+          <button id="resetAnswersBtn" class="reset-btn">⟳ СБРОСИТЬ ВСЕ</button>
+          <!-- Кнопка "Мои данные" из второго файла -->
+          <a href="javascript:void(0);" class="menu-button" id="viewDataLink">🔍 Мои данные</a>
+        </div>
+      </div>
+      <div class="footer-note">
+        ☆ Речь — визитная карточка человека. Будьте вежливы и выразительны.<br>
+        ☆ Внутренняя речь помогает думать, а диалог — обмениваться мыслями.
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="theory-card">
+        <h3>📚 Опорный материал</h3>
+        <div class="theory-content">
+          <p><strong>🎤 Устная речь</strong> — речь, которую мы слышим и произносим (от слова «уста» — рот, губы).<br>
+          <strong>✍️ Письменная речь</strong> — речь, написанная буквами и знаками, читаем и пишем.<br>
+          <strong>🧠 Речь про себя</strong> — внутренняя речь, используем, когда думаем, размышляем.</p>
+          <table class="pron-table">
+            <thead><tr><th>Термин</th><th>Определение</th></tr></thead>
+            <tbody>
+              <tr><td>Диалог</td><td>Разговор двух или нескольких лиц</td></tr>
+              <tr><td>Монолог</td><td>Речь одного лица, обращённая к слушателям или к себе</td></tr>
+              <tr><td>Вежливые слова</td><td>Здравствуйте, добрый день, до свидания, всего хорошего и др.</td></tr>
+            </tbody>
+          </table>
+          <p><strong>📌 Пословицы о речи:</strong><br>
+          «Каков человек — такова и его речь».<br>
+          «Кто говорит — тот сеет, кто слушает — тот собирает».</p>
+          <p><strong>💬 Качества правильной речи:</strong> правильность, уважительность, вежливость, доброжелательность, выразительность.</p>
+          <hr>
+          <p>✅ Помните: речь — важнейшая часть поведения. Грамотное ударение, точные понятия и уважительное общение создают культуру речи.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="results" style="display: none;"></div>
+</div>
+
+<script>
+  // ------------------- ТЕСТ: ПОНЯТИЯ РЕЧИ -------------------
+  const speechQuestions = [
+    {
+      text: "Что такое устная речь?",
+      variants: [
+        "Речь, которую мы слышим и произносим",
+        "Речь, которую читаем и пишем",
+        "Внутренние размышления"
+      ],
+      correct: "Речь, которую мы слышим и произносим"
+    },
+    {
+      text: "Что такое письменная речь?",
+      variants: [
+        "Речь, которую мы слышим и произносим",
+        "Речь, написанная буквами и знаками (читаем и пишем)",
+        "Речь, которую мы думаем про себя"
+      ],
+      correct: "Речь, написанная буквами и знаками (читаем и пишем)"
+    },
+    {
+      text: "Внутренняя речь — это...",
+      variants: [
+        "Разговор с другим человеком",
+        "Речь про себя, когда думаем и размышляем",
+        "Чтение вслух"
+      ],
+      correct: "Речь про себя, когда думаем и размышляем"
+    },
+    {
+      text: "От какого слова образовано слово «устная» (устная речь)?",
+      variants: [
+        "ухо",
+        "уста (рот, губы)",
+        "устный"
+      ],
+      correct: "уста (рот, губы)"
+    },
+    {
+      text: "Что такое диалог?",
+      variants: [
+        "Речь одного лица",
+        "Разговор двух или нескольких лиц",
+        "Письменное высказывание"
+      ],
+      correct: "Разговор двух или нескольких лиц"
+    },
+    {
+      text: "Что такое монолог?",
+      variants: [
+        "Обмен репликами между людьми",
+        "Речь одного лица, обращённая к слушателям или к себе",
+        "Беседа трёх человек"
+      ],
+      correct: "Речь одного лица, обращённая к слушателям или к себе"
+    },
+    {
+      text: "Какая русская пословица приведена в тексте о связи характера человека и его речи?",
+      variants: [
+        "Слово не воробей, вылетит — не поймаешь",
+        "Каков человек — такова и его речь",
+        "Язык до Киева доведёт"
+      ],
+      correct: "Каков человек — такова и его речь"
+    },
+    {
+      text: "Какой смысл вкладывает таджикская пословица «Кто говорит — тот сеет, кто слушает — тот собирает»?",
+      variants: [
+        "Говорить важнее, чем слушать",
+        "Умение слушать помогает приобретать знания и опыт",
+        "Тот, кто собирает, богаче"
+      ],
+      correct: "Умение слушать помогает приобретать знания и опыт"
+    },
+    {
+      text: "Какое из этих слов является формой приветствия?",
+      variants: [
+        "До свидания",
+        "Здравствуйте",
+        "Прощайте"
+      ],
+      correct: "Здравствуйте"
+    },
+    {
+      text: "Какое из перечисленных слов — формула прощания?",
+      variants: [
+        "Доброе утро",
+        "Всего хорошего",
+        "Добрый день"
+      ],
+      correct: "Всего хорошего"
+    },
+    {
+      text: "Какое качество речи НЕ было названо в тексте как важное?",
+      variants: [
+        "Правильная",
+        "Громкая",
+        "Вежливая"
+      ],
+      correct: "Громкая"
+    },
+    {
+      text: "Что означает требование «речь должна быть выразительной»?",
+      variants: [
+        "Говорить очень быстро",
+        "Использовать интонацию, жесты, образные средства, передавать чувства",
+        "Говорить только громко"
+      ],
+      correct: "Использовать интонацию, жесты, образные средства, передавать чувства"
+    },
+    {
+      text: "Выберите верное утверждение о диалоге и монологе:",
+      variants: [
+        "Диалог — это всегда письменная речь",
+        "Монолог может быть обращён к слушателям",
+        "Диалог состоит из реплик только одного человека"
+      ],
+      correct: "Монолог может быть обращён к слушателям"
+    },
+    {
+      text: "Что из приведённого является примером внутренней речи?",
+      variants: [
+        "Обсуждение фильма с другом",
+        "Мысленное решение математической задачи",
+        "Чтение стихотворения вслух"
+      ],
+      correct: "Мысленное решение математической задачи"
+    },
+    {
+      text: "Какое слово относится к вежливому прощанию?",
+      variants: [
+        "Добрый вечер",
+        "Здравствуйте",
+        "До встречи"
+      ],
+      correct: "До встречи"
+    },
+    {
+      text: "Как называется речь, которую мы читаем и пишем?",
+      variants: [
+        "Устная",
+        "Письменная",
+        "Внутренняя"
+      ],
+      correct: "Письменная"
+    },
+    {
+      text: "Что из перечисленного — обязательное качество речи согласно тексту?",
+      variants: [
+        "Доброжелательность",
+        "Быстрота",
+        "Громкость"
+      ],
+      correct: "Доброжелательность"
+    }
+  ];
+
+  const TOTAL = speechQuestions.length;
+  let startTime = null;
+  let timerInterval = null;
+  let isTestFinished = false;
+  let isProcessing = false;
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      if (isTestFinished) return;
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const timerDiv = document.getElementById('timer');
+      if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+    }, 200);
+  }
+
+  function stopTimerAndGetSeconds() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+    return 0;
+  }
+
+  function getCurrentDateTime() {
+    const now = new Date();
+    const Y = now.getFullYear();
+    const M = String(now.getMonth() + 1).padStart(2,'0');
+    const D = String(now.getDate()).padStart(2,'0');
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  function computeCurrentScore() {
+    let correct = 0;
+    for (let i = 0; i < TOTAL; i++) {
+      const selected = document.querySelector(`input[name="q_${i}"]:checked`);
+      if (selected && selected.value === speechQuestions[i].correct) {
+        correct++;
+      }
+    }
+    return correct;
+  }
+
+  function updateScoreDisplay() {
+    const correct = computeCurrentScore();
+    const scoreSpan = document.getElementById("scoreDisplay");
+    if (scoreSpan) scoreSpan.innerHTML = `🎯 ${correct} / ${TOTAL}`;
+  }
+
+  function evaluateAllAnswers() {
+    let wrongCount = 0;
+    let detailed = {};
+    for (let i = 0; i < TOTAL; i++) {
+      const selectedRadio = document.querySelector(`input[name="q_${i}"]:checked`);
+      const userAnswer = selectedRadio ? selectedRadio.value : "не выбран";
+      const correctAns = speechQuestions[i].correct;
+      const isCorrect = (userAnswer === correctAns);
+      if (!isCorrect) wrongCount++;
+      detailed[i] = {
+        text: speechQuestions[i].text,
+        userAnswer: userAnswer,
+        correctAnswer: correctAns,
+        isCorrect: isCorrect
+      };
+    }
+    const correctCount = TOTAL - wrongCount;
+    const percent = (correctCount / TOTAL) * 100;
+    let grade = 2;
+    if (percent >= 90) grade = 5;
+    else if (percent >= 70) grade = 4;
+    else if (percent >= 50) grade = 3;
+    else grade = 2;
+    return { wrongCount, correctCount, percent, grade, detailed };
+  }
+
+  function renderResultsTable(fio, timeSec, correct, wrong, percent, grade, detailedMap) {
+    let html = `<div><h3>📊 РЕЗУЛЬТАТЫ ТЕСТА (Понятия речи)</h3>
+      <p><strong>👤 Участник:</strong> ${escapeHtml(fio)}</p>
+      <p><strong>⏱️ Время:</strong> ${timeSec} секунд</p>
+      <p><strong>✅ Верно:</strong> ${correct} из ${TOTAL}</p>
+      <p><strong>❌ Ошибок:</strong> ${wrong}</p>
+      <p><strong>📈 Процент:</strong> ${percent.toFixed(1)}%</p>
+      <p><strong>🎓 ОЦЕНКА:</strong> <span style="font-size:1.5rem;">${grade}</span></p>
+      <h4>Детализация ответов:</h4><div style="overflow-x:auto;"><table>
+      <thead><tr><th>Вопрос</th><th>Ваш ответ</th><th>Правильный ответ</th><th>Результат</th></tr></thead><tbody>`;
+    for (let idx = 0; idx < TOTAL; idx++) {
+      const data = detailedMap[idx];
+      const status = data.isCorrect ? '✔ Верно' : '✘ Ошибка';
+      const color = data.isCorrect ? '#1f7a3b' : '#c0392b';
+      html += `<tr>
+        <td><strong>${escapeHtml(data.text)}</strong></td>
+        <td>${escapeHtml(data.userAnswer)}</td>
+        <td>${escapeHtml(data.correctAnswer)}</td>
+        <td style="color:${color};">${status}</td>
+       </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function sendToServer(formData) {
+    try {
+      const response = await fetch('save.php', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const serverDiv = document.getElementById('serverResponse');
+      serverDiv.innerHTML = `<strong>✅ Результаты успешно сохранены на сервере.</strong>`;
+      serverDiv.style.display = 'block';
+      setTimeout(() => { if(serverDiv) serverDiv.style.display = 'none'; }, 5000);
+    } catch (err) {
+      console.warn(err);
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.innerHTML = `⚠️ Ошибка отправки: ${escapeHtml(err.message)}. Данные сохранены локально.`;
+      errorDiv.style.display = 'block';
+      setTimeout(() => { if(errorDiv) errorDiv.style.display = 'none'; }, 6000);
+    }
+  }
+
+  async function finishTest() {
+    if (isTestFinished || isProcessing) return;
+    
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('serverResponse').style.display = 'none';
+    document.getElementById('results').style.display = 'none';
+    
+    const fioInput = document.getElementById('fio');
+    const userFio = fioInput.value.trim();
+    if (!userFio) {
+      const errDiv = document.getElementById('errorMessage');
+      errDiv.textContent = '❗ Введите ваше ФИО / имя перед завершением теста!';
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 4000);
+      return;
+    }
+
+    const spentSeconds = stopTimerAndGetSeconds();
+    isTestFinished = true;
+
+    document.getElementById('time_input').value = spentSeconds;
+    document.getElementById('tdate').value = getCurrentDateTime();
+    
+    const { wrongCount, correctCount, percent, grade, detailed } = evaluateAllAnswers();
+    document.getElementById('grade_input').value = grade;
+
+    renderResultsTable(userFio, spentSeconds, correctCount, wrongCount, percent, grade, detailed);
+    
+    const formElement = document.getElementById('myForm');
+    const formData = new FormData(formElement);
+    formData.set('fio', userFio);
+    
+    for (let i = 0; i < TOTAL; i++) {
+      const selectedRadio = document.querySelector(`input[name="q_${i}"]:checked`);
+      const answer = selectedRadio ? selectedRadio.value : '';
+      formData.append(`answer_${i}`, answer);
+      formData.append(`sentence_${i}`, speechQuestions[i].text);
+      formData.append(`word_${i}`, '');
+    }
+    formData.append('total_correct', correctCount);
+    formData.append('total_questions', TOTAL);
+    formData.append('percent', percent.toFixed(2));
+    
+    isProcessing = true;
+    await sendToServer(formData);
+    isProcessing = false;
+    
+    const infoDiv = document.getElementById('infoMsg');
+    infoDiv.innerHTML = `✨ Тест завершён! Результаты отправлены. ✨`;
+    infoDiv.style.display = 'block';
+    setTimeout(() => { if(infoDiv) infoDiv.style.display = 'none'; }, 5000);
+  }
+
+  function resetAllSelections() {
+    if (isTestFinished) return;
+    for (let i = 0; i < TOTAL; i++) {
+      const radios = document.querySelectorAll(`input[name="q_${i}"]`);
+      radios.forEach(radio => radio.checked = false);
+    }
+    updateScoreDisplay();
+    const resultsDiv = document.getElementById('results');
+    if (resultsDiv) resultsDiv.style.display = 'none';
+    const infoDiv = document.getElementById('infoMsg');
+    if(infoDiv) infoDiv.style.display = 'none';
+    const errDiv = document.getElementById('errorMessage');
+    if(errDiv) errDiv.style.display = 'none';
+    const serverDiv = document.getElementById('serverResponse');
+    if(serverDiv) serverDiv.style.display = 'none';
+  }
+
+  function renderTest() {
+    const container = document.getElementById("questionsArea");
+    if (!container) return;
+    container.innerHTML = "";
+    const titleDiv = document.createElement("div");
+    titleDiv.className = "section-title";
+    titleDiv.innerHTML = "🗣️ Выберите верный вариант (каждый вопрос — одно определение или понятие)";
+    container.appendChild(titleDiv);
+
+    for (let idx = 0; idx < speechQuestions.length; idx++) {
+      const q = speechQuestions[idx];
+      const card = document.createElement("div");
+      card.className = "question-card";
+      
+      const row = document.createElement("div");
+      row.className = "question-row";
+      
+      const questionBlock = document.createElement("div");
+      questionBlock.className = "word-display";
+      questionBlock.innerHTML = `<div class="word-text">❓ ${escapeHtml(q.text)}</div><div class="task-badge">выберите ответ</div>`;
+      
+      const optionsBlock = document.createElement("div");
+      optionsBlock.className = "options-area";
+      const radioGroup = document.createElement("div");
+      radioGroup.className = "radio-group";
+      
+      q.variants.forEach((variant, optIdx) => {
+        const radioWrapper = document.createElement("label");
+        radioWrapper.className = "radio-option";
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q_${idx}`;
+        radio.value = variant;
+        radio.addEventListener('change', () => updateScoreDisplay());
+        const span = document.createElement("span");
+        span.textContent = variant;
+        radioWrapper.appendChild(radio);
+        radioWrapper.appendChild(span);
+        radioGroup.appendChild(radioWrapper);
+      });
+      optionsBlock.appendChild(radioGroup);
+      
+      row.appendChild(questionBlock);
+      row.appendChild(optionsBlock);
+      card.appendChild(row);
+      container.appendChild(card);
+    }
+    updateScoreDisplay();
+  }
+
+  // Обработчик для кнопки "Мои данные" (аналогично второму файлу)
+  function handleViewData() {
+    const fioInput = document.getElementById('fio');
+    const userFio = fioInput.value.trim();
+    if (!userFio) {
+      const errDiv = document.getElementById('errorMessage');
+      errDiv.textContent = '❗ Введите имя, чтобы посмотреть свои результаты.';
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 4000);
+      return;
+    }
+    window.location.href = `show.php?fio=${encodeURIComponent(userFio)}`;
+  }
+
+  function initEventListeners() {
+    const finishBtn = document.getElementById("checkAndFinishBtn");
+    const resetBtn = document.getElementById("resetAnswersBtn");
+    const viewLink = document.getElementById("viewDataLink");
+    if (finishBtn) finishBtn.addEventListener("click", finishTest);
+    if (resetBtn) resetBtn.addEventListener("click", resetAllSelections);
+    if (viewLink) viewLink.addEventListener("click", handleViewData);
+    document.getElementById('myForm')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+  }
+
+  function initPage() {
+    renderTest();
+    initEventListeners();
+    startTimer();
+    isTestFinished = false;
+    updateScoreDisplay();
+    if (!document.getElementById('tdate').value) {
+      document.getElementById('tdate').value = getCurrentDateTime();
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPage);
+  else initPage();
+</script>
+</body>
+</html>

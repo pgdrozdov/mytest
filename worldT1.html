@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Живые существа</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    img {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      height: auto;
+    }
+    .form-group {
+      margin: 0.8em 0;
+    }
+    label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    input {
+      padding: 5px;
+      width: 200px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    datalist option {
+      white-space: normal;
+    }
+    .fio-container input {
+      width: 500px;
+      padding: 8px;
+      font-size: 16px;
+    }
+    #timer {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    #errorMessage {
+      color: red;
+      font-weight: bold;
+      margin: 10px 0;
+      display: none;
+    }
+    
+    /* Контейнер для кнопок внизу */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    #submitBtn {
+      font-size: 18px;
+      padding: 10px 30px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #submitBtn:hover {
+      background-color: #45a049;
+    }
+    #submitBtn:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    /* Кнопка меню внизу */
+    .menu-bottom-btn {
+      font-size: 18px;
+      padding: 10px 30px;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .menu-bottom-btn:hover {
+      background-color: #1976D2;
+    }
+    
+    /* Кнопка просмотра */
+    .view-bottom-btn {
+      font-size: 18px;
+      padding: 10px 30px;
+      background-color: #FF9800;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .view-bottom-btn:hover {
+      background-color: #F57C00;
+    }
+
+    /* Модальное окно */
+    .modal {
+      display: none; 
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 400px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: black;
+    }
+    #saveStatus {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    /* Стили для поиска по фамилии */
+    .search-container {
+      margin: 10px 0;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+    }
+    .search-input {
+      padding: 8px;
+      width: 300px;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .search-btn {
+      padding: 8px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .search-btn:hover {
+      background-color: #45a049;
+    }
+    .results-table {
+      width: 100%;
+      margin-top: 10px;
+      border-collapse: collapse;
+      text-align: left; /* Выравнивание текста в таблице по левому краю */
+    }
+    .results-table th, .results-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left; /* Выравнивание содержимого ячеек по левому краю */
+    }
+    .results-table th {
+      background-color: #4CAF50;
+      color: white;
+      text-align: left; /* Выравнивание заголовков по левому краю */
+    }
+    
+    /* Контейнер для результатов поиска с выравниванием по левому краю */
+    #searchResults {
+      text-align: left;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Тема: живые существа</h1>
+
+<!--
+<img src="natura.jpg" alt="Nature scene" onerror="this.style.display='none'">
+-->
+<img src="natura.jpg" alt="Test">
+
+<!-- Таймер -->
+<div id="timer">Время: 0 сек</div>
+
+<form id="myForm">
+  <!-- Скрытые поля -->
+  <input type="hidden" name="predmet" value="Окружающий мир">
+  <input type="hidden" name="tdate" id="tdate">
+  <input type="hidden" name="nazv" value="Живые существа">
+  <input type="hidden" name="time" id="time_input" value="0">
+  <input type="hidden" name="grade" id="grade_input" value="">
+
+  <div class="fio-container">
+    <label for="fio">ВВЕДИТЕ ФИО:</label>
+    <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="наведите курсор на поле и выберите в списке свою фамилию" required>
+    <datalist id="lift">
+      <option>Егор</option>
+      <option>Ксюша</option>
+      <option>Анюта</option>
+      <option>Даня</option>
+    </datalist>
+  </div>
+
+  <p>На рисунке изображены живые существа. Выбери царство каждого по указанному номеру.</p>
+
+  <div class="form-group">
+    <label for="number1">1</label>
+    <input type="text" id="number1" name="number1" list="num1" autocomplete="off" placeholder="выбери царство" required>
+    <datalist id="num1">
+      <option>грибы</option>
+      <option>птицы</option>
+      <option>млекопитающие</option>
+      <option>растения</option>
+      <option>рыбы</option>
+      <option>насекомые</option>
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <label for="number2">2</label>
+    <input type="text" id="number2" name="number2" list="num2" autocomplete="off" placeholder="выбери царство" required>
+    <datalist id="num2">
+      <option>рыбы</option>
+      <option>млекопитающие</option>
+      <option>насекомые</option>
+      <option>грибы</option>
+      <option>растения</option>
+      <option>птицы</option>
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <label for="number3">3</label>
+    <input type="text" id="number3" name="number3" list="num3" autocomplete="off" placeholder="выбери царство" required>
+    <datalist id="num3">
+      <option>растения</option>
+      <option>птицы</option>
+      <option>грибы</option>
+      <option>насекомые</option>
+      <option>рыбы</option>
+      <option>млекопитающие</option>
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <label for="number4">4</label>
+    <input type="text" id="number4" name="number4" list="num4" autocomplete="off" placeholder="выбери царство" required>
+    <datalist id="num4">
+      <option>грибы</option>
+      <option>птицы</option>
+      <option>млекопитающие</option>
+      <option>растения</option>
+      <option>рыбы</option>
+      <option>насекомые</option>
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <label for="number5">5</label>
+    <input type="text" id="number5" name="number5" list="num5" autocomplete="off" placeholder="выбери царство" required>
+    <datalist id="num5">
+      <option>растения</option>
+      <option>птицы</option>
+      <option>грибы</option>
+      <option>насекомые</option>
+      <option>рыбы</option>
+      <option>млекопитающие</option>
+    </datalist>
+  </div>
+
+  <div class="form-group">
+    <label for="number6">6</label>
+    <input type="text" id="number6" name="number6" list="num6" autocomplete="off" placeholder="выбери царство" required>
+    <datalist id="num6">
+      <option>рыбы</option>
+      <option>млекопитающие</option>
+      <option>насекомые</option>
+      <option>грибы</option>
+      <option>растения</option>
+      <option>птицы</option>
+    </datalist>
+  </div>
+</form>
+
+<!-- Контейнер с кнопками внизу -->
+<div class="button-container">
+  <button type="button" id="submitBtn">Завершить тест</button>
+  <button class="menu-bottom-btn" onclick="window.location.href='index.html'">⬅ Выход в меню</button>
+  <button class="view-bottom-btn" onclick="showSearchWithFio()">🔍 Просмотр ввода по фамилии</button>
+</div>
+
+<!-- Модальное окно для результатов -->
+<div id="resultModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Результаты</h2>
+    <p id="modalCorrect"></p>
+    <p id="modalPercentage"></p>
+    <p id="modalGrade"></p>
+    <div id="saveStatus"></div>
+  </div>
+</div>
+
+<!-- Модальное окно для поиска по фамилии -->
+<div id="searchModal" class="modal">
+  <div class="modal-content" style="width: 700px; max-width: 90%; text-align: left;"> <!-- Добавлено выравнивание по левому краю -->
+    <span class="close" onclick="closeSearchModal()">&times;</span>
+    <h2 style="text-align: center;">Поиск результатов по фамилии</h2> <!-- Заголовок по центру -->
+    <div class="search-container" style="text-align: center;"> <!-- Контейнер поиска по центру -->
+      <input type="text" id="searchFio" class="search-input" placeholder="Введите фамилию для поиска">
+      <button class="search-btn" onclick="searchByFio()">Найти</button>
+    </div>
+    <div id="searchResults"></div> <!-- Результаты будут выровнены по левому краю -->
+  </div>
+</div>
+
+<!-- Блок для сообщений об ошибках (если ФИО не введено) -->
+<div id="errorMessage"></div>
+
+<script>
+  // --- Таймер ---
+  let startTime;
+  let timerInterval;
+
+  function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function updateTimer() {
+    const currentTime = Date.now();
+    const timeSpent = Math.floor((currentTime - startTime) / 1000);
+    document.getElementById('timer').textContent = `Время: ${timeSpent} сек`;
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    const currentTime = Date.now();
+    return Math.floor((currentTime - startTime) / 1000);
+  }
+
+  // --- Текущая дата и время ---
+  function getCurrentDateTime() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  // --- Правильные ответы (ключи = имена полей) ---
+  const correctAnswers = {
+    number1: 'млекопитающие',
+    number2: 'рыбы',
+    number3: 'грибы',
+    number4: 'насекомые',
+    number5: 'птицы',
+    number6: 'растения'
+  };
+
+  // --- Функция подсчёта правильных ответов ---
+  function countCorrectAnswers() {
+    let correctCount = 0;
+    for (let i = 1; i <= 6; i++) {
+      const field = document.getElementById(`number${i}`);
+      if (field) {
+        const userAnswer = field.value.trim().toLowerCase();
+        const correctAnswer = correctAnswers[`number${i}`].toLowerCase();
+        if (userAnswer === correctAnswer) {
+          correctCount++;
+        }
+      }
+    }
+    return correctCount;
+  }
+
+  // --- Функция расчёта оценки ---
+  function calculateGrade(correctCount) {
+    const percentage = (correctCount / 6) * 100;
+    let grade;
+    if (percentage >= 90) grade = 5;
+    else if (percentage >= 70) grade = 4;
+    else if (percentage >= 50) grade = 3;
+    else grade = 2;
+    return { grade, percentage: Math.round(percentage) };
+  }
+
+  // --- Функция отправки данных в базу через save.php ---
+  async function sendToDatabase(formData) {
+    const saveStatus = document.getElementById('saveStatus');
+    saveStatus.textContent = 'Сохранение данных...';
+    saveStatus.style.color = 'blue';
+    
+    try {
+      const response = await fetch('save.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(formData)
+      });
+      
+      const result = await response.text();
+      
+      if (response.ok) {
+        saveStatus.textContent = '✓ Данные успешно сохранены в базе данных';
+        saveStatus.style.color = 'green';
+      } else {
+        saveStatus.textContent = '✗ Ошибка при сохранении данных';
+        saveStatus.style.color = 'red';
+        console.error('Ошибка сервера:', result);
+      }
+    } catch (error) {
+      saveStatus.textContent = '✗ Ошибка соединения с сервером';
+      saveStatus.style.color = 'red';
+      console.error('Ошибка:', error);
+    }
+  }
+
+  // --- Функция поиска по фамилии через show.php ---
+  async function searchByFio() {
+    const searchValue = document.getElementById('searchFio').value.trim();
+    if (!searchValue) {
+      alert('Введите фамилию для поиска');
+      return;
+    }
+
+    const resultsDiv = document.getElementById('searchResults');
+    resultsDiv.innerHTML = '<p>Поиск...</p>';
+
+    try {
+      const response = await fetch(`show.php?fio=${encodeURIComponent(searchValue)}`);
+      const data = await response.text();
+      
+      // Проверяем, является ли ответ JSON
+      try {
+        const jsonData = JSON.parse(data);
+        if (jsonData.error) {
+          resultsDiv.innerHTML = `<p style="color: red;">Ошибка: ${jsonData.error}</p>`;
+        } else if (jsonData.results && jsonData.results.length > 0) {
+          let html = '<table class="results-table">';
+          html += '<tr><th>ФИО</th><th>Предмет</th><th>Дата</th><th>Время</th><th>Оценка</th><th>Правильных ответов</th></tr>';
+          
+          jsonData.results.forEach(result => {
+            html += `<tr>
+              <td>${result.fio}</td>
+              <td>${result.predmet}</td>
+              <td>${result.tdate}</td>
+              <td>${result.time} сек</td>
+              <td>${result.grade}</td>
+              <td>${result.correct_count}/6 (${result.percentage}%)</td>
+            </tr>`;
+          });
+          
+          html += '</table>';
+          resultsDiv.innerHTML = html;
+        } else {
+          resultsDiv.innerHTML = '<p>Результаты не найдены</p>';
+        }
+      } catch (e) {
+        // Если не JSON, показываем как HTML
+        resultsDiv.innerHTML = data;
+      }
+    } catch (error) {
+      resultsDiv.innerHTML = '<p style="color: red;">Ошибка при поиске</p>';
+      console.error('Ошибка:', error);
+    }
+  }
+
+  // --- Функция для открытия поиска с подстановкой ФИО ---
+  function showSearchWithFio() {
+    const fioValue = document.getElementById('fio').value.trim();
+    document.getElementById('searchModal').style.display = 'block';
+    document.getElementById('searchResults').innerHTML = '';
+    
+    // Подставляем ФИО из поля ввода
+    if (fioValue) {
+      document.getElementById('searchFio').value = fioValue;
+      // Автоматически выполняем поиск
+      setTimeout(() => searchByFio(), 100);
+    } else {
+      document.getElementById('searchFio').value = '';
+    }
+  }
+
+  function closeSearchModal() {
+    document.getElementById('searchModal').style.display = 'none';
+  }
+
+  // --- Запуск таймера при загрузке ---
+  window.onload = function() {
+    startTimer();
+  };
+
+  // --- Модальное окно результатов ---
+  const modal = document.getElementById('resultModal');
+  const span = document.getElementsByClassName('close')[0];
+  span.onclick = function() {
+    modal.style.display = 'none';
+    // Очищаем статус сохранения при закрытии
+    document.getElementById('saveStatus').textContent = '';
+  };
+  
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+      document.getElementById('saveStatus').textContent = '';
+    }
+    if (event.target == document.getElementById('searchModal')) {
+      closeSearchModal();
+    }
+  };
+
+  // --- Обработчик кнопки "Завершить тест" ---
+  document.getElementById('submitBtn').addEventListener('click', async function() {
+    // Скрываем предыдущее сообщение об ошибке
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.style.display = 'none';
+
+    // Проверка ФИО
+    const userFio = document.getElementById('fio').value.trim();
+    if (!userFio) {
+      errorDiv.textContent = 'Пожалуйста, введите ваше ФИО!';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    // Блокируем кнопку на время отправки
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    // Останавливаем таймер и получаем время
+    const timeSpent = stopTimer();
+    document.getElementById('time_input').value = timeSpent;
+
+    // Устанавливаем текущую дату и время
+    document.getElementById('tdate').value = getCurrentDateTime();
+
+    // Подсчёт правильных ответов и оценка
+    const correctCount = countCorrectAnswers();
+    const { grade, percentage } = calculateGrade(correctCount);
+    document.getElementById('grade_input').value = grade;
+
+    // Заполняем модальное окно
+    document.getElementById('modalCorrect').textContent = `Правильных ответов: ${correctCount} из 6`;
+    document.getElementById('modalPercentage').textContent = `Процент выполнения: ${percentage}%`;
+    document.getElementById('modalGrade').textContent = `Оценка: ${grade}`;
+
+    // Показываем модальное окно
+    modal.style.display = 'block';
+
+    // Собираем все данные формы для отправки
+    const form = document.getElementById('myForm');
+    const formData = new FormData(form);
+    
+    // Добавляем ответы пользователя в formData
+    for (let i = 1; i <= 6; i++) {
+      const answerField = document.getElementById(`number${i}`);
+      if (answerField) {
+        formData.append(`answer${i}`, answerField.value.trim());
+      }
+    }
+    
+    // Добавляем количество правильных ответов
+    formData.append('correct_count', correctCount);
+    formData.append('percentage', percentage);
+
+    // Отправляем данные в базу данных
+    await sendToDatabase(formData);
+    
+    // Разблокируем кнопку
+    submitBtn.disabled = false;
+  });
+</script>
+
+</body>
+</html>

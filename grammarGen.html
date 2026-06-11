@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Безударные гласные в корне слова</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.2;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        h3.zag3 {
+            text-align: center;
+            margin: 0 0 10px 0;
+            padding: 15px;
+            background: #2196F3;
+            color: white;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .instructions {
+            font-family: 'Times New Roman', serif;
+            font-size: 16px; 
+            max-width: 900px;
+            margin: auto;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        } 
+        label {
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+            line-height: 1.2;
+            padding: 2px 0;
+            width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        input {
+            width: 3em;
+            height: 1.2em;
+            font-size: 1em;
+            margin-left: 8px;
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
+            background: transparent;
+            font-family: monospace;
+        }
+        input:focus {
+            border-bottom: 1px solid #2196F3;
+        }
+        button, .action-buttons a {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        button:hover, .action-buttons a:hover {
+            background-color: #0b7dda;
+        }
+        .columns-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+        #col2, #col3, #col4 {
+            width: 320px;
+            padding: 15px;
+            box-sizing: border-box;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 8px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        #resultsTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        #resultsTable th, #resultsTable td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        #resultsTable th {
+            background-color: #2196F3;
+            color: white;
+        }
+        #resultsTable tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .rule-link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        .fio-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .fio-container ul {
+            width: auto;
+        }
+        .fio-container label {
+            font-size: 18px;
+            margin-left: 0; 
+            padding-right: 0;
+            white-space: nowrap;
+        } 
+        .fio-container input {
+            width: 350px;
+            height: 2em;
+            padding-left: 5px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }		
+        #timer {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .server-response {
+            margin: 20px auto;
+            width: 80%;
+            padding: 10px;
+            background: #f0f8ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 30px auto 20px;
+            flex-wrap: wrap;
+        }
+        .action-buttons button,
+        .action-buttons a {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .action-buttons button:hover,
+        .action-buttons a:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+<h3 class="zag3">Проверяемые безударные гласные в корне + словарные слова</h3>
+<div class="instructions">
+    📌 <strong>Правило:</strong> Чтобы проверить безударную гласную в корне, подбери однокоренное слово или измени форму так, чтобы эта гласная стала ударной.<br>
+    📖 <strong>Словарные слова</strong> нужно запомнить (их написание нельзя проверить ударением).<br>
+    <span id="ruleVowel" class="rule-link">📘 Как проверять безударные?</span>
+    <span id="ruleDict" class="rule-link">📙 Словарные слова</span>
+</div>
+<div id="timer">Время: 0 сек</div>
+<div id="errorMessage" class="error"></div> 
+<div id="serverResponse" class="server-response"></div> 
+
+<form id="myForm">
+    <input type="hidden" name="predmet" value="Русский язык">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="Безударные гласные в корне">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+
+    <div class="fio-container">
+        <ul>
+            <li>
+                <label for="fio">ВВЕДИТЕ ФИО:</label> 
+                <input type="text" id="fio" name="fio" list="lift" autocomplete="off" 
+                       placeholder="выберите или введите фамилию" required>
+                <datalist id="lift">
+                    <option value="Иванов Иван">Иванов Иван</option>
+                    <option value="Петрова Мария">Петрова Мария</option>
+                    <option value="Сидоров Алексей">Сидоров Алексей</option>
+                    <option value="Кузнецова Анна">Кузнецова Анна</option>
+                </datalist>
+            </li>
+        </ul>	
+    </div>
+
+    <div class="columns-container">
+        <!-- Колонка 1: слова на О/А (1-15) -->
+        <div id="col2">
+            <ul> 
+                <li><label>1. р<input type="text" id="word1" name="test1" maxlength="1" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>са</label></li>
+                <li><label>2. тр<input type="text" id="word2" name="test2" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ва</label></li>
+                <li><label>3. тр<input type="text" id="word3" name="test3" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>па</label></li>
+                <li><label>4. з<input type="text" id="word4" name="test4" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>пах</label></li>
+                <li><label>5. ж<input type="text" id="word5" name="test5" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>леть</label></li>
+                <li><label>6. к<input type="text" id="word6" name="test6" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>сой</label></li>
+                <li><label>7. к<input type="text" id="word7" name="test7" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>за</label></li>
+                <li><label>8. к<input type="text" id="word8" name="test8" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ток</label></li>
+                <li><label>9. гр<input type="text" id="word9" name="test9" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>чи</label></li>
+                <li><label>10. в<input type="text" id="word10" name="test10" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>да</label></li>
+                <li><label>11. м<input type="text" id="word11" name="test11" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>лыш</label></li>
+                <li><label>12. гр<input type="text" id="word12" name="test12" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>за</label></li>
+                <li><label>13. сл<input type="text" id="word13" name="test13" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ва</label></li>
+                <li><label>14. д<input type="text" id="word14" name="test14" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ма</label></li>
+                <li><label>15. х<input type="text" id="word15" name="test15" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>лодный</label></li>
+            </ul>
+        </div>
+        <!-- Колонка 2: слова на Е/И/Я (16-30) -->
+        <div id="col3">
+            <ul> 
+                <li><label>16. з<input type="text" id="word16" name="test16" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ма</label></li>
+                <li><label>17. в<input type="text" id="word17" name="test17" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>сна</label></li>
+                <li><label>18. гл<input type="text" id="word18" name="test18" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>жу</label></li>
+                <li><label>19. л<input type="text" id="word19" name="test19" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>са</label></li>
+                <li><label>20. пр<input type="text" id="word20" name="test20" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>мой</label></li>
+                <li><label>21. кл<input type="text" id="word21" name="test21" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>сты</label></li>
+                <li><label>22. м<input type="text" id="word22" name="test22" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>дведь</label></li>
+                <li><label>23. п<input type="text" id="word23" name="test23" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>тно</label></li>
+                <li><label>24. п<input type="text" id="word24" name="test24" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>сать</label></li>
+                <li><label>25. с<input type="text" id="word25" name="test25" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>деть</label></li>
+                <li><label>26. т<input type="text" id="word26" name="test26" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>рпеть</label></li>
+                <li><label>27. б<input type="text" id="word27" name="test27" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>жать</label></li>
+                <li><label>28. см<input type="text" id="word28" name="test28" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>треть</label></li>
+                <li><label>29. р<input type="text" id="word29" name="test29" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ка</label></li>
+                <li><label>30. с<input type="text" id="word30" name="test30" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>стра</label></li>
+            </ul>
+        </div>
+        <!-- Колонка 3: словарные слова (31-45) -->
+        <div id="col4">
+            <ul>
+                <li><label>31. М<input type="text" id="word31" name="test31" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>сква</label></li>
+                <li><label>32. в<input type="text" id="word32" name="test32" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>р<input type="text" disabled style="width:0.1em; border:none; background:none;" />бей (вставь две буквы: в одно поле)</label> — в..робей → <input type="text" id="word32b" name="test32" style="width:3em;" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, ''); document.getElementById('word32').value=this.value" autocomplete="off"/>
+                    <input type="hidden" id="word32" value="">
+                </li>
+                <li><label>33. уч<input type="text" id="word33" name="test33" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ник</label></li>
+                <li><label>34. к<input type="text" id="word34" name="test34" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>р<input type="text" disabled style="width:0;" />ндаш (ка..ндаш) → <input type="text" id="word34b" style="width:3em;" maxlength="2" oninput="this.value = this.value.replace(/[^а-яё]/gi, ''); document.getElementById('word34').value=this.value" autocomplete="off"/>
+                    <input type="hidden" id="word34" value="">
+                </li>
+                <li><label>35. в<input type="text" id="word35" name="test35" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>р<input type="text" disabled style="width:0;" />на (во..она) → <input type="text" id="word35b" style="width:3em;" maxlength="2" oninput="this.value = this.value.replace(/[^а-яё]/gi, ''); document.getElementById('word35').value=this.value" autocomplete="off"/>
+                    <input type="hidden" id="word35" value="">
+                </li>
+                <li><label>36. уч<input type="text" id="word36" name="test36" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>тель</label></li>
+                <li><label>37. д<input type="text" id="word37" name="test37" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>вочка</label></li>
+                <li><label>38. п<input type="text" id="word38" name="test38" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>льто</label></li>
+                <li><label>39. м<input type="text" id="word39" name="test39" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>роз</label></li>
+                <li><label>40. с<input type="text" id="word40" name="test40" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>бака</label></li>
+                <li><label>41. п<input type="text" id="word41" name="test41" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>нал</label></li>
+                <li><label>42. т<input type="text" id="word42" name="test42" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>традь</label></li>
+                <li><label>43. уч<input type="text" id="word43" name="test43" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>бник</label></li>
+                <li><label>44. р<input type="text" id="word44" name="test44" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>кзак</label></li>
+                <li><label>45. к<input type="text" id="word45" name="test45" maxlength="2" required oninput="this.value = this.value.replace(/[^а-яё]/gi, '')" autocomplete="off"/>ртина</label></li>
+            </ul>
+        </div>
+    </div>
+</form>
+
+<div class="action-buttons">
+    <button type="button" id="finishTestBtn">✅ Завершить тест</button>
+    <a href="index.html" id="menuLink">🏠 Вход в меню</a>
+    <a href="#" id="viewBaseLink">📊 Просмотр базы</a>
+</div>
+
+<div id="resultsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Результаты теста</h2>
+        <div id="resultsContainer"></div>
+    </div>
+</div>
+
+<script>
+    // Правила (всплывающие окна)
+    document.getElementById('ruleVowel').addEventListener('click', function() {
+        alert("Проверяемая безударная гласная в корне: подбери однокоренное слово, где эта гласная под ударением.\nПример: вода́ — во́ды, трава́ — тра́вы, коза́ — ко́зы.");
+    });
+    document.getElementById('ruleDict').addEventListener('click', function() {
+        alert("Словарные слова — это слова, написание которых не проверяется ударением. Их нужно запомнить или проверять по орфографическому словарю.\nПримеры: Москва, воробей, ученик, карандаш.");
+    });
+
+    // Таймер
+    let globalStartTime = Date.now();
+    let timerInterval;
+    let timerStopped = false;
+
+    function startTimer() {
+        if (timerInterval) return;
+        timerInterval = setInterval(() => {
+            if (!timerStopped) {
+                const elapsed = Math.floor((Date.now() - globalStartTime) / 1000);
+                document.getElementById('timer').textContent = `Время: ${elapsed} сек`;
+            }
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (!timerStopped) {
+            timerStopped = true;
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        return Math.floor((Date.now() - globalStartTime) / 1000);
+    }
+
+    function getCurrentDateTime() {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    }
+
+    // ПРАВИЛЬНЫЕ ОТВЕТЫ (45 штук)
+    const correctAnswers = [
+        "о", "а", "о", "а", "а", "о", "о", "а", "а", "о", "а", "о", "о", "о", "о",  // 1-15 О/А
+        "и", "е", "я", "и", "я", "е", "е", "я", "и", "и", "е", "е", "е", "е", "е",  // 16-30 Е/И/Я
+        "о", "ое", "е", "аа", "оо", "и", "е", "а", "о", "о", "е", "е", "е", "ю", "а"   // 31-45 словарные
+    ];
+
+    // Полные формулировки для таблицы результатов
+    const correctWord = [
+        "1. роса", "2. трава", "3. тропа", "4. запах", "5. жалеть", "6. косой", "7. коза", "8. каток", "9. грачи", "10. вода", "11. малыш", "12. гроза", "13. слова", "14. дома", "15. холодный",
+        "16. зима", "17. весна", "18. гляжу", "19. лиса", "20. прямой", "21. клесты", "22. медведь", "23. пятно", "24. писать", "25. сидеть", "26. терпеть", "27. бежать", "28. смотреть", "29. река", "30. сестра",
+        "31. Москва", "32. воробей", "33. ученик", "34. карандаш", "35. ворона", "36. учитель", "37. девочка", "38. пальто", "39. мороз", "40. собака", "41. пенал", "42. тетрадь", "43. учебник", "44. рюкзак", "45. картина"
+    ];
+
+    // Функция сбора ответов с учётом скрытых полей для двухбуквенных
+    function getUserAnswers() {
+        let answers = [];
+        for (let i = 1; i <= 45; i++) {
+            let elem = document.getElementById(`word${i}`);
+            if (!elem) {
+                // для слов с двумя буквами используем hidden
+                if (i === 32) elem = document.getElementById('word32');
+                else if (i === 34) elem = document.getElementById('word34');
+                else if (i === 35) elem = document.getElementById('word35');
+            }
+            let val = elem ? elem.value.trim().toLowerCase() : "";
+            answers.push(val);
+        }
+        return answers;
+    }
+
+    // Отправка на сервер
+    async function sendFormData(form) {
+        const formData = new FormData(form);
+        try {
+            const response = await fetch('save.php', { method: 'POST', body: formData });
+            const text = await response.text();
+            return { ok: response.ok, message: text };
+        } catch (error) {
+            return { ok: false, message: error.message };
+        }
+    }
+
+    // Обработчик завершения теста
+    document.getElementById('finishTestBtn').addEventListener('click', async function() {
+        const form = document.getElementById('myForm');
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+        document.getElementById('serverResponse').innerHTML = '';
+
+        const userFio = document.getElementById('fio').value.trim();
+        if (!userFio) {
+            errorDiv.textContent = 'Пожалуйста, введите ваше ФИО!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        // Собрать ответы пользователя
+        let userAnswers = getUserAnswers();
+        let correctCount = 0;
+        const totalQuestions = 45;
+        for (let i = 0; i < totalQuestions; i++) {
+            if (userAnswers[i] === correctAnswers[i]) correctCount++;
+        }
+        const incorrectCount = totalQuestions - correctCount;
+        const errorPercentage = (incorrectCount / totalQuestions) * 100;
+        let finalGrade;
+        if (errorPercentage < 30) finalGrade = 5;
+        else if (errorPercentage < 50) finalGrade = 4;
+        else if (errorPercentage < 70) finalGrade = 3;
+        else finalGrade = 2;
+
+        // Построить таблицу результатов
+        let html = `<h3>✅ Правильных ответов: ${correctCount} из ${totalQuestions}. Оценка: ${finalGrade}</h3>`;
+        html += '<table id="resultsTable"><tr><th>Слово</th><th>Правильный ответ</th><th>Ваш ответ</th><th>Результат</th></tr>';
+        for (let i = 0; i < correctAnswers.length; i++) {
+            const isCorrect = userAnswers[i] === correctAnswers[i];
+            html += `<tr>
+                        <td>${correctWord[i]}</td>
+                        <td>${correctAnswers[i]}</td>
+                        <td>${userAnswers[i] || '—'}</td>
+                        <td style="color: ${isCorrect ? 'green' : 'red'}">${isCorrect ? '✓ Верно' : '✗ Ошибка'}</td>
+                     </tr>`;
+        }
+        html += '</table>';
+        document.getElementById('resultsContainer').innerHTML = html;
+        document.getElementById('resultsModal').style.display = 'block';
+
+        // Заполнить скрытые поля
+        document.getElementById('tdate').value = getCurrentDateTime();
+        document.getElementById('time_input').value = stopTimer();
+        document.getElementById('grade_input').value = finalGrade;
+
+        // Отправить на сервер
+        const serverDiv = document.getElementById('serverResponse');
+        serverDiv.innerHTML = 'Сохранение результатов...';
+        const result = await sendFormData(form);
+        if (result.ok) {
+            serverDiv.innerHTML = '<span class="success">✅ Результаты успешно сохранены на сервере.</span>';
+        } else {
+            serverDiv.innerHTML = `<span class="error">❌ Ошибка: ${result.message}</span>`;
+        }
+    });
+
+    // Закрытие модального окна
+    document.querySelector('.close').addEventListener('click', () => {
+        document.getElementById('resultsModal').style.display = 'none';
+    });
+    window.addEventListener('click', (event) => {
+        if (event.target === document.getElementById('resultsModal')) {
+            document.getElementById('resultsModal').style.display = 'none';
+        }
+    });
+
+    // Просмотр базы с передачей ФИО
+    document.getElementById('viewBaseLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        const fio = document.getElementById('fio').value.trim();
+        let url = 'show.php';
+        if (fio) url += '?fio=' + encodeURIComponent(fio);
+        window.location.href = url;
+    });
+
+    // Синхронизация полей для двухбуквенных слов (32,34,35)
+    document.getElementById('word32b')?.addEventListener('input', function() {
+        document.getElementById('word32').value = this.value;
+    });
+    document.getElementById('word34b')?.addEventListener('input', function() {
+        document.getElementById('word34').value = this.value;
+    });
+    document.getElementById('word35b')?.addEventListener('input', function() {
+        document.getElementById('word35').value = this.value;
+    });
+    // инициализация hidden полей
+    if(document.getElementById('word32')) document.getElementById('word32').value = "";
+    if(document.getElementById('word34')) document.getElementById('word34').value = "";
+    if(document.getElementById('word35')) document.getElementById('word35').value = "";
+
+    startTimer();
+</script>
+</body>
+</html>

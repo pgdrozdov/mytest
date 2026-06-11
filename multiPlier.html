@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица умножения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        input:disabled {
+            background-color: #f9f9f9;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .correct {
+            background-color: #00FF00;
+        }
+        
+        .incorrect {
+            background-color: #FF0000;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .form-container {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        #timer {
+            text-align: right;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Найдите значение  множителя</h1>
+    <!-- Таймер -->
+    <div id="timer">Время: 0 сек</div>
+    
+    <!-- Форма выбора метода -->
+    <div class="form-container" id="method-form-container">
+        <form id="method-form">
+            <label for="examination-select">Выберите правильный метод вычисления:</label>
+            <select name="examination" id="examination-select">
+                <option value="">-- Выберите метод --</option>
+                <option value="wrong1">первый множитель умножьте на второй</option>
+                <option value="wrong2">Произведение умножьте на множитель</option>
+                <option value="1">Произведение разделите на множитель</option>
+                <option value="wrong3">множитель разделите на произведение</option>
+            </select>
+            <button type="button" id="validate-method">Подтвердите выбор</button>
+        </form>
+        <div id="method-error" class="error-message"></div>
+    </div>
+    
+    <div id="success-message" class="success-message hidden">Правильный метод выбран! Теперь вы можете заполнить таблицу.</div>
+    
+    <!-- Основная форма для отправки на сервер -->
+    <!-- Добавлен autocomplete="off" для всей формы -->
+    <form action="save.php" method="POST" id="myForm" autocomplete="off">
+        <!-- Скрытые поля -->
+        <input type="hidden" name="predmet" value="математика">
+        <input type="hidden" name="tdate" id="tdate">
+        <input type="hidden" name="nazv" value="тест найти множитель">
+        <input type="hidden" name="time" id="time_input" value="0">
+        <input type="hidden" name="grade" id="grade_input" value="">
+
+        <div class="fio-container">
+            <label for="fio">ВВЕДИТЕ ФИО:</label>
+            <input style="width: 500px;" type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="наведите курсор на поле и выберите в списке свою фамилию" required>
+            <datalist id="lift">
+                <option>Егор</option>
+                <option>Ксюша</option>
+                <option>Анюта</option>
+                <option>Даня</option>
+            </datalist>
+        </div>
+        <!-- Блок для ошибки ФИО -->
+        <div id="errorMessage" class="error-message"></div>
+
+        <table id="multiplication-table">
+            <tr>
+                <td>Множитель</td>
+                <td>Множитель</td>
+                <td>Произведение</td>
+            </tr>
+            <tr>
+                <!-- Добавлен autocomplete="off" для каждого поля ввода -->
+                <td><input type="number" data-product="45" data-multiplier2="5" disabled autocomplete="off"></td>
+                <td>5</td>
+                <td>45</td>
+            </tr>
+            <tr>
+                <td><input type="number" data-product="63" data-multiplier2="7" disabled autocomplete="off"></td>
+                <td>7</td>
+                <td>63</td>
+            </tr>
+            <tr>
+                <td><input type="number" data-product="18" data-multiplier2="3" disabled autocomplete="off"></td>
+                <td>3</td>
+                <td>18</td>
+            </tr>
+            <tr>
+                <td><input type="number" data-product="72" data-multiplier2="9" disabled autocomplete="off"></td>
+                <td>9</td>
+                <td>72</td>
+            </tr>
+            <tr>
+                <td><input type="number" data-product="48" data-multiplier2="12" disabled autocomplete="off"></td>
+                <td>12</td>
+                <td>48</td>
+            </tr>
+            <tr>
+                <td><input type="number" data-product="32" data-multiplier2="8" disabled autocomplete="off"></td>
+                <td>8</td>
+                <td>32</td>
+            </tr>
+        </table>
+        
+        <div class="button-container">
+            <button type="button" id="check-button" disabled>Проверить ответы</button>
+            <!-- Кнопка отправки теперь видима -->
+            <button type="submit" id="submit-button">Отправить результаты</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Элементы DOM ---
+            const timerDiv = document.getElementById('timer');
+            const checkButton = document.getElementById('check-button');
+            const resultDiv = document.getElementById('result');
+            const validateMethodButton = document.getElementById('validate-method');
+            const methodSelect = document.getElementById('examination-select');
+            const methodError = document.getElementById('method-error');
+            const methodFormContainer = document.getElementById('method-form-container');
+            const successMessage = document.getElementById('success-message');
+            const inputs = document.querySelectorAll('#multiplication-table input');
+            const fioInput = document.getElementById('fio');
+            const errorMessageDiv = document.getElementById('errorMessage');
+            const form = document.getElementById('myForm');
+            
+            // --- Переменные состояния ---
+            let correctMethodSelected = false;
+            let startTime;
+            let timerInterval;
+
+            // --- Принудительная очистка всех полей ввода таблицы при загрузке страницы ---
+            // Это гарантирует, что поля не сохранят ранее введённые значения
+            inputs.forEach(input => {
+                input.value = '';
+                // Также убираем подсветку, если она была
+                input.classList.remove('correct', 'incorrect');
+            });
+
+            // --- Функции таймера ---
+            function startTimer() {
+                startTime = Date.now();
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+
+            function updateTimer() {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                timerDiv.textContent = `Время: ${timeSpent} сек`;
+            }
+
+            function stopTimer() {
+                clearInterval(timerInterval);
+                return Math.floor((Date.now() - startTime) / 1000);
+            }
+
+            // --- Текущая дата и время для скрытого поля tdate ---
+            function getCurrentDateTime() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+
+            // --- Запуск таймера при загрузке ---
+            startTimer();
+
+            // --- Функция проверки ответов: возвращает количество правильных и подсвечивает ячейки ---
+            function checkAnswersAndCount() {
+                let correctCount = 0;
+                inputs.forEach(input => {
+                    const product = parseInt(input.dataset.product);
+                    const multiplier2 = parseInt(input.dataset.multiplier2);
+                    const expected = product / multiplier2; // правильный ответ
+                    const userAnswer = parseInt(input.value) || 0;
+                    
+                    if (userAnswer === expected) {
+                        input.classList.remove('incorrect');
+                        input.classList.add('correct');
+                        correctCount++;
+                    } else {
+                        input.classList.remove('correct');
+                        input.classList.add('incorrect');
+                    }
+                });
+                return correctCount;
+            }
+
+            // --- Функция вычисления оценки на основе процента правильных ответов ---
+            function calculateGrade(correctCount, totalCount) {
+                if (totalCount === 0) return 2;
+                const percentage = (correctCount / totalCount) * 100;
+                if (percentage >= 70) return 5;
+                if (percentage >= 50) return 4;
+                if (percentage >= 30) return 3;
+                return 2;
+            }
+
+            // --- Обработчик выбора метода ---
+            validateMethodButton.addEventListener('click', function() {
+                const selectedMethod = methodSelect.value;
+                
+                if (selectedMethod === '') {
+                    methodError.textContent = 'Пожалуйста, выберите метод вычисления.';
+                    correctMethodSelected = false;
+                    checkButton.disabled = true;
+                    
+                    // Делаем все поля ввода недоступными
+                    inputs.forEach(input => {
+                        input.disabled = true;
+                        input.classList.remove('correct', 'incorrect'); // очистка подсветки
+                    });
+                    resultDiv.textContent = ''; // очистка результата
+                    successMessage.classList.add('hidden');
+                } else if (selectedMethod === '1') { // правильный метод
+                    methodError.textContent = '';
+                    correctMethodSelected = true;
+                    checkButton.disabled = false;
+                    
+                    // Скрываем форму выбора метода
+                    methodFormContainer.classList.add('hidden');
+                    
+                    // Показываем сообщение об успехе
+                    successMessage.classList.remove('hidden');
+                    
+                    // Делаем все поля ввода доступными
+                    inputs.forEach(input => {
+                        input.disabled = false;
+                    });
+                } else {
+                    methodError.textContent = 'Неверный выбор! Правильный метод: "Произведение разделите на множитель". Пожалуйста, попробуйте еще раз.';
+                    correctMethodSelected = false;
+                    checkButton.disabled = true;
+                    
+                    // Делаем все поля ввода недоступными
+                    inputs.forEach(input => {
+                        input.disabled = true;
+                        input.classList.remove('correct', 'incorrect');
+                    });
+                    resultDiv.textContent = '';
+                    successMessage.classList.add('hidden');
+                }
+            });
+
+            // --- Обработчик кнопки "Проверить ответы" (только проверка, не отправка) ---
+            checkButton.addEventListener('click', function() {
+                if (!correctMethodSelected) {
+                    resultDiv.textContent = 'Сначала выберите правильный метод вычисления!';
+                    resultDiv.style.color = 'red';
+                    return;
+                }
+
+                const totalCount = inputs.length;
+                const correctCount = checkAnswersAndCount();
+                
+                if (correctCount === totalCount) {
+                    resultDiv.textContent = 'Поздравляем! Все ответы верны!';
+                    resultDiv.style.color = 'green';
+                } else {
+                    resultDiv.textContent = `Вы ответили правильно на ${correctCount} из ${totalCount} вопросов. Попробуйте еще раз!`;
+                    resultDiv.style.color = 'red';
+                }
+            });
+
+            // --- Обработчик отправки формы (заполнение скрытых полей и отправка на сервер) ---
+            form.addEventListener('submit', function(event) {
+                // Сброс предыдущих сообщений об ошибках
+                errorMessageDiv.textContent = '';
+
+                // Проверка ФИО
+                const fio = fioInput.value.trim();
+                if (!fio) {
+                    errorMessageDiv.textContent = 'Пожалуйста, введите ваше ФИО!';
+                    event.preventDefault(); // останавливаем отправку
+                    return;
+                }
+
+                // Если метод ещё не выбран или выбран неверно — не даём отправить
+                if (!correctMethodSelected) {
+                    errorMessageDiv.textContent = 'Сначала выберите правильный метод вычисления!';
+                    event.preventDefault();
+                    return;
+                }
+
+                // Останавливаем таймер и записываем время
+                const timeSpent = stopTimer();
+                document.getElementById('time_input').value = timeSpent;
+
+                // Устанавливаем дату и время
+                document.getElementById('tdate').value = getCurrentDateTime();
+
+                // Проверяем ответы и получаем количество правильных
+                const totalCount = inputs.length;
+                const correctCount = checkAnswersAndCount(); // заодно подсветит
+
+                // Вычисляем оценку
+                const grade = calculateGrade(correctCount, totalCount);
+                document.getElementById('grade_input').value = grade;
+
+                // (Необязательно) показываем итоговый результат с оценкой
+                const percentage = totalCount ? Math.round((correctCount / totalCount) * 100) : 0;
+                let gradeColor = grade >= 5 ? '#4CAF50' : (grade >= 4 ? '#2196F3' : (grade >= 3 ? '#FF9800' : '#F44336'));
+                resultDiv.innerHTML = `Вы ответили правильно на ${correctCount} из ${totalCount} (${percentage}%). Оценка: <span style="color:${gradeColor}; font-weight:bold;">${grade}</span>.`;
+
+                // Форма отправится автоматически (не вызываем preventDefault)
+            });
+        });
+    </script>
+</body>
+</html>

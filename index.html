@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Меню с подменю + анимация</title>
+  <style>
+    /* Сброс стандартных отступов */
+    .simple-menu ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      background-color: #a14740; /* красный фон меню */
+    }
+
+    /* Очистка float (чтобы не скрывать выпадающее меню) */
+    .simple-menu ul::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    /* Выравнивание основных пунктов меню в ряд */
+    .simple-menu li {
+      float: left;
+      position: relative; /* Для позиционирования подменю */
+    }
+
+    /* Оформление ссылок */
+    .simple-menu li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-family: Arial, sans-serif;
+      transition: 0.3s;
+    }
+
+    /* Эффект при наведении на ссылку */
+    .simple-menu li a:hover {
+      background-color: #555;
+      color: #ffcc00;
+    }
+
+    /* Стили для выпадающего подменю */
+    .simple-menu .dropdown {
+      display: none; /* Скрыто по умолчанию */
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #333;
+      min-width: 180px;
+      z-index: 1;
+      padding: 0;
+    }
+
+    .simple-menu .dropdown li {
+      float: none;
+      width: 100%;
+    }
+
+    .simple-menu .dropdown li a {
+      text-align: left;
+      padding: 12px 16px;
+    }
+
+    /* Показываем подменю при наведении */
+    .simple-menu li:hover .dropdown {
+      display: block;
+    }
+
+    /* ===== Анимация текста ===== */
+    .moving-text {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      white-space: nowrap;        /* текст в одну строку */
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+      font-family: 'Arial', sans-serif;
+      z-index: 1000;              /* чтобы текст был поверх меню */
+      animation: moveDiagonal 10s infinite alternate ease-in-out;
+    }
+
+    /* Ключевые кадры: из левого нижнего в правый верхний угол */
+    @keyframes moveDiagonal {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        /* Смещение на всю ширину окна минус ширина элемента (по X) */
+        /* и на всю высоту окна минус высота элемента (по Y, вверх отрицательное) */
+        transform: translate(calc(100vw - 100%), calc(-100vh + 100%));
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; background-color: #0000ff;"> <!-- начальный синий фон, будет переопределён скриптом -->
+  <nav class="simple-menu">
+    <ul>
+  <li>
+    <a href="#">Русский</a>
+    <ul class="dropdown">
+	  <li><a href="alphabet.html">Алфавит звуки и буквы</a></li>
+	   <li><a href="speech.html">Речь</a></li>
+	  <li><a href="accent.html">Ударение</a></li>
+	   <li><a href="text.html">текст</a></li>
+	  <li><a href="nouns.html">Имя существительное</a></li>
+	  <li><a href="genus.html">Род существительного</a></li>
+	  <li><a href="caseNoun.html">Падежи существительных</a></li>
+	  <li><a href="caseNounSup.html">Падежи существительных тренинг</a></li>
+      <li><a href="grammarNe.html">(НЕ) частица</a></li>
+      <li><a href="grammarNN.html">(Н) слитно - раздельно</a></li>
+      <li><a href="grammarCh.html">Ча Че Чу Чк Чт</a></li>
+      <li><a href="unstressedVowels.html">бнзударные гласные</a></li>
+    </ul>
+  </li>
+  <li>
+    <a href="#">Математика</a>
+    <ul class="dropdown">
+      <li><a href="matematik30.html">Легкие выражения</a></li>
+	  <li><a href="matematikNew.html">Сложных выражения</a></li>
+	  <li><a href="matematikSuper.html">Очень сложные выражения</a></li>
+	   <li><a href="matDict.html">Диктант</a></li>
+	   <li><a href="matematicKD.html">Названия арифметических действий</a></li>
+	   <li><a href="matematicPR.html">Тренировка арифметических действий</a></li>
+      <li><a href="matematikplus.html">сложение</a></li>
+      <li><a href="matematikmultiply.html">умножение</a></li>
+      <li><a href="multiplier.html">найди множитель</a></li>
+    </ul>
+  </li>
+  <li><a href="#">Литература</a></li>
+  <li>
+    <a href="#">Окружающий мир</a>
+    <ul class="dropdown">
+      <li><a href="worldt1.html">Живые существа</a></li>
+    </ul>
+  </li>
+</ul>
+
+
+  </nav>
+
+  <!-- Движущийся текст -->
+  <div class="moving-text">Учиться надо всю жизнь, до последнего дыхания. "Сюньцзы"</div>
+
+  <script>
+    // Плавное изменение фона от синего к оранжевому и обратно
+    (function() {
+      const body = document.body;
+      // Цвета в формате RGB
+      const colorStart = { r: 0, g: 0, b: 255 };     // синий
+      const colorEnd   = { r: 255, g: 165, b: 0 };   // оранжевый
+
+      // Длительность полного цикла (туда и обратно) в миллисекундах
+      const cycleDuration = 8000; // 8 секунд
+
+      function animateBackground() {
+        const now = Date.now();
+        // Вычисляем прогресс от 0 до 1 в пределах цикла (синусоида)
+        const progress = (now % cycleDuration) / cycleDuration; // 0 .. 1
+        // Фаза: 0 → 1 → 0 (плавный переход туда и обратно)
+        // Используем синусоиду: sin(pi * t) даёт 0 -> 1 -> 0
+        const t = Math.sin(Math.PI * progress); // от 0 до 1 и обратно
+
+        // Интерполяция компонентов цвета
+        const r = Math.round(colorStart.r + (colorEnd.r - colorStart.r) * t);
+        const g = Math.round(colorStart.g + (colorEnd.g - colorStart.g) * t);
+        const b = Math.round(colorStart.b + (colorEnd.b - colorStart.b) * t);
+
+        body.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+        requestAnimationFrame(animateBackground);
+      }
+
+      // Запускаем анимацию фона
+      animateBackground();
+    })();
+
+    // Дополнительный маленький скрипт для демонстрации использования JS
+    // При клике на движущийся текст он временно ускоряется
+    const textElement = document.querySelector('.moving-text');
+    textElement.addEventListener('click', function() {
+      this.style.animationDuration = '3s'; // ускорить
+      setTimeout(() => {
+        this.style.animationDuration = '10s'; // вернуть обратно
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

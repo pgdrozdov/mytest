@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблицы вычислений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #myForm { overflow: hidden; }
+        #timer {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .correct {
+            background-color: #00FF00;
+        }
+        .incorrect {
+            background-color: #FF0000;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Таблица вычислений сложения</h1>
+    <div id="timer">Время: 0 сек</div>
+    <form action="save.php" method="POST" id="myForm">
+        <!-- Скрытые поля -->
+        <input type="hidden" name="predmet" value="математика">
+        <input type="hidden" name="tdate" id="tdate">
+        <input type="hidden" name="nazv" value="тест на сложение">
+        <input type="hidden" name="time" id="time_input" value="0">
+        <input type="hidden" name="grade" id="grade_input" value="">
+
+        <div class="fio-container">
+            <label for="fio">ВВЕДИТЕ ФИО:</label>
+            <input style="width: 500px;" type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="наведите курсор на поле и выберите в списке свою фамилию" required>
+            <datalist id="lift">
+                <option>Егор</option>
+                <option>Ксюша</option>
+                <option>Анюта</option>
+                <option>Даня</option>
+            </datalist>
+        </div>
+
+        <table id="addition-table">
+            <tr>
+                <th>Слагаемое</th>
+                <td>72</td>
+                <td>34</td>
+                <td>39</td>
+                <td>89</td>
+                <td>51</td>
+                <td>23</td>
+            </tr>
+            <tr>
+                <th>Слагаемое</th>
+                <td>13</td>
+                <td>49</td>
+                <td>28</td>
+                <td>18</td>
+                <td>98</td>
+                <td>64</td>
+            </tr>
+            <tr>
+                <th>Сумма</th>
+                <td><input type="number" data-term1="72" data-term2="13"></td>
+                <td><input type="number" data-term1="34" data-term2="49"></td>
+                <td><input type="number" data-term1="39" data-term2="28"></td>
+                <td><input type="number" data-term1="89" data-term2="18"></td>
+                <td><input type="number" data-term1="51" data-term2="98"></td>
+                <td><input type="number" data-term1="23" data-term2="64"></td>
+            </tr>
+        </table>
+
+        <div class="button-container">
+            <button type="button" id="check-button">Проверить ответы</button>
+        </div>
+        <div id="result" class="result"></div>
+        <div id="errorMessage" class="error"></div>
+    </form>
+
+    <script>
+        // --- Таймер ---
+        let startTime;
+        let timerInterval;
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const currentTime = Date.now();
+            const timeSpent = Math.floor((currentTime - startTime) / 1000);
+            document.getElementById('timer').textContent = `Время: ${timeSpent} сек`;
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            const currentTime = Date.now();
+            return Math.floor((currentTime - startTime) / 1000);
+        }
+
+        // --- Текущая дата и время в формате ГГГГ-ММ-ДД ЧЧ:ММ:СС ---
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        // --- Функция проверки ответов и возврата количества правильных ---
+        function checkAnswersAndHighlight() {
+            let correctCount = 0;
+            const inputs = document.querySelectorAll('#addition-table input');
+            inputs.forEach(input => {
+                const term1 = parseInt(input.dataset.term1);
+                const term2 = parseInt(input.dataset.term2);
+                const expected = term1 + term2;
+                const userAnswer = parseInt(input.value) || 0;
+
+                if (userAnswer === expected) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    correctCount++;
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                }
+            });
+            return correctCount;
+        }
+
+        // --- Вычисление оценки на основе количества правильных ответов ---
+        function calculateGrade(correctCount, totalCount) {
+            if (totalCount === 0) return 2;
+            const percentage = (correctCount / totalCount) * 100;
+            if (percentage >= 70) return 5;
+            if (percentage >= 50) return 4;
+            if (percentage >= 30) return 3;
+            return 2;
+        }
+
+        // --- Обработчик кнопки "Проверить ответы" ---
+        document.getElementById('check-button').addEventListener('click', function() {
+            const fio = document.getElementById('fio').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            if (!fio) {
+                errorDiv.textContent = 'Пожалуйста, введите ваше ФИО!';
+                return;
+            }
+            errorDiv.textContent = '';
+
+            // Остановка таймера и запись времени
+            const timeSpent = stopTimer();
+            document.getElementById('time_input').value = timeSpent;
+
+            // Установка даты и времени
+            document.getElementById('tdate').value = getCurrentDateTime();
+
+            // Проверка ответов и подсветка
+            const inputs = document.querySelectorAll('#addition-table input');
+            const totalCount = inputs.length;
+            const correctCount = checkAnswersAndHighlight();
+
+            // Вычисление оценки и отображение результата
+            const grade = calculateGrade(correctCount, totalCount);
+            document.getElementById('grade_input').value = grade;
+
+            const percentage = totalCount ? Math.round((correctCount / totalCount) * 100) : 0;
+            let gradeColor = grade >= 5 ? '#4CAF50' : (grade >= 4 ? '#2196F3' : (grade >= 3 ? '#FF9800' : '#F44336'));
+            document.getElementById('result').innerHTML = `Вы ответили правильно на ${correctCount} из ${totalCount} (${percentage}%). Оценка: <span style="color:${gradeColor}; font-weight:bold;">${grade}</span>.`;
+
+            // Отправка формы
+            document.getElementById('myForm').submit();
+        });
+
+        // --- Запуск таймера при загрузке страницы ---
+        window.onload = function() {
+            startTimer();
+        };
+    </script>
+</body>
+</html>

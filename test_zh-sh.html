@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тест: ЖИ-ШИ пиши с буквой И</title>
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        line-height: 1.4;
+        margin: 0;
+        padding: 20px;
+        background: #f1f8e9;
+    }
+    .main-card {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        padding: 20px 25px 30px 25px;
+    }
+    h3.zag3 {
+        text-align: center;
+        margin: 0 0 20px 0;
+        padding: 16px;
+        background: #2e7d32;
+        color: white;
+        border-radius: 60px;
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+    .instructions {
+        background: #fff8e1;
+        padding: 12px 20px;
+        border-radius: 40px;
+        font-size: 1.05rem;
+        font-family: 'Segoe UI', serif;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 20px;
+        border-left: 6px solid #ffb74d;
+    }
+    .rule-links {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+    .rule-link {
+        color: #1e6f5c;
+        text-decoration: underline;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+        background: #e0f2f1;
+        padding: 4px 12px;
+        border-radius: 30px;
+        transition: 0.2s;
+    }
+    .rule-link:hover {
+        background: #b2dfdb;
+        color: #004d40;
+    }
+    .fio-container {
+        display: flex;
+        justify-content: center;
+        margin: 10px 0 25px 0;
+    }
+    .fio-card {
+        background: #f5f5f5;
+        padding: 12px 25px;
+        border-radius: 50px;
+        display: inline-flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .fio-card label {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #2c3e2f;
+    }
+    .fio-card input {
+        font-size: 1.2rem;
+        padding: 8px 15px;
+        width: 320px;
+        border: 2px solid #c8e6c9;
+        border-radius: 40px;
+        outline: none;
+        transition: 0.2s;
+        font-family: inherit;
+    }
+    .fio-card input:focus {
+        border-color: #2e7d32;
+    }
+    .columns-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+        margin: 20px 0 20px;
+    }
+    .word-col {
+        background: #fef9e6;
+        border-radius: 28px;
+        padding: 20px 20px;
+        width: 320px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.2s;
+    }
+    .word-col ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .word-col li {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: baseline;
+        border-bottom: 1px dashed #d7ccc8;
+        padding-bottom: 6px;
+    }
+    .word-col label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        font-size: 1.1rem;
+        font-weight: 500;
+        font-family: 'Courier New', 'Consolas', monospace;
+        gap: 10px;
+    }
+    .word-text {
+        background: #fff3e0;
+        padding: 4px 8px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
+    }
+    input.answer-input {
+        width: 70px;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border: none;
+        border-bottom: 2px solid #81c784;
+        background: #ffffffcc;
+        outline: none;
+        font-family: monospace;
+        padding: 4px 0;
+        transition: 0.2s;
+        border-radius: 0;
+    }
+    input.answer-input:focus {
+        border-bottom-color: #2e7d32;
+        background: #fff;
+    }
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin: 30px auto 15px;
+        flex-wrap: wrap;
+    }
+    .action-buttons button, .action-buttons a {
+        background: #2e7d32;
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 40px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: 0.2s;
+        display: inline-block;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .action-buttons button:hover, .action-buttons a:hover {
+        background: #1b5e20;
+        transform: scale(1.02);
+    }
+    #timer {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: bold;
+        background: #263238;
+        color: #ffcc80;
+        display: inline-block;
+        width: auto;
+        margin: 0 auto 20px;
+        padding: 8px 25px;
+        border-radius: 50px;
+        letter-spacing: 1px;
+    }
+    .timer-wrapper {
+        text-align: center;
+    }
+    .error {
+        color: #d32f2f;
+        background: #ffebee;
+        padding: 8px;
+        border-radius: 30px;
+        text-align: center;
+        margin: 10px auto;
+        max-width: 500px;
+        font-weight: bold;
+    }
+    .server-response {
+        margin: 15px auto;
+        padding: 10px;
+        text-align: center;
+        background: #e8f5e9;
+        border-radius: 30px;
+        max-width: 700px;
+    }
+    .success {
+        color: #2e7d32;
+        font-weight: bold;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        overflow: auto;
+    }
+    .modal-content {
+        background-color: #fefef7;
+        margin: 5% auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 1000px;
+        border-radius: 28px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 32px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .close:hover {
+        color: black;
+    }
+    #resultsTable {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin-top: 15px;
+    }
+    #resultsTable th, #resultsTable td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    #resultsTable th {
+        background-color: #2e7d32;
+        color: white;
+    }
+    .footer-note {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.8rem;
+        color: #6d4c41;
+    }
+    @media (max-width: 750px) {
+        .word-col { width: 100%; }
+        .fio-card input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="main-card">
+    <h3 class="zag3">✍️ ЖИ—ШИ пиши с буквой И!</h3>
+    <div class="instructions">
+        <span>📖 Вставь пропущенные гласные (вспомни правило: ЖИ-ШИ пиши с И).</span>
+        <div class="rule-links">
+            <span class="rule-link" data-rule="1">📘 ЖИ / ШИ</span>
+            <span class="rule-link" data-rule="2">✏️ Примеры</span>
+            <span class="rule-link" data-rule="3">🐭 Слова-исключения</span>
+        </div>
+    </div>
+
+    <div class="timer-wrapper">
+        <div id="timer">⏱️ Время: 0 сек</div>
+    </div>
+    <div id="errorMessage" class="error" style="display: none;"></div>
+    <div id="serverResponse" class="server-response"></div>
+
+    <form id="myForm">
+        <input type="hidden" name="predmet" value="Русский язык">
+        <input type="hidden" name="tdate" id="tdate">
+        <input type="hidden" name="nazv" value="ЖИ-ШИ тест">
+        <input type="hidden" name="time" id="time_input" value="0">
+        <input type="hidden" name="grade" id="grade_input" value="">
+
+        <div class="fio-container">
+            <div class="fio-card">
+                <label for="fio">👤 Фамилия и имя:</label>
+                <input type="text" id="fio" name="fio" list="student-list" autocomplete="off" placeholder="Выберите или введите" required>
+                <datalist id="student-list">
+                    <option value="Ганжа Егор">Ганжа Егор</option>
+                    <option value="Носкова Ксюша">Носкова Ксюша</option>
+                    <option value="Ганжа Анюта">Ганжа Анюта</option>
+                    <option value="Носков Даня">Носков Даня</option>
+                </datalist>
+            </div>
+        </div>
+
+        <div class="columns-container">
+            <!-- Колонка 1: слова из фотографии + классические ЖИ-ШИ -->
+            <div class="word-col">
+                <ul>
+                    <li><label><span class="word-text">1. еж_</span> <input type="text" class="answer-input" name="test1" id="word1" maxlength="2" placeholder="и/ы" autocomplete="off"></label></li>
+                    <li><label><span class="word-text">2. м_ло</span> <input type="text" class="answer-input" name="test2" id="word2" maxlength="2" placeholder="гласная"></label></li>
+                    <li><label><span class="word-text">3. уж_</span> <input type="text" class="answer-input" name="test3" id="word3" maxlength="2"></label></li>
+                    <li><label><span class="word-text">4. уш_</span> <input type="text" class="answer-input" name="test4" id="word4" maxlength="2"></label></li>
+                    <li><label><span class="word-text">5. ж_л</span> <input type="text" class="answer-input" name="test5" id="word5" maxlength="2"></label></li>
+                    <li><label><span class="word-text">6. п_ль</span> <input type="text" class="answer-input" name="test6" id="word6" maxlength="2"></label></li>
+                    <li><label><span class="word-text">7. ш_п</span> <input type="text" class="answer-input" name="test7" id="word7" maxlength="2"></label></li>
+                    <li><label><span class="word-text">8. ж_в</span> <input type="text" class="answer-input" name="test8" id="word8" maxlength="2"></label></li>
+                    <li><label><span class="word-text">9. кр_ло</span> <input type="text" class="answer-input" name="test9" id="word9" maxlength="2"></label></li>
+                    <li><label><span class="word-text">10. ерш_</span> <input type="text" class="answer-input" name="test10" id="word10" maxlength="2"></label></li>
+                    <li><label><span class="word-text">11. луж_</span> <input type="text" class="answer-input" name="test11" id="word11" maxlength="2"></label></li>
+                    <li><label><span class="word-text">12. д_шло</span> <input type="text" class="answer-input" name="test12" id="word12" maxlength="2"></label></li>
+                    <li><label><span class="word-text">13. ш_рь</span> <input type="text" class="answer-input" name="test13" id="word13" maxlength="2"></label></li>
+                    <li><label><span class="word-text">14. мыш_</span> <input type="text" class="answer-input" name="test14" id="word14" maxlength="2"></label></li>
+                </ul>
+            </div>
+
+            <div class="word-col">
+                <ul>
+                    <li><label><span class="word-text">15. д_м</span> <input type="text" class="answer-input" name="test15" id="word15" maxlength="2"></label></li>
+                    <li><label><span class="word-text">16. лыж_</span> <input type="text" class="answer-input" name="test16" id="word16" maxlength="2"></label></li>
+                    <li><label><span class="word-text">17. ж_знь</span> <input type="text" class="answer-input" name="test17" id="word17" maxlength="2"></label></li>
+                    <li><label><span class="word-text">18. м_шление</span> <input type="text" class="answer-input" name="test18" id="word18" maxlength="2"></label></li>
+                    <li><label><span class="word-text">19. уж_н</span> <input type="text" class="answer-input" name="test19" id="word19" maxlength="2"></label></li>
+                    <li><label><span class="word-text">20. п_ш_</span> <input type="text" class="answer-input" name="test20" id="word20" maxlength="2"></label></li>
+                    <li><label><span class="word-text">21. с_н</span> <input type="text" class="answer-input" name="test21" id="word21" maxlength="2"></label></li>
+                    <li><label><span class="word-text">22. п_ж</span> <input type="text" class="answer-input" name="test22" id="word22" maxlength="2"></label></li>
+                    <li><label><span class="word-text">23. Рыж_к</span> <input type="text" class="answer-input" name="test23" id="word23" maxlength="2"></label></li>
+                    <li><label><span class="word-text">24. ак_н</span> <input type="text" class="answer-input" name="test24" id="word24" maxlength="2"></label></li>
+                    <li><label><span class="word-text">25. ш_шк_</span> <input type="text" class="answer-input" name="test25" id="word25" maxlength="2"></label></li>
+                    <li><label><span class="word-text">26. леж_т</span> <input type="text" class="answer-input" name="test26" id="word26" maxlength="2"></label></li>
+                    <li><label><span class="word-text">27. м_с</span> <input type="text" class="answer-input" name="test27" id="word27" maxlength="2"></label></li>
+                    <li><label><span class="word-text">28. малыш_</span> <input type="text" class="answer-input" name="test28" id="word28" maxlength="2"></label></li>
+                </ul>
+            </div>
+
+            <div class="word-col">
+                <ul>
+                    <li><label><span class="word-text">29. корж_</span> <input type="text" class="answer-input" name="test29" id="word29" maxlength="2"></label></li>
+                    <li><label><span class="word-text">30. р_сак</span> <input type="text" class="answer-input" name="test30" id="word30" maxlength="2"></label></li>
+                    <li><label><span class="word-text">31. крыш_</span> <input type="text" class="answer-input" name="test31" id="word31" maxlength="2"></label></li>
+                    <li><label><span class="word-text">32. ч_ж_к</span> <input type="text" class="answer-input" name="test32" id="word32" maxlength="2"></label></li>
+                    <li><label><span class="word-text">33. п_рей</span> <input type="text" class="answer-input" name="test33" id="word33" maxlength="2"></label></li>
+                    <li><label><span class="word-text">34. т_ш_на</span> <input type="text" class="answer-input" name="test34" id="word34" maxlength="2"></label></li>
+                    <li><label><span class="word-text">35. полож_</span> <input type="text" class="answer-input" name="test35" id="word35" maxlength="2"></label></li>
+                    <li><label><span class="word-text">36. хорош_</span> <input type="text" class="answer-input" name="test36" id="word36" maxlength="2"></label></li>
+                    <li><label><span class="word-text">37. больш_е</span> <input type="text" class="answer-input" name="test37" id="word37" maxlength="2"></label></li>
+                    <li><label><span class="word-text">38. шалаш_</span> <input type="text" class="answer-input" name="test38" id="word38" maxlength="2"></label></li>
+                    <li><label><span class="word-text">39. яз_к</span> <input type="text" class="answer-input" name="test39" id="word39" maxlength="2"></label></li>
+                    <li><label><span class="word-text">40. ж_дк_й</span> <input type="text" class="answer-input" name="test40" id="word40" maxlength="2"></label></li>
+                    <li><label><span class="word-text">41. камыш_</span> <input type="text" class="answer-input" name="test41" id="word41" maxlength="2"></label></li>
+                </ul>
+            </div>
+            <div class="word-col">
+                <ul>
+                    <li><label><span class="word-text">42. покр_вало</span> <input type="text" class="answer-input" name="test42" id="word42" maxlength="2"></label></li>
+                    <li><label><span class="word-text">43. ар_к</span> <input type="text" class="answer-input" name="test43" id="word43" maxlength="2"></label></li>
+                    <li><label><span class="word-text">44. ландыш_</span> <input type="text" class="answer-input" name="test44" id="word44" maxlength="2"></label></li>
+                    <li><label><span class="word-text">45. с_ройе</span> <input type="text" class="answer-input" name="test45" id="word45" maxlength="2"></label></li>
+                    <li><label><span class="word-text">46. похож_е</span> <input type="text" class="answer-input" name="test46" id="word46" maxlength="2"></label></li>
+                    <li><label><span class="word-text">47. т_н</span> <input type="text" class="answer-input" name="test47" id="word47" maxlength="2"></label></li>
+                    <li><label><span class="word-text">48. прохож_е</span> <input type="text" class="answer-input" name="test48" id="word48" maxlength="2"></label></li>
+                    <li><label><span class="word-text">49. душ_стый</span> <input type="text" class="answer-input" name="test49" id="word49" maxlength="2"></label></li>
+                    <li><label><span class="word-text">50. у Паш_ Чижикова</span> <input type="text" class="answer-input" name="test50" id="word50" maxlength="2" placeholder="и"></label></li>
+                    <li><label><span class="word-text">51. кр_льцо</span> <input type="text" class="answer-input" name="test51" id="word51" maxlength="2"></label></li>
+                    <li><label><span class="word-text">52. у Серёж_ Ёжикова</span> <input type="text" class="answer-input" name="test52" id="word52" maxlength="2"></label></li>
+                </ul>
+                <div class="footer-note">✏️ Вставляй И (жи-ши пиши с И)!</div>
+            </div>
+        </div>
+    </form>
+
+    <div class="action-buttons">
+        <button type="button" id="finishTestBtn">✅ Завершить тест</button>
+        <a href="#" id="viewBaseLink">📊 Просмотр базы</a>
+        <a href="index.html" id="menuLink">🏠 Вход в меню</a>
+    </div>
+</div>
+
+<div id="resultsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>📋 Результаты теста «ЖИ-ШИ»</h2>
+        <div id="resultsContainer"></div>
+    </div>
+</div>
+
+<script>
+    // ПРАВИЛЬНЫЕ ОТВЕТЫ согласно орфограмме ЖИ-ШИ -> всегда И
+    // Всего 52 слова (из текста фотографии + дополнение)
+    const correctAnswers = Array(52).fill("и");
+    // Список эталонных слов для наглядности (можно уточнить)
+    const wordLabels = [
+        "1. ежи", "2. мыло", "3. ужи", "4. уши", "5. жил", "6. пыль", "7. шип", "8. жив", "9. крыло", "10. ерши",
+        "11. лужи", "12. дышло", "13. ширь", "14. мыши", "15. дым", "16. лыжи", "17. жизнь", "18. мышление", "19. ужин",
+        "20. пиши", "21. сын", "22. пыж", "23. Рыжик", "24. акын", "25. шишки", "26. лежит", "27. мыс",
+        "28. малыши", "29. коржи", "30. рысак", "31. крыши", "32. чижик", "33. пырей", "34. тишина", "35. положи",
+        "36. хороши", "37. большие", "38. шалаши", "39. язык", "40. жидкий", "41. камыши", "42. покрывало",
+        "43. ар_к", "44. ландыши", "45. сырой", "46. похожие", "47. тын", "48. прохожие", "49. душистый",
+        "50. у Паши", "51. крыльцо", "52. у Серёжи"
+    ];
+
+    let globalStartTime = Date.now();
+    let timerInterval = null;
+    let timerStopped = false;
+
+    function startTimer() {
+        if (timerInterval) return;
+        timerInterval = setInterval(() => {
+            if (!timerStopped) {
+                let elapsed = Math.floor((Date.now() - globalStartTime) / 1000);
+                document.getElementById('timer').innerHTML = `⏱️ Время: ${elapsed} сек`;
+            }
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (!timerStopped) {
+            timerStopped = true;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        return Math.floor((Date.now() - globalStartTime) / 1000);
+    }
+
+    function getCurrentDateTime() {
+        const now = new Date();
+        return now.toISOString().slice(0,19).replace('T',' ');
+    }
+
+    // подсказки правил
+    document.querySelectorAll('.rule-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            if(e.target.dataset.rule === '1') alert('📖 Правило: В сочетаниях ЖИ и ШИ всегда пишется буква И (жить, шило, мыши, уши).');
+            else if(e.target.dataset.rule === '2') alert('📝 Примеры из задания: ежи, груши, лыжи, машина, камыши, пушистый.');
+            else alert('🐭 Исключений нет: ЖИ-ШИ пиши с И! Даже в именах: Паша, Маша, Серёжа пишется с буквой И в окончаниях? Нет, но внутри слов: жи, ши всегда И.');
+        });
+    });
+
+    async function sendFormData(form) {
+        const formData = new FormData(form);
+        try {
+            const resp = await fetch('save.php', { method: 'POST', body: formData });
+            const text = await resp.text();
+            return { ok: resp.ok, message: text };
+        } catch(e) {
+            return { ok: false, message: e.message };
+        }
+    }
+
+    document.getElementById('finishTestBtn').addEventListener('click', async () => {
+        const fioField = document.getElementById('fio');
+        const fio = fioField.value.trim();
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.style.display = 'none';
+        if (!fio) {
+            errorDiv.textContent = '❌ Пожалуйста, введите или выберите ФИО!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        let userAnswers = [];
+        let correctCount = 0;
+        const total = correctAnswers.length;
+        for (let i = 1; i <= total; i++) {
+            const inp = document.getElementById(`word${i}`);
+            let val = inp ? inp.value.trim().toLowerCase() : '';
+            userAnswers.push(val);
+            if (val === correctAnswers[i-1]) correctCount++;
+        }
+
+        const incorrectCount = total - correctCount;
+        const errorPercent = (incorrectCount / total) * 100;
+        let grade = 2;
+        if (errorPercent < 30) grade = 5;
+        else if (errorPercent < 50) grade = 4;
+        else if (errorPercent < 70) grade = 3;
+        else grade = 2;
+
+        let html = `<h3>🎯 Правильных ответов: ${correctCount} из ${total} (оценка: ${grade})</h3>`;
+        html += '<table id="resultsTable"><thead><tr><th>Слово (задание)</th><th>Верный ответ</th><th>Ваш ответ</th><th>Результат</th></tr></thead><tbody>';
+        for (let i = 0; i < total; i++) {
+            const isCorrect = (userAnswers[i] === correctAnswers[i]);
+            html += `<tr>
+                        <td>${wordLabels[i]}</td>
+                        <td><strong>${correctAnswers[i]}</strong></td>
+                        <td>${userAnswers[i] || '—'}</td>
+                        <td style="color:${isCorrect ? 'green' : 'red'}; font-weight:bold;">${isCorrect ? '✔ Верно' : '✘ Ошибка'}</td>
+                     </tr>`;
+        }
+        html += '</tbody></table>';
+        document.getElementById('resultsContainer').innerHTML = html;
+        document.getElementById('resultsModal').style.display = 'block';
+
+        document.getElementById('tdate').value = getCurrentDateTime();
+        document.getElementById('time_input').value = stopTimer();
+        document.getElementById('grade_input').value = grade;
+
+        const serverDiv = document.getElementById('serverResponse');
+        serverDiv.innerHTML = '💾 Сохранение...';
+        const result = await sendFormData(document.getElementById('myForm'));
+        if (result.ok) serverDiv.innerHTML = '<span class="success">✅ Результаты успешно сохранены на сервере!</span>';
+        else serverDiv.innerHTML = `<span style="color:red;">❌ Ошибка: ${result.message}</span>`;
+    });
+
+    document.querySelector('.close').addEventListener('click', () => {
+        document.getElementById('resultsModal').style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('resultsModal')) {
+            document.getElementById('resultsModal').style.display = 'none';
+        }
+    });
+
+    document.getElementById('viewBaseLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        const fio = document.getElementById('fio').value.trim();
+        let url = 'show.php';
+        if (fio) url += '?fio=' + encodeURIComponent(fio);
+        window.location.href = url;
+    });
+
+    window.addEventListener('load', () => {
+        startTimer();
+        // установить placeholder для всех полей ввода
+        for(let i=1;i<=52;i++) {
+            let inp = document.getElementById(`word${i}`);
+            if(inp) inp.placeholder = " ";
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Тест: падежи имён существительных</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f6f9fc 0%, #eef2f5 100%);
+      margin: 0;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .test-container {
+      max-width: 1400px;
+      width: 100%;
+      background: rgba(255,255,255,0.92);
+      border-radius: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: all 0.2s;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    .left-col {
+      flex: 2.5;
+      min-width: 260px;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .right-col {
+      flex: 1.4;
+      min-width: 260px;
+    }
+
+    .theory-card {
+      background: #ffffffea;
+      border-radius: 1.8rem;
+      border: 1px solid #dce5f0;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      padding: 1.5rem 1.3rem;
+      height: auto;
+      transition: 0.2s;
+      backdrop-filter: blur(2px);
+    }
+
+    .theory-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      border-left: 5px solid #2c3e66;
+      padding-left: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theory-card h3::before {
+      content: "📖";
+      font-size: 1.4rem;
+    }
+
+    .theory-content {
+      font-size: 0.96rem;
+      line-height: 1.5;
+      color: #1e2f3e;
+    }
+
+    .theory-content p {
+      margin-bottom: 0.9rem;
+    }
+
+    .cases-table {
+      width: 100%;
+      background: #f8fafd;
+      border-radius: 1rem;
+      margin: 0.8rem 0;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .cases-table th, .cases-table td {
+      border: 1px solid #cbdde9;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .cases-table th {
+      background: #e9f0f5;
+      color: #1f4e6e;
+    }
+
+    .theory-content strong {
+      color: #1f3a5f;
+      font-weight: 600;
+    }
+
+    .theory-content hr {
+      margin: 1rem 0;
+      border: none;
+      height: 1px;
+      background: #e2edf2;
+    }
+
+    .top-bar {
+      background: #ffffffcc;
+      backdrop-filter: blur(8px);
+      border-radius: 2rem;
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    #timer {
+      font-size: 1.7rem;
+      font-weight: 800;
+      background: #0b2b3f;
+      color: #f0fcff;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-family: monospace;
+      letter-spacing: 1px;
+      text-align: center;
+      min-width: 180px;
+    }
+    .fio-block {
+      flex: 2;
+      min-width: 200px;
+    }
+    .fio-block label {
+      font-weight: 700;
+      color: #144e6b;
+      margin-right: 0.5rem;
+    }
+    .fio-block input {
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: 1.5px solid #bdd4e8;
+      background: white;
+      font-size: 0.9rem;
+      width: 220px;
+      transition: 0.2s;
+    }
+    .fio-block input:focus {
+      border-color: #2c7da0;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+    }
+    .error, .server-response {
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .error {
+      background: #ffe8e6;
+      color: #b12a1f;
+      border-left: 6px solid #c0392b;
+    }
+    .server-response {
+      background: #eaf6ff;
+      border-left: 6px solid #2c7da0;
+      color: #155f7c;
+    }
+    .test-header {
+      background: #2c3e66;
+      padding: 1.2rem 1.8rem;
+      color: white;
+      border-radius: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    .test-header h1 {
+      margin: 0 0 0.35rem 0;
+      font-weight: 600;
+      font-size: 1.7rem;
+      letter-spacing: -0.3px;
+    }
+    .test-header p {
+      margin: 0;
+      opacity: 0.85;
+      font-size: 0.9rem;
+    }
+    .question-card {
+      background: white;
+      border-radius: 1.2rem;
+      margin-bottom: 1rem;
+      padding: 0.9rem 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border: 1px solid #e9edf2;
+      transition: all 0.1s ease;
+    }
+    /* Гибкий контейнер для вопроса + селекта в одной строке */
+    .question-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+      row-gap: 0.6rem;
+    }
+    .question-text-block {
+      flex: 3;
+      min-width: 200px;
+    }
+    .sentence-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: #0f3b5c;
+      background: #f1f5f9;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+    }
+    .word-highlight {
+      background: #fde68a;
+      padding: 0.1rem 0.3rem;
+      border-radius: 12px;
+      font-weight: 700;
+      color: #92400e;
+    }
+    .task-badge {
+      font-size: 0.7rem;
+      background: #d9e6f5;
+      display: inline-block;
+      margin-left: 0.8rem;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-weight: 500;
+      color: #1e4a6b;
+      vertical-align: middle;
+    }
+    .word-hint {
+      font-size: 0.85rem;
+      color: #4a627a;
+      margin-top: 0.2rem;
+    }
+    .options {
+      flex: 1.2;
+      min-width: 180px;
+      text-align: right;
+    }
+    .case-select {
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      border: 1.5px solid #cbd5e1;
+      background: white;
+      font-size: 0.9rem;
+      width: 100%;
+      max-width: 240px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-weight: 500;
+    }
+    .case-select:focus {
+      border-color: #2c3e66;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(44,62,102,0.2);
+    }
+    .feedback {
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding-left: 0.2rem;
+      color: #2b6e3c;
+    }
+    .score-area {
+      background: #f1f5f9;
+      border-radius: 1.8rem;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .score-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: #ffffffcc;
+      padding: 0.3rem 1rem;
+      border-radius: 60px;
+    }
+    .button-group {
+      display: flex;
+      gap: 0.8rem;
+    }
+    button {
+      border: none;
+      background: #2c3e66;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    button:hover {
+      background: #1e2f4f;
+      transform: scale(0.97);
+    }
+    button.reset-btn { background: #475569; }
+    button.reset-btn:hover { background: #334155; }
+    .menu-button {
+      background: #3a6b47;
+      color: white;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      text-align: center;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+    .menu-button:hover {
+      background: #2c5539;
+      transform: scale(0.97);
+    }
+    .footer-note {
+      padding: 0.8rem 0 0.2rem;
+      font-size: 0.75rem;
+      color: #5b6e8c;
+      border-top: 1px solid #e2edf2;
+      margin-top: 0.6rem;
+    }
+    #results {
+      margin-top: 1.5rem;
+      background: #ffffffec;
+      border-radius: 2rem;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border: 1px solid #d4e2f0;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 1rem;
+      font-size: 0.85rem;
+    }
+    th {
+      background: #e3f0fa;
+      color: #1a4c74;
+      padding: 8px;
+    }
+    td, th {
+      border: 1px solid #cde0ef;
+      padding: 6px 8px;
+    }
+    .section-title {
+      font-weight: 700;
+      margin: 0.5rem 0 0.8rem 0;
+      color: #1f4e6e;
+      background: #eef3fc;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 860px) {
+      body { padding: 1rem; }
+      .test-container { flex-direction: column; }
+      .top-bar { flex-direction: column; align-items: stretch; }
+      .fio-block input { width: 100%; }
+      .question-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .options {
+        width: 100%;
+        text-align: left;
+      }
+      .case-select {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div style="width:100%; max-width:1400px; margin:0 auto;">
+  <div class="top-bar">
+    <div id="timer">⏱️ Время: 0 сек</div>
+    <div class="fio-block">
+      <label for="fio">📝 ФИО / Имя:</label>
+      <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="Выберите или введите имя" required>
+      <datalist id="lift">
+        <option>Егор</option><option>Ксюша</option><option>Анюта</option><option>Даня</option><option>Мария</option><option>Артём</option>
+      </datalist>
+    </div>
+  </div>
+
+  <div id="errorMessage" class="error" style="display: none;"></div>
+  <div id="serverResponse" class="server-response" style="display: none;"></div>
+
+  <form id="myForm" method="POST" action="save.php">
+    <input type="hidden" name="predmet" value="русский язык">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="Падежи имён существительных">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+  </form>
+
+  <div class="test-container" id="quizRoot">
+    <div class="left-col">
+      <div class="test-header">
+        <h1>📚 Определи падеж имени существительного</h1>
+        <p>В каждом предложении выделено слово. Выбери правильный падеж (И., Р., Д., В., Т., П.).</p>
+      </div>
+      <div id="questionsArea" class="test-words"></div>
+      <div class="score-area">
+        <div class="score-text" id="scoreDisplay">✅ 0 / 0</div>
+        <div class="button-group">
+          <button id="checkAndFinishBtn">✅ ЗАВЕРШИТЬ ТЕСТ ✅</button>
+          <button id="resetAnswersBtn" class="reset-btn">⟳ СБРОСИТЬ ВСЕ</button>
+          <a href="javascript:void(0);" class="menu-button" id="viewDataLink">🔍 Мои данные</a>
+        </div>
+      </div>
+      <div class="footer-note">
+        ★ Падеж узнаём по вопросу и смыслу. Вопросы в таблице справа помогут.<br>
+        ☆ Будь внимателен: некоторые слова в разных контекстах могут менять падеж.
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="theory-card">
+        <h3>Падежи имён существительных</h3>
+        <div class="theory-content">
+          <p><strong>📌 Имена существительные изменяются по падежам</strong> — это <strong>склонение</strong>. Каждый падеж отвечает на свои вопросы и часто употребляется с предлогами.</p>
+          <table class="cases-table">
+            <thead>
+              <tr><th>Падеж</th><th>Вспом. слово</th><th>Вопросы</th><th>Предлоги (примеры)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Именительный</strong></td><td>есть</td><td>кто? что?</td><td>—</td></tr>
+              <tr><td><strong>Родительный</strong></td><td>нет</td><td>кого? чего?</td><td>без, у, от, до, из, для, около</td></tr>
+              <tr><td><strong>Дательный</strong></td><td>благодаря</td><td>кому? чему?</td><td>к, по, благодаря, вопреки</td></tr>
+              <tr><td><strong>Винительный</strong></td><td>люблю</td><td>кого? что?</td><td>в, на, за, про, через</td></tr>
+              <tr><td><strong>Творительный</strong></td><td>доволен</td><td>кем? чем?</td><td>с, со, за, над, под, перед, между</td></tr>
+              <tr><td><strong>Предложный</strong></td><td>думаю</td><td>о ком? о чём?</td><td>о, об, в, на, при</td></tr>
+            </tbody>
+          </table>
+          <p><strong>🧠 Как не ошибиться?</strong><br>
+          Задай вопрос к существительному. Если слово отвечает на «кто? что?» → И.п.; «кого? чего?» → Р.п.; «кому? чему?» → Д.п.; «кого? что?» → В.п.; «кем? чем?» → Т.п.; «о ком? о чём?» → П.п.</p>
+          <hr>
+          <p>✅ <strong>Примеры из теста:</strong><br>
+          «Думаю о <u>брате</u>» → вопрос «о ком?» → <strong>Предложный падеж</strong>.<br>
+          «Нет <u>машины</u>» → вопрос «чего?» → <strong>Родительный падеж</strong>.<br>
+          «Горжусь <u>победой</u>» → вопрос «чем?» → <strong>Творительный падеж</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="results" style="display: none;"></div>
+</div>
+
+<script>
+  // ----- СПИСОК ВОПРОСОВ: предложение, выделенное слово, правильный падеж -----
+  const caseQuestions = [
+    { sentence: "Думаю о брате", word: "брате", correctCase: "Предложный" },
+    { sentence: "благодаря отцу", word: "отцу", correctCase: "Дательный" },
+    { sentence: "доволен работой", word: "работой", correctCase: "Творительный" },
+    { sentence: "нет машины", word: "машины", correctCase: "Родительный" },
+    { sentence: "люблю природу", word: "природу", correctCase: "Винительный" },
+    { sentence: "гости пришли", word: "гости", correctCase: "Именительный" },
+    { sentence: "боятся темноты", word: "темноты", correctCase: "Родительный" },
+    { sentence: "сказал сестре", word: "сестре", correctCase: "Дательный" },
+    { sentence: "обнял маму", word: "маму", correctCase: "Винительный" },
+    { sentence: "наслаждаюсь закатом", word: "закатом", correctCase: "Творительный" },
+    { sentence: "рассказываю о школе", word: "школе", correctCase: "Предложный" },
+    { sentence: "Солнце светит ярко", word: "Солнце", correctCase: "Именительный" },
+    { sentence: "В лесу слышны голоса птиц", word: "голоса", correctCase: "Именительный" },
+    { sentence: "Ученик ответил у доски", word: "Ученик", correctCase: "Именительный" },
+    { sentence: "Зимой часто бывают метели", word: "метели", correctCase: "Именительный" },
+    { sentence: "Нет времени на разговоры", word: "времени", correctCase: "Родительный" },
+    { sentence: "У дома растёт старый дуб", word: "дуб", correctCase: "Именительный" },
+    { sentence: "Выйти из комнаты", word: "комнаты", correctCase: "Родительный" },
+    { sentence: "Подарок для подруги", word: "подруги", correctCase: "Родительный" },
+    { sentence: "Помоги другу", word: "другу", correctCase: "Дательный" },
+    { sentence: "Иду к врачу", word: "врачу", correctCase: "Дательный" },
+    { sentence: "Рад встрече", word: "встрече", correctCase: "Дательный" },
+    { sentence: "Вижу реку за окном", word: "реку", correctCase: "Винительный" },
+    { sentence: "Читаю книгу вечером", word: "книгу", correctCase: "Винительный" },
+    { sentence: "Встретил сестру на вокзале", word: "сестру", correctCase: "Винительный" },
+    { sentence: "Горжусь победой", word: "победой", correctCase: "Творительный" },
+    { sentence: "Любоваться закатом", word: "закатом", correctCase: "Творительный" },
+    { sentence: "Дышать свежим воздухом", word: "воздухом", correctCase: "Творительный" },
+    { sentence: "Мечтаю о путешествии", word: "путешествии", correctCase: "Предложный" },
+    { sentence: "Живу в маленьком городе", word: "городе", correctCase: "Предложный" }
+  ];
+
+  const TOTAL_QUESTIONS = caseQuestions.length;
+  const caseOptions = ["Именительный", "Родительный", "Дательный", "Винительный", "Творительный", "Предложный"];
+
+  let startTime = null;
+  let timerInterval = null;
+  let isTestFinished = false;
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      if (isTestFinished) return;
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const timerDiv = document.getElementById('timer');
+      if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+    }, 200);
+  }
+
+  function stopTimerAndGetSeconds() {
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+    return 0;
+  }
+
+  function getCurrentDateTime() {
+    const now = new Date();
+    const Y = now.getFullYear();
+    const M = String(now.getMonth() + 1).padStart(2,'0');
+    const D = String(now.getDate()).padStart(2,'0');
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  function computeCurrentScore() {
+    let correct = 0;
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      if (select && select.value) {
+        if (select.value === caseQuestions[i].correctCase) correct++;
+      }
+    }
+    return correct;
+  }
+
+  function updateScoreDisplay(count = null) {
+    const correct = (count !== null) ? count : computeCurrentScore();
+    const scoreSpan = document.getElementById("scoreDisplay");
+    if (scoreSpan) scoreSpan.innerHTML = `🎯 ${correct} / ${TOTAL_QUESTIONS}`;
+  }
+
+  function refreshLiveScore() {
+    updateScoreDisplay(computeCurrentScore());
+  }
+
+  function evaluateAllAnswers() {
+    let wrongCount = 0;
+    let detailed = {};
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      const selectedCase = select ? select.value : "";
+      const correctCase = caseQuestions[i].correctCase;
+      const isCorrect = (selectedCase === correctCase);
+      if (!isCorrect) wrongCount++;
+      detailed[i] = {
+        sentence: caseQuestions[i].sentence,
+        word: caseQuestions[i].word,
+        userAnswer: selectedCase || "не выбран",
+        correctAnswer: correctCase,
+        isCorrect: isCorrect
+      };
+    }
+    const correctCount = TOTAL_QUESTIONS - wrongCount;
+    const percent = (correctCount / TOTAL_QUESTIONS) * 100;
+    let grade = 2;
+    if (percent >= 90) grade = 5;
+    else if (percent >= 70) grade = 4;
+    else if (percent >= 50) grade = 3;
+    else grade = 2;
+    return { wrongCount, correctCount, percent, grade, detailed };
+  }
+
+  function renderResultsTable(fio, timeSec, correct, wrong, percent, grade, detailedMap) {
+    let html = `<div><h3>📊 РЕЗУЛЬТАТЫ ТЕСТА (падежи существительных)</h3>
+      <p><strong>👤 Участник:</strong> ${escapeHtml(fio)}</p>
+      <p><strong>⏱️ Время:</strong> ${timeSec} секунд</p>
+      <p><strong>✅ Правильно:</strong> ${correct} из ${TOTAL_QUESTIONS}</p>
+      <p><strong>❌ Ошибок:</strong> ${wrong}</p>
+      <p><strong>📈 Процент:</strong> ${percent.toFixed(1)}%</p>
+      <p><strong>🎓 ОЦЕНКА:</strong> <span style="font-size:1.5rem;">${grade}</span></p>
+      <h4>Детализация ответов:</h4><div style="overflow-x:auto;"><table>
+      <thead><tr><th>Предложение</th><th>Слово</th><th>Ваш ответ (падеж)</th><th>Правильный падеж</th><th>Результат</th></tr></thead><tbody>`;
+    for (let idx = 0; idx < TOTAL_QUESTIONS; idx++) {
+      const data = detailedMap[idx];
+      const color = data.isCorrect ? '#1f7a3b' : '#c0392b';
+      const status = data.isCorrect ? '✔ Верно' : '✘ Ошибка';
+      html += `<tr>
+        <td>${escapeHtml(data.sentence)}</td>
+        <td><strong>${escapeHtml(data.word)}</strong></td>
+        <td>${escapeHtml(data.userAnswer)}</td>
+        <td>${escapeHtml(data.correctAnswer)}</td>
+        <td style="color:${color};">${status}</td>
+       </tr>`;
+    }
+    html += `</tbody></table></div></div>`;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = 'block';
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function sendToServer(formData) {
+    try {
+      const response = await fetch('save.php', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const serverDiv = document.getElementById('serverResponse');
+      serverDiv.innerHTML = `<strong>✅ Результаты успешно сохранены на сервере.</strong>`;
+      serverDiv.style.display = 'block';
+      setTimeout(() => { if(serverDiv) serverDiv.style.display = 'none'; }, 5000);
+    } catch (err) {
+      console.warn(err);
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.innerHTML = `⚠️ Ошибка отправки: ${escapeHtml(err.message)}. Данные сохранены локально.`;
+      errorDiv.style.display = 'block';
+      setTimeout(() => { if(errorDiv) errorDiv.style.display = 'none'; }, 6000);
+    }
+  }
+
+  let isProcessing = false;
+  async function finishTest() {
+    if (isTestFinished || isProcessing) return;
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('serverResponse').style.display = 'none';
+    document.getElementById('results').style.display = 'none';
+
+    const fioInput = document.getElementById('fio');
+    const userFio = fioInput.value.trim();
+    if (!userFio) {
+      const errDiv = document.getElementById('errorMessage');
+      errDiv.textContent = '❗ Введите ваше ФИО / имя перед завершением теста!';
+      errDiv.style.display = 'block';
+      setTimeout(() => errDiv.style.display = 'none', 4000);
+      return;
+    }
+
+    const spentSeconds = stopTimerAndGetSeconds();
+    isTestFinished = true;
+
+    document.getElementById('time_input').value = spentSeconds;
+    document.getElementById('tdate').value = getCurrentDateTime();
+
+    const { wrongCount, correctCount, percent, grade, detailed } = evaluateAllAnswers();
+    document.getElementById('grade_input').value = grade;
+
+    renderResultsTable(userFio, spentSeconds, correctCount, wrongCount, percent, grade, detailed);
+
+    const formElement = document.getElementById('myForm');
+    const formData = new FormData(formElement);
+    formData.set('fio', userFio);
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      const answer = select ? select.value : '';
+      formData.append(`answer_${i}`, answer);
+      formData.append(`sentence_${i}`, caseQuestions[i].sentence);
+      formData.append(`word_${i}`, caseQuestions[i].word);
+    }
+    formData.append('total_correct', correctCount);
+    formData.append('total_questions', TOTAL_QUESTIONS);
+    formData.append('percent', percent.toFixed(2));
+
+    isProcessing = true;
+    await sendToServer(formData);
+    isProcessing = false;
+  }
+
+  function resetAllSelections() {
+    if (isTestFinished) return;
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const select = document.getElementById(`select_${i}`);
+      if (select) select.value = "";
+      const fb = document.getElementById(`fb_${i}`);
+      if (fb) { fb.innerHTML = ""; fb.className = "feedback"; }
+    }
+    updateScoreDisplay(0);
+  }
+
+  function renderTest() {
+    const container = document.getElementById("questionsArea");
+    if (!container) return;
+    container.innerHTML = "";
+    const mainTitle = document.createElement("div");
+    mainTitle.className = "section-title";
+    mainTitle.innerHTML = "✍️ Определи падеж выделенного существительного";
+    container.appendChild(mainTitle);
+
+    for (let idx = 0; idx < caseQuestions.length; idx++) {
+      const q = caseQuestions[idx];
+      const card = document.createElement("div");
+      card.className = "question-card";
+      
+      // Горизонтальная строка: текст вопроса + select на одной линии
+      const row = document.createElement("div");
+      row.className = "question-row";
+      
+      // Левая часть: предложение + подсказка
+      const textBlock = document.createElement("div");
+      textBlock.className = "question-text-block";
+      
+      let displaySentence = q.sentence.replace(new RegExp(`\\b(${escapeHtml(q.word)})\\b`, 'gi'), `<span class="word-highlight">$1</span>`);
+      const sentenceSpan = document.createElement("div");
+      sentenceSpan.className = "sentence-text";
+      sentenceSpan.innerHTML = `📖 ${displaySentence}`;
+      
+      const wordHint = document.createElement("div");
+      wordHint.className = "word-hint";
+      wordHint.innerHTML = `🔍 Определи падеж слова «${escapeHtml(q.word)}»`;
+      
+      textBlock.appendChild(sentenceSpan);
+      textBlock.appendChild(wordHint);
+      
+      // Правая часть: select (выбор падежа)
+      const optionsDiv = document.createElement("div");
+      optionsDiv.className = "options";
+      
+      const selectEl = document.createElement("select");
+      selectEl.id = `select_${idx}`;
+      selectEl.className = "case-select";
+      selectEl.innerHTML = `<option value="">— выбери падеж —</option>`;
+      for (let opt of caseOptions) {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        selectEl.appendChild(option);
+      }
+      selectEl.addEventListener('change', () => refreshLiveScore());
+      optionsDiv.appendChild(selectEl);
+      
+      row.appendChild(textBlock);
+      row.appendChild(optionsDiv);
+      
+      const feedbackDiv = document.createElement("div");
+      feedbackDiv.className = "feedback";
+      feedbackDiv.id = `fb_${idx}`;
+      
+      card.appendChild(row);
+      card.appendChild(feedbackDiv);
+      container.appendChild(card);
+    }
+    refreshLiveScore();
+  }
+
+  function initEventListeners() {
+    const finishBtn = document.getElementById("checkAndFinishBtn");
+    const resetBtn = document.getElementById("resetAnswersBtn");
+    const viewLink = document.getElementById("viewDataLink");
+
+    if (finishBtn) finishBtn.addEventListener("click", finishTest);
+    if (resetBtn) resetBtn.addEventListener("click", resetAllSelections);
+    if (viewLink) {
+      viewLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        const fioVal = document.getElementById('fio').value.trim();
+        if (!fioVal) {
+          const errDiv = document.getElementById('errorMessage');
+          errDiv.textContent = '❗ Введите имя, чтобы посмотреть свои результаты.';
+          errDiv.style.display = 'block';
+          setTimeout(() => errDiv.style.display = 'none', 4000);
+          return;
+        }
+        window.location.href = `show.php?fio=${encodeURIComponent(fioVal)}`;
+      });
+    }
+    document.getElementById('myForm')?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+  }
+
+  function initPage() {
+    renderTest();
+    initEventListeners();
+    startTimer();
+    isTestFinished = false;
+    if (!document.getElementById('tdate').value) {
+      document.getElementById('tdate').value = getCurrentDateTime();
+    }
+    refreshLiveScore();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPage);
+  else initPage();
+</script>
+</body>
+</html>

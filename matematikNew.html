@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Арифметический тест</title>
+  <style>
+    h2 { margin-left: 350px; }
+    h3 { margin-left: 100px; } 
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+    }
+    label span {
+      display: inline-block;
+      width: 100px;
+      text-align: left;
+      margin-right: 10px;
+    }
+    input { width: 3em; }
+    #aCol {
+      width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    #col2 {
+      width: 17%;
+      float: left;
+      padding: 1.5%;
+      margin-left: 100px;
+      margin-bottom: 10px;
+    }
+    #col3 {
+      width: 17%;
+      float: left;
+      padding: 1.5%;
+      margin-left: 100px;
+      margin-bottom: 10px;
+    }
+    #myForm { overflow: hidden; }
+    #timer {
+      text-align: center;
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    #results {
+      margin: 20px auto;
+      width: 80%;
+      padding: 15px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th { background-color: #f2f2f2; }
+    .fio-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .fio-container label {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    .fio-container input {
+      width: 500px;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    /* Скрываем пустые информационные блоки, чтобы не было пустых рамок */
+    #errorMessage, #serverResponse, #results {
+      display: none;
+    }
+    /* Стили для показанных блоков */
+    .error {
+      color: red;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .server-response {
+      margin: 20px auto;
+      width: 80%;
+      padding: 15px;
+      border: 1px solid transparent;
+	  background: #f0f8ff;
+    }
+  </style>
+</head>
+<body>
+  <h2>Решите 30 арифметических примеров</h2>
+  <h3>Считайте как можно скорее, ваша оценка состоит из скорости выполнения теста и количества ошибок!</h3>
+
+  <div id="timer">Время: 0 сек</div>
+  <!-- Пустые блоки изначально скрыты, появятся только при необходимости -->
+  <div id="errorMessage" class="error"></div> 
+  <div id="serverResponse" class="server-response"></div> 
+
+  <form action="save.php" method="POST" id="myForm">
+    <!-- Скрытые поля -->
+    <input type="hidden" name="predmet" value="математика">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="30 сложных примеров">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+
+    <div class="fio-container">
+      <label for="fio">ВВЕДИТЕ ФИО:</label>
+      <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="наведите курсор на поле и выберите в списке свою фамилию" required>
+      <datalist id="lift">
+        <option>Егор</option>
+        <option>Ксюша</option>
+        <option>Анюта</option>
+        <option>Даня</option>
+      </datalist>
+    </div>
+
+    <div id="aCol">
+      <div style="float: left; width: 17%; padding: 1.5%;">
+        <ul>
+          <li><label for="test1"><span>1. 15 + 19 =</span></label><input type='number' id="test1" name='test1' size="2"/></li>
+          <li><label for="test2"><span>2. 34 - 15 =</span></label><input type='number' id="test2" name='test2' size="2"/></li> 
+          <li><label for="test3"><span>3. 8 x 7 =</span></label><input type='number' id="test3" name='test3' size="2"/></li> 
+          <li><label for="test4"><span>4. 186 - 79 =</span></label><input type='number' id="test4" name='test4' size="2"/></li>
+          <li><label for="test5"><span>5. 64 + 53 =</span></label><input type='number' id="test5" name='test5' size="2"/></li>
+          <li><label for="test6"><span>6. 235 - 67 =</span></label><input type='number' id="test6" name='test6' size="2"/></li> 
+          <li><label for="test7"><span>7. 424 + 184 =</span></label><input type='number' id="test7" name='test7' size="2"/></li> 
+          <li><label for="test8"><span>8. 647 - 369 =</span></label><input type='number' id="test8" name='test8' size="2"/></li>
+          <li><label for="test9"><span>9. 72 + 47 =</span></label><input type='number' id="test9" name='test9' size="2"/></li> 
+          <li><label for="test10"><span>10. 4 x 8 =</span></label><input type='number' id="test10" name='test10' size="2"/></li>
+        </ul>
+      </div>
+      <div id="col2">
+        <ul>
+          <li><label for="test11"><span>11. 363 - 184 =</span></label><input type='number' id="test11" name='test11' size="2"/></li>
+          <li><label for="test12"><span>12. 23 x 4 =</span></label><input type='number' id="test12" name='test12' size="2"/></li> 
+          <li><label for="test13"><span>13. 139 - 82 =</span></label><input type='number' id="test13" name='test13' size="2"/></li> 
+          <li><label for="test14"><span>14. 364 - 236 =</span></label><input type='number' id="test14" name='test14' size="2"/></li>
+          <li><label for="test15"><span>15. 637 + 88 =</span></label><input type='number' id="test15" name='test15' size="2"/></li>
+          <li><label for="test16"><span>16. 111 - 56 =</span></label><input type='number' id="test16" name='test16' size="2"/></li> 
+          <li><label for="test17"><span>17. 714 + 82 =</span></label><input type='number' id="test17" name='test17' size="2"/></li> 
+          <li><label for="test18"><span>18. 45 x 5 =</span></label><input type='number' id="test18" name='test18' size="2"/></li>
+          <li><label for="test19"><span>19. 88 + 88 =</span></label><input type='number' id="test19" name='test19' size="2"/></li> 
+          <li><label for="test20"><span>20. 57 + 123 =</span></label><input type='number' id="test20" name='test20' size="2"/></li>
+        </ul>
+      </div>
+      <div id="col3">
+        <ul>
+          <li><label for="test21"><span>21. 6 x 6 =</span></label><input type='number' id="test21" name='test21' size="2"/></li>
+          <li><label for="test22"><span>22. 142 - 67 =</span></label><input type='number' id="test22" name='test22' size="2"/></li> 
+          <li><label for="test23"><span>23. 289 + 542 =</span></label><input type='number' id="test23" name='test23' size="2"/></li> 
+          <li><label for="test24"><span>24. 11 x 11 =</span></label><input type='number' id="test24" name='test24' size="2"/></li>
+          <li><label for="test25"><span>25. 84 x 3 =</span></label><input type='number' id="test25" name='test25' size="2"/></li>
+          <li><label for="test26"><span>26. 58 + 67 =</span></label><input type='number' id="test26" name='test26' size="2"/></li> 
+          <li><label for="test27"><span>27. 102 x 7 =</span></label><input type='number' id="test27" name='test27' size="2"/></li> 
+          <li><label for="test28"><span>28. 555 + 167 =</span></label><input type='number' id="test28" name='test28' size="2"/></li>
+          <li><label for="test29"><span>29. 324 + 87 =</span></label><input type='number' id="test29" name='test29' size="2"/></li> 
+          <li><label for="test30"><span>30. 148 + 326 =</span></label><input type='number' id="test30" name='test30' size="2"/></li>
+        </ul>
+      </div>
+    </div>
+    <div style="clear: both;"></div>
+    <button type="button" id="submitBtn">Завершить тест</button>
+  </form>
+  <div id="results"></div>
+
+  <script>
+    // --- Таймер ---
+    let startTime;
+    let timerInterval;
+
+    function startTimer() {
+      startTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      const currentTime = Date.now();
+      const timeSpent = Math.floor((currentTime - startTime) / 1000);
+      document.getElementById('timer').textContent = `Время: ${timeSpent} сек`;
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      const currentTime = Date.now();
+      return Math.floor((currentTime - startTime) / 1000);
+    }
+
+    // --- Правильные ответы ---
+    const correctAnswers = {
+      "1. 15 + 19 =": 34, "2. 34 - 15 =": 19, "3. 8 x 7 =": 56, "4. 186 - 79 =": 107,
+      "5. 64 + 53 =": 117, "6. 235 - 67 =": 168, "7. 424 + 184 =": 608, "8. 647 - 369 =": 278,
+      "9. 72 + 47 =": 119, "10. 4 x 8 =": 32, "11. 363 - 184 =": 179, "12. 23 x 4 =": 92,
+      "13. 139 - 82 =": 57, "14. 364 - 236 =": 128, "15. 637 + 88 =": 725, "16. 111 - 56 =": 55,
+      "17. 714 + 82 =": 796, "18. 45 x 5 =": 225, "19. 88 + 88 =": 176, "20. 57 + 123 =": 180,
+      "21. 6 x 6 =": 36, "22. 142 - 67 =": 75, "23. 289 + 542 =": 831, "24. 11 x 11 =": 121,
+      "25. 84 x 3 =": 252, "26. 58 + 67 =": 125, "27. 102 x 7 =": 714, "28. 555 + 167 =": 722,
+      "29. 324 + 87 =": 411, "30. 148 + 326 =": 474
+    };
+
+    function countWrongAnswers(userAnswers) {
+      let wrongCount = 0;
+      let results = {};
+      for (const [question, userAnswer] of Object.entries(userAnswers)) {
+        const correctAnswer = correctAnswers[question];
+        const isCorrect = userAnswer === correctAnswer;
+        if (!isCorrect) wrongCount++;
+        results[question] = { userAnswer, correctAnswer, isCorrect };
+      }
+      return { wrongCount, results };
+    }
+
+    function calculateGrade(correctCount) {
+      const percentage = (correctCount / 30) * 100;
+      let grade;
+      if (percentage >= 90) grade = 5;
+      else if (percentage >= 70) grade = 4;
+      else if (percentage >= 50) grade = 3;
+      else grade = 2;
+      return { grade, percentage };
+    }
+
+    // --- Функция получения текущей даты и времени в формате ГГГГ-ММ-ДД ЧЧ:ММ:СС ---
+    function getCurrentDateTime() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    // --- Запуск таймера при загрузке ---
+    window.onload = function() {
+      startTimer();
+    };
+
+    // --- Обработчик завершения теста ---
+    document.getElementById("submitBtn").addEventListener("click", async function() {
+      // Скрываем предыдущие сообщения (на случай повторной отправки)
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('serverResponse').style.display = 'none';
+      document.getElementById('results').style.display = 'none';
+
+      // Проверка ФИО
+      const userFio = document.getElementById('fio').value.trim();
+      if (!userFio) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = 'Пожалуйста, введите ваше ФИО!';
+        errorDiv.style.display = 'block'; // показываем блок с ошибкой
+        return;
+      }
+
+      // Остановка таймера и получение времени выполнения
+      const timeSpent = stopTimer();
+      document.getElementById('time_input').value = timeSpent;
+
+      // Устанавливаем текущую дату и время (с секундами) в поле tdate
+      document.getElementById('tdate').value = getCurrentDateTime();
+
+      // Сбор ответов пользователя
+      const userAnswers = {};
+      for (let i = 1; i <= 30; i++) {
+        const questionElement = document.querySelector(`label[for="test${i}"] span`);
+        if (questionElement) {
+          const question = questionElement.textContent.trim();
+          const answer = parseInt(document.getElementById(`test${i}`).value) || 0;
+          userAnswers[question] = answer;
+        }
+      }
+
+      // Подсчёт ошибок и оценка
+      const { wrongCount, results } = countWrongAnswers(userAnswers);
+      const correctCount = 30 - wrongCount;
+      const gradeResult = calculateGrade(correctCount);
+      document.getElementById('grade_input').value = gradeResult.grade;
+
+      // Формирование таблицы результатов
+      let resultHTML = `
+        <h3>Результаты теста</h3>
+        <p><strong>Участник:</strong> ${userFio}</p>
+        <p>Время выполнения: ${timeSpent} секунд</p>
+        <p>Правильных ответов: ${correctCount} из 30</p>
+        <p>Неправильных ответов: ${wrongCount}</p>
+        <p>Процент правильных ответов: ${gradeResult.percentage.toFixed(1)}%</p>
+        <p><strong>Оценка: ${gradeResult.grade}</strong></p>
+        <h4>Детализация:</h4>
+        <table>
+          <tr><th>Вопрос</th><th>Ваш ответ</th><th>Правильный ответ</th><th>Результат</th></tr>
+      `;
+      for (const [question, data] of Object.entries(results)) {
+        resultHTML += `
+          <tr>
+            <td>${question}</td>
+            <td>${data.userAnswer}</td>
+            <td>${data.correctAnswer}</td>
+            <td style="color: ${data.isCorrect ? 'green' : 'red'}">${data.isCorrect ? 'Верно' : 'Неверно'}</td>
+          </tr>
+        `;
+      }
+      resultHTML += `</table>`;
+      
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = resultHTML;
+      resultsDiv.style.display = 'block'; // показываем блок с результатами
+      resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+      // --- Отправка данных на save.php ---
+      const formData = new FormData(document.getElementById('myForm'));
+      formData.set('fio', userFio); // обновим значение на всякий случай
+
+      try {
+        const response = await fetch('save.php', {
+          method: 'POST',
+          body: formData
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.text();
+        const serverDiv = document.getElementById('serverResponse');
+        serverDiv.innerHTML = `
+          <h3>Ответ от сервера:</h3>
+          <div>${data}</div>
+        `;
+        serverDiv.style.display = 'block'; // показываем блок с ответом сервера
+      } catch (error) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = `Ошибка при отправке данных: ${error.message}. Убедитесь, что файл saveEnd.php находится в той же папке и вы используете локальный сервер.`;
+        errorDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

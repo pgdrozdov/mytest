@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Арифметический тренажёр: термины действий + сохранение результатов</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #e0eafc 0%, #cfdef3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 24px 20px;
+        }
+
+        .trainer-card {
+            background: #ffffff;
+            max-width: 1300px;
+            width: 100%;
+            border-radius: 38px;
+            box-shadow: 0 35px 55px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .card-header {
+            background: #0f2b4f;
+            color: white;
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.6rem;
+            letter-spacing: -0.2px;
+        }
+
+        .card-body {
+            padding: 24px 28px 32px 28px;
+            background: #fefefe;
+        }
+
+        .top-instruction {
+            background: #e9f0fe;
+            border-left: 6px solid #1e3c72;
+            padding: 14px 20px;
+            border-radius: 28px;
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #0a2a44;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-instruction::before {
+            content: "📖";
+            font-size: 1.6rem;
+        }
+
+        .fio-timer-container {
+            background: #eef3fc;
+            border-radius: 28px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .fio-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .fio-group label {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 1rem;
+        }
+
+        .fio-group input {
+            padding: 10px 18px;
+            border-radius: 40px;
+            border: 1.5px solid #cbdbe2;
+            font-size: 0.95rem;
+            width: 260px;
+            background: white;
+        }
+
+        .fio-group input:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 2px rgba(30,60,114,0.2);
+        }
+
+        #timer {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: #0f2b4f;
+            color: #f0fcff;
+            padding: 8px 24px;
+            border-radius: 60px;
+            font-family: monospace;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .control-panel {
+            background: #eef3fc;
+            border-radius: 28px;
+            padding: 16px 24px;
+            margin-top: 28px;
+            margin-bottom: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            justify-content: flex-start;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 14px;
+        }
+
+        .btn-primary {
+            background: #2c7a4d;
+            border: none;
+            color: white;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: #1e5f3a;
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background: #6c757d;
+        }
+
+        .btn-reset:hover {
+            background: #49555f;
+        }
+
+        .btn-save {
+            background: #1f6390;
+        }
+        .btn-save:hover {
+            background: #0a4b70;
+        }
+
+        .terms-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .terms-table th {
+            background: #1e3c72;
+            color: white;
+            padding: 14px 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            border: 1px solid #2e5080;
+        }
+
+        .terms-table td {
+            background: white;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #d9e2ef;
+            vertical-align: middle;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 6px;
+            border-radius: 28px;
+            border: 1px solid #cbdbe2;
+            background: #fefefe;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.1s;
+            text-align: center;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 2px rgba(30, 60, 114, 0.2);
+        }
+
+        .operation-sign-select {
+            font-weight: bold;
+            background: #f4f9ff;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .incorrect-select {
+            background-color: #ffe0e0 !important;
+            border: 2px solid #e03a3a !important;
+            color: #a12222;
+            box-shadow: 0 0 0 1px #ffb3b3;
+        }
+
+        .result-area {
+            margin-top: 24px;
+            padding: 18px 20px;
+            background: #eef2f9;
+            border-radius: 28px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .grade-text {
+            font-size: 1.4rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .grade-excellent {
+            color: #1f6e43;
+            background: #e0f3e9;
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+        }
+
+        .grade-good {
+            color: #b45f1b;
+            background: #fff0e0;
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+        }
+
+        .grade-satisfactory {
+            color: #9e6d0b;
+            background: #fff1cf;
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+        }
+
+        .grade-bad {
+            color: #b12a2a;
+            background: #ffe2e2;
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 50px;
+        }
+
+        .score-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-right: 8px;
+        }
+
+        #results {
+            margin-top: 30px;
+            background: #ffffffec;
+            border-radius: 36px;
+            padding: 20px 24px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #d4e2f0;
+        }
+
+        table.detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        table.detail-table th {
+            background: #e3f0fa;
+            color: #1a4c74;
+            padding: 10px;
+        }
+        table.detail-table td, table.detail-table th {
+            border: 1px solid #cde0ef;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .error, .server-response {
+            max-width: 100%;
+            margin: 12px 0;
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .error {
+            background: #ffe8e6;
+            color: #b12a1f;
+            border-left: 6px solid #c0392b;
+        }
+        .server-response {
+            background: #eaf6ff;
+            border-left: 6px solid #2c7da0;
+            color: #155f7c;
+        }
+        footer {
+            font-size: 0.75rem;
+            text-align: center;
+            margin-top: 20px;
+            color: #5f6c80;
+        }
+        .menu-link {
+            display: inline-block;
+            background: #3a6b47;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 10px;
+            transition: 0.2s;
+        }
+        .menu-link:hover {
+            background: #2c5539;
+        }
+
+        @media (max-width: 780px) {
+            .card-body {
+                padding: 16px;
+            }
+            .terms-table th, .terms-table td {
+                padding: 8px 4px;
+            }
+            select {
+                font-size: 0.72rem;
+                padding: 6px 3px;
+            }
+            .fio-timer-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            #timer {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="trainer-card">
+    <div class="card-header">
+        <h2>📚 Тренировка: компоненты арифметических действий</h2>
+    </div>
+    <div class="card-body">
+        <div class="top-instruction">
+            Выбери правильные названия компонентов для каждого действия. После выбора нажми «Завершить и сохранить».
+        </div>
+
+        <!-- Форма с данными -->
+        <form id="myForm">
+            <input type="hidden" name="predmet" value="математика">
+            <input type="hidden" name="tdate" id="tdate">
+            <input type="hidden" name="nazv" value="Арифметический тренажёр: термины действий">
+            <input type="hidden" name="time" id="time_input" value="0">
+            <input type="hidden" name="grade" id="grade_input" value="">
+
+            <!-- Блок ФИО и таймер -->
+            <div class="fio-timer-container">
+                <div class="fio-group">
+                    <label for="fio">📝 ФИО / Имя:</label>
+                    <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="Выберите или введите имя" required>
+                    <datalist id="lift">
+                        <option>Егор</option>
+                        <option>Ксюша</option>
+                        <option>Анюта</option>
+                        <option>Даня</option>
+                    </datalist>
+                </div>
+                <div id="timer">⏱️ Время: 0 сек</div>
+            </div>
+
+            <!-- Таблица с терминами (каждый select имеет уникальное name) -->
+            <div style="overflow-x: auto;">
+                <table class="terms-table" id="termsTable">
+                    <thead>
+                        <tr><th>🔹 Первый компонент</th><th>⚙️ Знак действия</th><th>🔸 Второй компонент</th><th>🏁 Результат</th></tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- строки будут добавлены скриптом -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Панель управления -->
+            <div class="control-panel">
+                <div class="action-buttons">
+                    <button type="button" class="btn-primary btn-save" id="submitBtn">✅ Завершить и сохранить ✅</button>
+                    <button type="button" class="btn-primary btn-reset" id="resetTermsBtn">🔄 Сбросить выбор терминов</button>
+                    <a href="javascript:void(0);" class="menu-link" id="viewDataLink">🔍 Просмотр моих данных</a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Область для сообщений и оценки -->
+        <div class="result-area" id="resultArea">
+            <div id="scoreMessage">📌 Выберите термины для каждого знака. Для смены операции используйте выпадающий список во втором столбце.</div>
+            <div id="gradeDisplay" class="grade-text"></div>
+        </div>
+
+        <!-- Блок детальных результатов после отправки -->
+        <div id="results" style="display: none;"></div>
+        
+        <footer>✔️ Для каждого действия выберите правильные названия компонентов. После нажатия «Завершить и сохранить» данные отправятся на сервер, вы увидите оценку и детали.</footer>
+    </div>
+</div>
+
+<script>
+    // ---------- СПИСОК ТЕРМИНОВ И ПРАВИЛЬНЫЕ СООТВЕТСТВИЯ ----------
+    const ALL_TERMS = [
+        "первое слагаемое", "произведение", "уменьшаемое", "делитель",
+        "первый множитель", "вычитаемое", "частное", "второе слагаемое",
+        "второй множитель", "сумма", "делимое", "разность"
+    ];
+
+    const TERM_MAPPING = {
+        '+': { first: "первое слагаемое", second: "второе слагаемое", result: "сумма" },
+        '-': { first: "уменьшаемое", second: "вычитаемое", result: "разность" },
+        '*': { first: "первый множитель", second: "второй множитель", result: "произведение" },
+        '/': { first: "делимое", second: "делитель", result: "частное" }
+    };
+
+    // DOM элементы
+    const tableBody = document.getElementById('tableBody');
+    const resetBtn = document.getElementById('resetTermsBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const scoreMessageDiv = document.getElementById('scoreMessage');
+    const gradeDisplayDiv = document.getElementById('gradeDisplay');
+    const resultsDiv = document.getElementById('results');
+
+    // Хранилище строк и select'ов
+    let rowsData = []; // каждый элемент: { firstSelect, opSelect, secondSelect, resultSelect, rowIndex, operation }
+
+    // ---------- ТАЙМЕР ----------
+    let startTime = null;
+    let timerInterval = null;
+    let isTestFinished = false;
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+            if (isTestFinished) return;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const timerDiv = document.getElementById('timer');
+            if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+        }, 200);
+    }
+
+    function stopTimerAndGetSeconds() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+        return 0;
+    }
+
+    function getCurrentDateTime() {
+        const now = new Date();
+        const Y = now.getFullYear();
+        const M = String(now.getMonth() + 1).padStart(2, '0');
+        const D = String(now.getDate()).padStart(2, '0');
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+    }
+
+    // ---------- СОЗДАНИЕ ЭЛЕМЕНТОВ ТАБЛИЦЫ ----------
+    function createTermSelect(selectedValue = "", nameAttr) {
+        const select = document.createElement('select');
+        if (nameAttr) select.name = nameAttr;
+        const emptyOption = document.createElement('option');
+        emptyOption.value = "";
+        emptyOption.textContent = "— выберите термин —";
+        emptyOption.disabled = true;
+        emptyOption.selected = (selectedValue === "");
+        select.appendChild(emptyOption);
+        ALL_TERMS.forEach(term => {
+            const option = document.createElement('option');
+            option.value = term;
+            option.textContent = term;
+            if (term === selectedValue && selectedValue !== "") option.selected = true;
+            select.appendChild(option);
+        });
+        return select;
+    }
+
+    function createOpSelect(defaultOp = '+', nameAttr) {
+        const select = document.createElement('select');
+        if (nameAttr) select.name = nameAttr;
+        select.classList.add('operation-sign-select');
+        const ops = ['+', '-', '*', '/'];
+        ops.forEach(op => {
+            const opt = document.createElement('option');
+            opt.value = op;
+            opt.textContent = op;
+            if (op === defaultOp) opt.selected = true;
+            select.appendChild(opt);
+        });
+        return select;
+    }
+
+    // Построение таблицы: 4 строки с именами полей для отправки
+    function buildTable() {
+        tableBody.innerHTML = '';
+        rowsData = [];
+        const operations = ['+', '-', '*', '/'];
+        const opNames = ['plus', 'minus', 'mul', 'div'];
+        
+        operations.forEach((op, idx) => {
+            const tr = document.createElement('tr');
+            const prefix = opNames[idx];
+            
+            const tdFirst = document.createElement('td');
+            const firstSelect = createTermSelect("", `first_${prefix}`);
+            tdFirst.appendChild(firstSelect);
+            
+            const tdOp = document.createElement('td');
+            const opSelect = createOpSelect(op, `op_${prefix}`);
+            tdOp.appendChild(opSelect);
+            
+            const tdSecond = document.createElement('td');
+            const secondSelect = createTermSelect("", `second_${prefix}`);
+            tdSecond.appendChild(secondSelect);
+            
+            const tdResult = document.createElement('td');
+            const resultSelect = createTermSelect("", `result_${prefix}`);
+            tdResult.appendChild(resultSelect);
+            
+            tr.appendChild(tdFirst);
+            tr.appendChild(tdOp);
+            tr.appendChild(tdSecond);
+            tr.appendChild(tdResult);
+            tableBody.appendChild(tr);
+            
+            rowsData.push({
+                firstSelect, opSelect, secondSelect, resultSelect,
+                rowIndex: idx, operation: op
+            });
+        });
+        clearAllHighlights();
+        resetResultDisplayToNeutral(true);
+    }
+
+    function clearAllHighlights() {
+        rowsData.forEach(row => {
+            [row.firstSelect, row.opSelect, row.secondSelect, row.resultSelect].forEach(select => {
+                select.classList.remove('incorrect-select');
+            });
+        });
+    }
+
+    function resetResultDisplayToNeutral(preserveInstruction = false) {
+        if (preserveInstruction) {
+            scoreMessageDiv.innerHTML = '📌 Выберите термины для каждого знака. Для смены операции используйте выпадающий список во втором столбце.';
+        } else {
+            scoreMessageDiv.innerHTML = '🔄 Термины сброшены. Выберите правильные названия компонентов.';
+        }
+        gradeDisplayDiv.innerHTML = '';
+    }
+
+    // Сброс всех select (только термины, знаки не трогаем)
+    function resetAllTermSelects() {
+        rowsData.forEach(row => {
+            const setEmpty = (sel) => {
+                sel.value = "";
+                if (sel.options[0] && sel.options[0].value === "") sel.options[0].selected = true;
+                sel.classList.remove('incorrect-select');
+            };
+            setEmpty(row.firstSelect);
+            setEmpty(row.secondSelect);
+            setEmpty(row.resultSelect);
+        });
+        clearAllHighlights();
+        resetResultDisplayToNeutral(false);
+        scoreMessageDiv.innerHTML = '🔄 Термины сброшены. Выберите правильные названия компонентов.';
+        gradeDisplayDiv.innerHTML = '';
+        resultsDiv.style.display = 'none';
+    }
+
+    // Функция проверки и подсчёта результатов (возвращает объект с итогами)
+    function evaluateAndGetScore() {
+        let totalCorrect = 0;
+        const totalCells = rowsData.length * 3;
+        clearAllHighlights();
+        
+        rowsData.forEach(row => {
+            const operation = row.opSelect.value;
+            if (!TERM_MAPPING[operation]) return;
+            const expected = TERM_MAPPING[operation];
+            const firstVal = row.firstSelect.value;
+            const secondVal = row.secondSelect.value;
+            const resultVal = row.resultSelect.value;
+            
+            const isFirstOk = (firstVal === expected.first);
+            const isSecondOk = (secondVal === expected.second);
+            const isResultOk = (resultVal === expected.result);
+            
+            if (isFirstOk) totalCorrect++;
+            else row.firstSelect.classList.add('incorrect-select');
+            
+            if (isSecondOk) totalCorrect++;
+            else row.secondSelect.classList.add('incorrect-select');
+            
+            if (isResultOk) totalCorrect++;
+            else row.resultSelect.classList.add('incorrect-select');
+        });
+        
+        const percentage = totalCells > 0 ? (totalCorrect / totalCells) * 100 : 0;
+        let grade5 = 2;
+        if (percentage >= 90) grade5 = 5;
+        else if (percentage >= 70) grade5 = 4;
+        else if (percentage >= 50) grade5 = 3;
+        else grade5 = 2;
+        
+        return { totalCorrect, totalCells, percentage, grade: grade5 };
+    }
+
+    // Показать результат проверки на экране (без отправки)
+    function displayGradeLocally(score) {
+        const { totalCorrect, totalCells, percentage, grade } = score;
+        let ratingMessage = "";
+        let gradeClass = "";
+        let gradeText = "";
+        if (percentage >= 80) {
+            ratingMessage = "✨ Превосходно! Ты отлично знаешь названия компонентов действий! ✨";
+            gradeClass = "grade-excellent";
+            gradeText = `⭐ ОТЛИЧНО (${grade}) ⭐`;
+        } else if (percentage >= 60) {
+            ratingMessage = "Хороший результат! Но повтори компоненты вычитания или деления, если есть ошибки.";
+            gradeClass = "grade-good";
+            gradeText = `👍 ХОРОШО (${grade}) 👍`;
+        } else if (percentage >= 40) {
+            ratingMessage = "Удовлетворительно. Рекомендуем повторить: слагаемые, множители, делимое/делитель.";
+            gradeClass = "grade-satisfactory";
+            gradeText = `📗 УДОВЛЕТВОРИТЕЛЬНО (${grade}) 📗`;
+        } else {
+            ratingMessage = "Необходимо изучить компоненты арифметических действий. Посмотри подсказки в учебнике!";
+            gradeClass = "grade-bad";
+            gradeText = `❌ НУЖНО ПОВТОРИТЬ (${grade}) ❌`;
+        }
+        scoreMessageDiv.innerHTML = `📊 Результат: ${totalCorrect} из ${totalCells} правильных ответов (${Math.round(percentage)}%)<br>${ratingMessage}`;
+        gradeDisplayDiv.innerHTML = `<span class="${gradeClass}">${gradeText}</span>`;
+        return grade;
+    }
+
+    // Построение детальной таблицы для отображения после отправки
+    function buildDetailTable(scoreObj) {
+        let html = `<h3>📋 Подробный разбор ответов</h3>
+        <div style="overflow-x:auto;">
+        <table class="detail-table">
+            <thead><tr><th>Действие</th><th>Компонент</th><th>Ваш выбор</th><th>Правильный термин</th><th>Результат</th></tr></thead>
+            <tbody>`;
+        const opLabels = ['Сложение (+)', 'Вычитание (-)', 'Умножение (*)', 'Деление (/)'];
+        rowsData.forEach((row, idx) => {
+            const operation = row.opSelect.value;
+            const expected = TERM_MAPPING[operation] || {};
+            const firstVal = row.firstSelect.value;
+            const secondVal = row.secondSelect.value;
+            const resultVal = row.resultSelect.value;
+            const expectedFirst = expected.first || '—';
+            const expectedSecond = expected.second || '—';
+            const expectedResult = expected.result || '—';
+            
+            const firstOk = (firstVal === expectedFirst);
+            const secondOk = (secondVal === expectedSecond);
+            const resultOk = (resultVal === expectedResult);
+            
+            html += `<tr><td rowspan="3">${opLabels[idx]}</td>
+                     <td>Первый компонент</td><td>${firstVal || '—'}</td><td>${expectedFirst}</td>
+                     <td style="color:${firstOk ? '#1f7a3b' : '#c0392b'}; font-weight:bold">${firstOk ? '✔' : '✘'}</td></tr>`;
+            html += `<tr><td>Второй компонент</td><td>${secondVal || '—'}</td><td>${expectedSecond}</td>
+                     <td style="color:${secondOk ? '#1f7a3b' : '#c0392b'}; font-weight:bold">${secondOk ? '✔' : '✘'}</td></tr>`;
+            html += `<tr><td>Результат</td><td>${resultVal || '—'}</td><td>${expectedResult}</td>
+                     <td style="color:${resultOk ? '#1f7a3b' : '#c0392b'}; font-weight:bold">${resultOk ? '✔' : '✘'}</td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+        return html;
+    }
+
+    // Отправка данных на сервер через fetch
+    async function sendToServer(formData) {
+        try {
+            const response = await fetch('save.php', {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const serverDiv = document.createElement('div');
+            serverDiv.className = 'server-response';
+            serverDiv.innerHTML = `<strong>✅ Результаты успешно сохранены на сервере.</strong>`;
+            resultArea.insertAdjacentElement('afterend', serverDiv);
+            setTimeout(() => serverDiv.remove(), 5000);
+        } catch (err) {
+            console.warn('Ошибка отправки на save.php', err);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.innerHTML = `⚠️ Не удалось отправить данные на сервер: ${err.message}. Результаты сохранены локально.`;
+            resultArea.insertAdjacentElement('afterend', errorDiv);
+            setTimeout(() => errorDiv.remove(), 6000);
+        }
+    }
+
+    // Основная функция завершения: проверка, заполнение скрытых полей, отправка
+    async function finishAndSave() {
+        if (isTestFinished) return;
+        
+        // Скрыть предыдущие сообщения
+        const oldServerMsg = document.querySelector('.server-response');
+        if (oldServerMsg) oldServerMsg.remove();
+        const oldErrorMsg = document.querySelector('.error');
+        if (oldErrorMsg) oldErrorMsg.remove();
+        resultsDiv.style.display = 'none';
+        
+        // Проверка ФИО
+        const fioInput = document.getElementById('fio');
+        const userFio = fioInput.value.trim();
+        if (!userFio) {
+            scoreMessageDiv.innerHTML = '❗ Пожалуйста, введите ваше имя!';
+            gradeDisplayDiv.innerHTML = '';
+            return;
+        }
+        
+        // Проверка, что все select заполнены
+        let allFilled = true;
+        rowsData.forEach(row => {
+            if (!row.firstSelect.value) { row.firstSelect.classList.add('incorrect-select'); allFilled = false; }
+            if (!row.secondSelect.value) { row.secondSelect.classList.add('incorrect-select'); allFilled = false; }
+            if (!row.resultSelect.value) { row.resultSelect.classList.add('incorrect-select'); allFilled = false; }
+        });
+        if (!allFilled) {
+            scoreMessageDiv.innerHTML = '⚠️ Заполните все выпадающие списки (каждый компонент). Незаполненные подсвечены.';
+            gradeDisplayDiv.innerHTML = '';
+            return;
+        }
+        
+        // Остановка таймера
+        const spentSeconds = stopTimerAndGetSeconds();
+        isTestFinished = true;
+        document.getElementById('time_input').value = spentSeconds;
+        document.getElementById('tdate').value = getCurrentDateTime();
+        
+        // Проверка ответов и получение оценки
+        const score = evaluateAndGetScore();
+        document.getElementById('grade_input').value = score.grade;
+        displayGradeLocally(score);
+        
+        // Построить детальную таблицу и показать её
+        const detailHtml = buildDetailTable(score);
+        resultsDiv.innerHTML = `
+            <h3>📊 Результаты сохранены</h3>
+            <p><strong>👤 Участник:</strong> ${escapeHtml(userFio)}</p>
+            <p><strong>⏱️ Время выполнения:</strong> ${spentSeconds} сек</p>
+            <p><strong>✅ Верных ответов:</strong> ${score.totalCorrect} из ${score.totalCells}</p>
+            <p><strong>📈 Процент:</strong> ${score.percentage.toFixed(1)}%</p>
+            <p><strong>🎓 Оценка:</strong> <span style="font-size:1.4rem; font-weight:800;">${score.grade}</span></p>
+            ${detailHtml}
+        `;
+        resultsDiv.style.display = 'block';
+        resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Подготовка FormData и отправка
+        const formElement = document.getElementById('myForm');
+        const formData = new FormData(formElement);
+        // Добавляем явно значение fio (на случай, если не попалось)
+        formData.set('fio', userFio);
+        
+        await sendToServer(formData);
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    // Просмотр данных: show.php?fio=...
+    document.getElementById('viewDataLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        const fioInput = document.getElementById('fio');
+        const fioValue = fioInput.value.trim();
+        if (!fioValue) {
+            scoreMessageDiv.innerHTML = '❗ Введите имя, чтобы просмотреть свои результаты.';
+            gradeDisplayDiv.innerHTML = '';
+            return;
+        }
+        window.location.href = `show.php?fio=${encodeURIComponent(fioValue)}`;
+    });
+    
+    // Сброс терминов
+    resetBtn.addEventListener('click', () => {
+        resetAllTermSelects();
+        resultsDiv.style.display = 'none';
+        isTestFinished = false;
+        // Перезапуск таймера, если он остановлен? Для удобства перезапустим, но старый остановим
+        if (timerInterval) clearInterval(timerInterval);
+        startTimer();
+    });
+    
+    // Завершение и сохранение
+    submitBtn.addEventListener('click', finishAndSave);
+    
+    // Инициализация страницы
+    function init() {
+        buildTable();
+        startTimer();
+        isTestFinished = false;
+        document.getElementById('tdate').value = getCurrentDateTime();
+        // Сброс подсветки при изменении select
+        rowsData.forEach(row => {
+            const clearRow = () => {
+                row.firstSelect.classList.remove('incorrect-select');
+                row.secondSelect.classList.remove('incorrect-select');
+                row.resultSelect.classList.remove('incorrect-select');
+            };
+            row.opSelect.addEventListener('change', clearRow);
+            row.firstSelect.addEventListener('change', clearRow);
+            row.secondSelect.addEventListener('change', clearRow);
+            row.resultSelect.addEventListener('change', clearRow);
+        });
+    }
+    
+    init();
+</script>
+</body>
+</html>

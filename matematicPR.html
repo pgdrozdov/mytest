@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Контрольная работа — сложение, умножение, вычитание, деление + сохранение</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .form-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(0px);
+      border-radius: 2rem;
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.05);
+      padding: 2rem 1.8rem;
+      max-width: 1100px;
+      width: 100%;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.6rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #1e2b3c, #2c4e6e);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.2px;
+    }
+
+    .instruction {
+      font-size: 0.9rem;
+      color: #2c3e4e;
+      background: #eef2f9;
+      padding: 0.7rem 1rem;
+      border-radius: 1.2rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #3b82f6;
+      font-weight: 500;
+    }
+
+    /* Блок ФИО + таймер (из шаблона) */
+    .fio-timer-container {
+      background: #eef3fc;
+      border-radius: 28px;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+    .fio-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .fio-group label {
+      font-weight: 700;
+      color: #1e3c72;
+      font-size: 0.95rem;
+    }
+    .fio-group input {
+      padding: 8px 16px;
+      border-radius: 40px;
+      border: 1.5px solid #cbdbe2;
+      font-size: 0.9rem;
+      width: 240px;
+      background: white;
+    }
+    .fio-group input:focus {
+      outline: none;
+      border-color: #1e3c72;
+      box-shadow: 0 0 0 2px rgba(30,60,114,0.2);
+    }
+    #timer {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: #0f2b4f;
+      color: #f0fcff;
+      padding: 5px 20px;
+      border-radius: 60px;
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+    .view-link {
+      background: #3a6b47;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+    .view-link:hover {
+      background: #2c5539;
+    }
+
+    .expression-group {
+      background: #f8fafd;
+      border-radius: 1.5rem;
+      padding: 1.5rem 1.2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: inset 0 1px 2px #00000008, 0 2px 5px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+
+    .group-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      background: #e9f0fa;
+      display: inline-block;
+      padding: 0.2rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.3px;
+    }
+
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      background: white;
+      padding: 0.5rem 0.6rem;
+      border-radius: 1.2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .field-group label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #5b6e8c;
+      letter-spacing: 0.3px;
+    }
+
+    .compact-input {
+      width: 4.2rem;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 600;
+      padding: 0.4rem 0;
+      border: 2px solid #dce3ec;
+      border-radius: 1rem;
+      background: white;
+      transition: all 0.2s;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      box-shadow: inset 0 1px 2px #00000008;
+    }
+
+    .compact-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    .equal-sign {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2c3e66;
+      background: #eef2fa;
+      width: 3rem;
+      text-align: center;
+      border-radius: 2rem;
+      line-height: 1;
+      padding: 0.2rem;
+    }
+
+    .submit-btn {
+      background: #1e3a5f;
+      color: white;
+      border: none;
+      padding: 0.9rem 1.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 3rem;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.8rem;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-btn:hover {
+      background: #0f2b44;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .submit-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Модальное окно */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      font-family: system-ui, 'Segoe UI', sans-serif;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 960px;
+      width: 90%;
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+      animation: modalFadeIn 0.25s ease-out;
+      overflow: hidden;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-header {
+      background: #1e3a5f;
+      color: white;
+      padding: 1rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      background: #fefefe;
+    }
+
+    .assignment-row {
+      background: #f8fafd;
+      border-radius: 1.5rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.2s;
+      border-left: 6px solid;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .assignment-row.correct-assignment {
+      border-left-color: #2e7d64;
+      background: linear-gradient(105deg, #f6fef9 0%, #ffffff 100%);
+    }
+
+    .assignment-row.incorrect-assignment {
+      border-left-color: #c2410c;
+      background: #fffaf8;
+    }
+
+    .assignment-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .assignment-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      background: #eef2ff;
+      padding: 0.2rem 0.8rem;
+      border-radius: 2rem;
+      display: inline-block;
+      color: #1e3a5f;
+    }
+
+    .assignment-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.7rem;
+      border-radius: 2rem;
+      background: #e2e8f0;
+    }
+
+    .badge-correct {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-wrong {
+      background: #ffe4e2;
+      color: #b91c1c;
+    }
+
+    .expression-line {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.95rem;
+      font-weight: 500;
+      background: white;
+      padding: 0.6rem 1rem;
+      border-radius: 1rem;
+      margin: 0.6rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      border: 1px solid #e9edf2;
+    }
+
+    .user-expr {
+      background: #f1f5f9;
+      padding: 0.2rem 0.8rem;
+      border-radius: 2rem;
+      font-weight: 600;
+    }
+
+    .expected-expr {
+      background: #eef2ff;
+      padding: 0.2rem 0.8rem;
+      border-radius: 2rem;
+      color: #1e40af;
+    }
+
+    .error-details {
+      font-size: 0.75rem;
+      color: #b45309;
+      background: #fff0e7;
+      padding: 0.4rem 0.8rem;
+      border-radius: 1rem;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+
+    .score-block {
+      margin: 1.2rem 0 0.5rem 0;
+      padding: 0.9rem;
+      background: #f0f4fa;
+      border-radius: 1.2rem;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      border-left: 5px solid #3b82f6;
+      transition: all 0.2s;
+    }
+
+    .score-correct {
+      background: #e0f2e9;
+      border-left-color: #2e7d64;
+      color: #115e47;
+    }
+
+    .score-incorrect {
+      background: #ffe9e9;
+      border-left-color: #c2410c;
+      color: #9b2c1d;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem 1.5rem;
+      text-align: right;
+      background: #ffffff;
+    }
+
+    .close-modal-btn {
+      background: #2c3e66;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      font-weight: 500;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .close-modal-btn:hover {
+      background: #1e2e4a;
+    }
+
+    .note {
+      font-size: 0.7rem;
+      color: #6c7e9e;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    hr {
+      margin: 0.5rem 0;
+      border: none;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .server-response, .error-msg {
+      max-width: 100%;
+      margin: 12px 0;
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-weight: 500;
+      text-align: center;
+    }
+    .server-response {
+      background: #eaf6ff;
+      border-left: 6px solid #2c7da0;
+      color: #155f7c;
+    }
+    .error-msg {
+      background: #ffe8e6;
+      color: #b12a1f;
+      border-left: 6px solid #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-card">
+  <h2>🧮 Проверка сложения, умножения, вычитания и деления</h2>
+  <div class="instruction">
+    📐 Правила: <br>
+    ➕ Сложение: 12 + 17 = 29 <br>
+    ✖️ Умножение: 4 × 6 = 24 <br>
+    ➖ Вычитание: 63 − 25 = 38 (из 63 вычли неизвестное число, получили 38 → вычитаемое = 25) <br>
+    ➗ Деление: 56 ÷ 7 = 8 <br>
+    <span style="font-size:0.75rem;">✏️ Заполни каждое выражение математическим знаком и числами, затем нажми «Отправить».</span>
+  </div>
+
+  <!-- Блок ФИО и таймер (из шаблона) -->
+  <div class="fio-timer-container">
+    <div class="fio-group">
+      <label for="fio">📝 ФИО / Имя:</label>
+      <input type="text" id="fio" name="fio" list="lift" autocomplete="off" placeholder="Выберите или введите имя" required>
+      <datalist id="lift">
+        <option>Егор</option>
+        <option>Ксюша</option>
+        <option>Анюта</option>
+        <option>Даня</option>
+      </datalist>
+    </div>
+    <div id="timer">⏱️ Время: 0 сек</div>
+    <a href="javascript:void(0);" class="view-link" id="viewDataLink">🔍 Мои данные</a>
+  </div>
+
+  <form id="mathForm">
+    <!-- Скрытые поля для отправки на сервер -->
+    <input type="hidden" name="predmet" value="математика">
+    <input type="hidden" name="tdate" id="tdate">
+    <input type="hidden" name="nazv" value="Контрольная работа — сложение, умножение, вычитание, деление">
+    <input type="hidden" name="time" id="time_input" value="0">
+    <input type="hidden" name="grade" id="grade_input" value="">
+
+    <!-- БЛОК СЛОЖЕНИЯ -->
+    <div class="expression-group">
+      <div class="group-title">📌 ЗАДАНИЕ 1: Первое слагаемое 12 сумма 29 вычисли - второе слагаемое</div>
+      <div class="input-row">
+        <div class="field-group">
+          <label>ПЕРВОЕ</label>
+          <input type="text" name="firstTerm" id="firstTerm" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="field-group">
+          <label>ОПЕРАТОР</label>
+          <input type="text" name="operant" id="operant" class="compact-input"
+                  size="3" maxlength="3">
+        </div>
+        <div class="field-group">
+          <label>ВТОРОЕ</label>
+          <input type="text" name="twoTerm" id="twoTerm" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="equal-sign">=</div>
+        <div class="field-group">
+          <label>РЕЗУЛЬТАТ</label>
+          <input type="text" name="sum" id="sum" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+      </div>
+    </div>
+
+    <!-- БЛОК УМНОЖЕНИЯ -->
+    <div class="expression-group">
+      <div class="group-title">📌 ЗАДАНИЕ 2: Второй множитель 6 произведение 24 вычисли  - первый множитель</div>
+      <div class="input-row">
+        <div class="field-group">
+          <label>МНОЖИТЕЛЬ 1</label>
+          <input type="text" name="firstFactor" id="firstFactor" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="field-group">
+          <label>ОПЕРАТОР</label>
+          <input type="text" name="operatorMul" id="operatorMul" class="compact-input" size="3" maxlength="3">
+        </div>
+        <div class="field-group">
+          <label>МНОЖИТЕЛЬ 2</label>
+          <input type="text" name="secondFactor" id="secondFactor" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="equal-sign">=</div>
+        <div class="field-group">
+          <label>ПРОИЗВЕДЕНИЕ</label>
+          <input type="text" name="product" id="product" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+      </div>
+    </div>
+
+    <!-- БЛОК ВЫЧИТАНИЯ -->
+    <div class="expression-group">
+      <div class="group-title">📌 ЗАДАНИЕ 3: ОТ 63 отнять 25 вычисли разницу</div>
+      <div class="input-row">
+        <div class="field-group">
+          <label>УМЕНЬШАЕМОЕ</label>
+          <input type="text" name="minuend" id="minuend" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="field-group">
+          <label>ОПЕРАТОР</label>
+          <input type="text" name="operatorSub" id="operatorSub" class="compact-input" size="3" maxlength="3">
+        </div>
+        <div class="field-group">
+          <label>ВЫЧИТАЕМОЕ</label>
+          <input type="text" name="subtrahend" id="subtrahend" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="equal-sign">=</div>
+        <div class="field-group">
+          <label>РАЗНОСТЬ</label>
+          <input type="text" name="difference" id="difference" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+      </div>
+    </div>
+
+    <!-- БЛОК ДЕЛЕНИЯ -->
+    <div class="expression-group">
+      <div class="group-title">📌 ЗАДАНИЕ 4: известно частное 8 и делитель 7 вычисли делимое</div>
+      <div class="input-row">
+        <div class="field-group">
+          <label>ДЕЛИМОЕ</label>
+          <input type="text" name="dividend" id="dividend" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="field-group">
+          <label>ОПЕРАТОР</label>
+          <input type="text" name="operatorDiv" id="operatorDiv" class="compact-input" size="3" maxlength="3">
+        </div>
+        <div class="field-group">
+          <label>ДЕЛИТЕЛЬ</label>
+          <input type="text" name="divisor" id="divisor" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+        <div class="equal-sign">=</div>
+        <div class="field-group">
+          <label>ЧАСТНОЕ</label>
+          <input type="text" name="quotient" id="quotient" class="compact-input"
+                  size="3" maxlength="3" inputmode="numeric"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="submit-btn">📤 Отправить и показать полную проверку</button>
+    <div class="note">※ Сложение: 12+17=29; Умножение: 4×6=24 (символ × или * → автозамена на ×); Вычитание: 63−25=38 (оператор «-»); Деление: 56÷7=8 (символ ÷ или / → автозамена на ÷). Все числовые поля до 3 цифр. Операторы проверяются строго.</div>
+  </form>
+</div>
+
+<!-- Модальное окно (вывод результатов каждого задания) -->
+<div id="valuesModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      📊 Результаты проверки (каждое задание — отдельная строка)
+    </div>
+    <div class="modal-body" id="dynamicModalBody"></div>
+    <div class="modal-footer">
+      <button class="close-modal-btn" id="closeModalBtn">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- Элементы формы ----------
+    const form = document.getElementById('mathForm');
+    const modal = document.getElementById('valuesModal');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const modalBodyContainer = document.getElementById('dynamicModalBody');
+
+    // Поля сложения
+    const firstInput = document.getElementById('firstTerm');
+    const operInput = document.getElementById('operant');
+    const secondInput = document.getElementById('twoTerm');
+    const sumInput = document.getElementById('sum');
+
+    // Поля умножения
+    const factor1Input = document.getElementById('firstFactor');
+    const operatorMulInput = document.getElementById('operatorMul');
+    const factor2Input = document.getElementById('secondFactor');
+    const productInput = document.getElementById('product');
+
+    // Поля вычитания
+    const minuendInput = document.getElementById('minuend');
+    const operatorSubInput = document.getElementById('operatorSub');
+    const subtrahendInput = document.getElementById('subtrahend');
+    const differenceInput = document.getElementById('difference');
+
+    // Поля деления
+    const dividendInput = document.getElementById('dividend');
+    const operatorDivInput = document.getElementById('operatorDiv');
+    const divisorInput = document.getElementById('divisor');
+    const quotientInput = document.getElementById('quotient');
+
+    // Эталонные значения
+    const EXPECTED = {
+      first: '12', operator: '+', second: '17', sum: '29',
+      factor1: '4', operatorMul: '×', factor2: '6', product: '24',
+      minuend: '63', operatorSub: '-', subtrahend: '25', difference: '38',
+      dividend: '56', operatorDiv: '÷', divisor: '7', quotient: '8'
+    };
+
+    // ---------- ТАЙМЕР (из шаблона) ----------
+    let startTime = null;
+    let timerInterval = null;
+    let isTestFinished = false;
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        if (isTestFinished) return;
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const timerDiv = document.getElementById('timer');
+        if (timerDiv) timerDiv.textContent = `⏱️ Время: ${elapsed} сек`;
+      }, 200);
+    }
+
+    function stopTimerAndGetSeconds() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      if (startTime) return Math.floor((Date.now() - startTime) / 1000);
+      return 0;
+    }
+
+    function getCurrentDateTime() {
+      const now = new Date();
+      const Y = now.getFullYear();
+      const M = String(now.getMonth() + 1).padStart(2, '0');
+      const D = String(now.getDate()).padStart(2, '0');
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+    }
+
+    // ---------- Функции нормализации операторов ----------
+    function normalizeMulOperator(raw) {
+      let trimmed = raw.trim();
+      if (trimmed === '*') return '×';
+      return trimmed;
+    }
+    function normalizeSubOperator(raw) {
+      let trimmed = raw.trim();
+      if (trimmed === '−' || trimmed === '–' || trimmed === '—') return '-';
+      return trimmed;
+    }
+    function normalizeDivOperator(raw) {
+      let trimmed = raw.trim();
+      if (trimmed === '/') return '÷';
+      return trimmed;
+    }
+
+    // ---------- Получение статуса каждого задания (верно/неверно) ----------
+    function getAssignmentsStatus() {
+      // сложение
+      let firstVal = firstInput.value.replace(/[^0-9]/g, '');
+      let operVal = operInput.value.trim();
+      let secondVal = secondInput.value.replace(/[^0-9]/g, '');
+      let sumVal = sumInput.value.replace(/[^0-9]/g, '');
+      const addOk = (firstVal === EXPECTED.first && operVal === EXPECTED.operator &&
+                     secondVal === EXPECTED.second && sumVal === EXPECTED.sum);
+
+      // умножение
+      let factor1Val = factor1Input.value.replace(/[^0-9]/g, '');
+      let operatorMulRaw = operatorMulInput.value.trim();
+      let factor2Val = factor2Input.value.replace(/[^0-9]/g, '');
+      let productVal = productInput.value.replace(/[^0-9]/g, '');
+      let operatorMulForCheck = normalizeMulOperator(operatorMulRaw);
+      const mulOk = (factor1Val === EXPECTED.factor1 && operatorMulForCheck === EXPECTED.operatorMul &&
+                     factor2Val === EXPECTED.factor2 && productVal === EXPECTED.product);
+
+      // вычитание
+      let minuendVal = minuendInput.value.replace(/[^0-9]/g, '');
+      let operatorSubRaw = operatorSubInput.value.trim();
+      let subtrahendVal = subtrahendInput.value.replace(/[^0-9]/g, '');
+      let diffVal = differenceInput.value.replace(/[^0-9]/g, '');
+      let operatorSubForCheck = normalizeSubOperator(operatorSubRaw);
+      const subOk = (minuendVal === EXPECTED.minuend && operatorSubForCheck === EXPECTED.operatorSub &&
+                     subtrahendVal === EXPECTED.subtrahend && diffVal === EXPECTED.difference);
+
+      // деление
+      let dividendVal = dividendInput.value.replace(/[^0-9]/g, '');
+      let operatorDivRaw = operatorDivInput.value.trim();
+      let divisorVal = divisorInput.value.replace(/[^0-9]/g, '');
+      let quotientVal = quotientInput.value.replace(/[^0-9]/g, '');
+      let operatorDivForCheck = normalizeDivOperator(operatorDivRaw);
+      const divOk = (dividendVal === EXPECTED.dividend && operatorDivForCheck === EXPECTED.operatorDiv &&
+                     divisorVal === EXPECTED.divisor && quotientVal === EXPECTED.quotient);
+
+      return { addOk, mulOk, subOk, divOk };
+    }
+
+    // Вычисление оценки (процент, количество верных заданий, оценка 2-5)
+    function computeScore() {
+      const { addOk, mulOk, subOk, divOk } = getAssignmentsStatus();
+      const correctCount = [addOk, mulOk, subOk, divOk].filter(v => v === true).length;
+      const totalCount = 4;
+      const percent = (correctCount / totalCount) * 100;
+      let grade = 2;
+      if (percent >= 90) grade = 5;
+      else if (percent >= 70) grade = 4;
+      else if (percent >= 50) grade = 3;
+      else grade = 2;
+      return { correctCount, totalCount, percent, grade };
+    }
+
+    // ---------- Отправка данных на сервер (save.php) ----------
+    async function sendToServer(formData) {
+      try {
+        const response = await fetch('save.php', {
+          method: 'POST',
+          body: formData
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const successDiv = document.createElement('div');
+        successDiv.className = 'server-response';
+        successDiv.innerHTML = `<strong>✅ Результаты успешно сохранены на сервере.</strong>`;
+        form.insertAdjacentElement('afterend', successDiv);
+        setTimeout(() => successDiv.remove(), 5000);
+      } catch (err) {
+        console.warn('Ошибка отправки на save.php', err);
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-msg';
+        errorDiv.innerHTML = `⚠️ Не удалось отправить данные на сервер: ${err.message}. Результаты сохранены локально.`;
+        form.insertAdjacentElement('afterend', errorDiv);
+        setTimeout(() => errorDiv.remove(), 6000);
+      }
+    }
+
+    // ---------- Отрисовка модального окна с результатами (расширенная оценка) ----------
+    function renderModalWithAssignments() {
+      // ---- Сбор и очистка значений (как в исходном коде) ----
+      let firstVal = firstInput.value.replace(/[^0-9]/g, '');
+      let operVal = operInput.value.trim();
+      let secondVal = secondInput.value.replace(/[^0-9]/g, '');
+      let sumVal = sumInput.value.replace(/[^0-9]/g, '');
+
+      let factor1Val = factor1Input.value.replace(/[^0-9]/g, '');
+      let operatorMulRaw = operatorMulInput.value.trim();
+      let factor2Val = factor2Input.value.replace(/[^0-9]/g, '');
+      let productVal = productInput.value.replace(/[^0-9]/g, '');
+      let operatorMulForCheck = normalizeMulOperator(operatorMulRaw);
+      let operatorMulForDisplay = operatorMulForCheck === '×' ? '×' : (operatorMulRaw || '?');
+
+      let minuendVal = minuendInput.value.replace(/[^0-9]/g, '');
+      let operatorSubRaw = operatorSubInput.value.trim();
+      let subtrahendVal = subtrahendInput.value.replace(/[^0-9]/g, '');
+      let diffVal = differenceInput.value.replace(/[^0-9]/g, '');
+      let operatorSubForCheck = normalizeSubOperator(operatorSubRaw);
+      let operatorSubForDisplay = operatorSubForCheck === '-' ? '-' : (operatorSubRaw || '?');
+
+      let dividendVal = dividendInput.value.replace(/[^0-9]/g, '');
+      let operatorDivRaw = operatorDivInput.value.trim();
+      let divisorVal = divisorInput.value.replace(/[^0-9]/g, '');
+      let quotientVal = quotientInput.value.replace(/[^0-9]/g, '');
+      let operatorDivForCheck = normalizeDivOperator(operatorDivRaw);
+      let operatorDivForDisplay = operatorDivForCheck === '÷' ? '÷' : (operatorDivRaw || '?');
+
+      // Проверки на полную корректность
+      const addOk = (firstVal === EXPECTED.first && operVal === EXPECTED.operator && secondVal === EXPECTED.second && sumVal === EXPECTED.sum);
+      const mulOk = (factor1Val === EXPECTED.factor1 && operatorMulForCheck === EXPECTED.operatorMul && factor2Val === EXPECTED.factor2 && productVal === EXPECTED.product);
+      const subOk = (minuendVal === EXPECTED.minuend && operatorSubForCheck === EXPECTED.operatorSub && subtrahendVal === EXPECTED.subtrahend && diffVal === EXPECTED.difference);
+      const divOk = (dividendVal === EXPECTED.dividend && operatorDivForCheck === EXPECTED.operatorDiv && divisorVal === EXPECTED.divisor && quotientVal === EXPECTED.quotient);
+
+      // Функции ошибок
+      function getAdditionErrors() { let e=[]; if(firstVal!==EXPECTED.first) e.push(`первое слагаемое должно быть ${EXPECTED.first}`); if(operVal!==EXPECTED.operator) e.push(`оператор должен быть ${EXPECTED.operator}`); if(secondVal!==EXPECTED.second) e.push(`второе слагаемое должно быть ${EXPECTED.second}`); if(sumVal!==EXPECTED.sum) e.push(`сумма должна быть ${EXPECTED.sum}`); return e; }
+      function getMultiplicationErrors() { let e=[]; if(factor1Val!==EXPECTED.factor1) e.push(`первый множитель = ${EXPECTED.factor1}`); if(operatorMulForCheck!==EXPECTED.operatorMul) e.push(`оператор умножения должен быть ${EXPECTED.operatorMul}`); if(factor2Val!==EXPECTED.factor2) e.push(`второй множитель = ${EXPECTED.factor2}`); if(productVal!==EXPECTED.product) e.push(`произведение = ${EXPECTED.product}`); return e; }
+      function getSubtractionErrors() { let e=[]; if(minuendVal!==EXPECTED.minuend) e.push(`уменьшаемое = ${EXPECTED.minuend}`); if(operatorSubForCheck!==EXPECTED.operatorSub) e.push(`оператор вычитания должен быть ${EXPECTED.operatorSub}`); if(subtrahendVal!==EXPECTED.subtrahend) e.push(`вычитаемое = ${EXPECTED.subtrahend}`); if(diffVal!==EXPECTED.difference) e.push(`разность = ${EXPECTED.difference}`); return e; }
+      function getDivisionErrors() { let e=[]; if(dividendVal!==EXPECTED.dividend) e.push(`делимое должно быть ${EXPECTED.dividend}`); if(operatorDivForCheck!==EXPECTED.operatorDiv) e.push(`оператор деления должен быть ${EXPECTED.operatorDiv}`); if(divisorVal!==EXPECTED.divisor) e.push(`делитель должен быть ${EXPECTED.divisor}`); if(quotientVal!==EXPECTED.quotient) e.push(`частное должно быть ${EXPECTED.quotient}`); return e; }
+
+      // Формирование HTML для каждого задания
+      function formatUserExpr(p1, op, p2, res) { return `${p1||'___'} ${op||'___'} ${p2||'___'} = ${res||'___'}`; }
+      const userAddExpr = formatUserExpr(firstVal, operVal, secondVal, sumVal);
+      const expectedAddExpr = `${EXPECTED.first} ${EXPECTED.operator} ${EXPECTED.second} = ${EXPECTED.sum}`;
+      const addErrors = getAdditionErrors();
+      const addCardClass = addOk ? 'correct-assignment' : 'incorrect-assignment';
+      const addBadgeClass = addOk ? 'badge-correct' : 'badge-wrong';
+      const addBadgeText = addOk ? '✓ ВЕРНО' : '✗ НЕВЕРНО';
+      const addErrorHtml = (!addOk && addErrors.length) ? `<div class="error-details">⚠️ ${addErrors.join('; ')}</div>` : '';
+
+      const userMulExpr = formatUserExpr(factor1Val, operatorMulForDisplay, factor2Val, productVal);
+      const expectedMulExpr = `${EXPECTED.factor1} ${EXPECTED.operatorMul} ${EXPECTED.factor2} = ${EXPECTED.product}`;
+      const mulErrors = getMultiplicationErrors();
+      const mulCardClass = mulOk ? 'correct-assignment' : 'incorrect-assignment';
+      const mulBadgeClass = mulOk ? 'badge-correct' : 'badge-wrong';
+      const mulBadgeText = mulOk ? '✓ ВЕРНО' : '✗ НЕВЕРНО';
+      const mulErrorHtml = (!mulOk && mulErrors.length) ? `<div class="error-details">⚠️ ${mulErrors.join('; ')}</div>` : '';
+
+      const userSubExpr = formatUserExpr(minuendVal, operatorSubForDisplay, subtrahendVal, diffVal);
+      const expectedSubExpr = `${EXPECTED.minuend} ${EXPECTED.operatorSub} ${EXPECTED.subtrahend} = ${EXPECTED.difference}`;
+      const subErrors = getSubtractionErrors();
+      const subCardClass = subOk ? 'correct-assignment' : 'incorrect-assignment';
+      const subBadgeClass = subOk ? 'badge-correct' : 'badge-wrong';
+      const subBadgeText = subOk ? '✓ ВЕРНО' : '✗ НЕВЕРНО';
+      const subErrorHtml = (!subOk && subErrors.length) ? `<div class="error-details">⚠️ ${subErrors.join('; ')}</div>` : '';
+
+      const userDivExpr = formatUserExpr(dividendVal, operatorDivForDisplay, divisorVal, quotientVal);
+      const expectedDivExpr = `${EXPECTED.dividend} ${EXPECTED.operatorDiv} ${EXPECTED.divisor} = ${EXPECTED.quotient}`;
+      const divErrors = getDivisionErrors();
+      const divCardClass = divOk ? 'correct-assignment' : 'incorrect-assignment';
+      const divBadgeClass = divOk ? 'badge-correct' : 'badge-wrong';
+      const divBadgeText = divOk ? '✓ ВЕРНО' : '✗ НЕВЕРНО';
+      const divErrorHtml = (!divOk && divErrors.length) ? `<div class="error-details">⚠️ ${divErrors.join('; ')}</div>` : '';
+
+      // Общая оценка (процент, оценка 2-5)
+      const { correctCount, totalCount, percent, grade } = computeScore();
+      let overallHtml = '';
+      if (grade >= 4) {
+        overallHtml = `<div class="score-block score-correct">
+          ✅ ОБЩАЯ ОЦЕНКА: ${grade} (${correctCount}/${totalCount} заданий, ${Math.round(percent)}%)<br>
+          Отлично! Все четыре выражения: сложение 12+17=29, умножение 4×6=24, вычитание 63−25=38, деление 56÷7=8.
+        </div>`;
+      } else {
+        let mistakes = [];
+        if (!addOk) mistakes.push('Сложение');
+        if (!mulOk) mistakes.push('Умножение');
+        if (!subOk) mistakes.push('Вычитание');
+        if (!divOk) mistakes.push('Деление');
+        overallHtml = `<div class="score-block score-incorrect">
+          ❌ ОБЩАЯ ОЦЕНКА: ${grade} (${correctCount}/${totalCount} заданий, ${Math.round(percent)}%)<br>
+          Ошибки в: ${mistakes.join(', ')}. Проверьте поля.
+        </div>`;
+      }
+
+      const finalHtml = `
+        <div class="assignment-row ${addCardClass}"><div class="assignment-header"><span class="assignment-title">➕ ЗАДАНИЕ 1: СЛОЖЕНИЕ</span><span class="assignment-badge ${addBadgeClass}">${addBadgeText}</span></div><div class="expression-line"><span><span style="font-weight:600;">Ваше выражение:</span> <span class="user-expr">${escapeHtml(userAddExpr)}</span></span><span><span style="font-weight:600;">Ожидалось:</span> <span class="expected-expr">${escapeHtml(expectedAddExpr)}</span></span></div>${addErrorHtml}</div>
+        <div class="assignment-row ${mulCardClass}"><div class="assignment-header"><span class="assignment-title">✖️ ЗАДАНИЕ 2: УМНОЖЕНИЕ</span><span class="assignment-badge ${mulBadgeClass}">${mulBadgeText}</span></div><div class="expression-line"><span><span style="font-weight:600;">Ваше выражение:</span> <span class="user-expr">${escapeHtml(userMulExpr)}</span></span><span><span style="font-weight:600;">Ожидалось:</span> <span class="expected-expr">${escapeHtml(expectedMulExpr)}</span></span></div>${mulErrorHtml}</div>
+        <div class="assignment-row ${subCardClass}"><div class="assignment-header"><span class="assignment-title">➖ ЗАДАНИЕ 3: ВЫЧИТАНИЕ</span><span class="assignment-badge ${subBadgeClass}">${subBadgeText}</span></div><div class="expression-line"><span><span style="font-weight:600;">Ваше выражение:</span> <span class="user-expr">${escapeHtml(userSubExpr)}</span></span><span><span style="font-weight:600;">Ожидалось:</span> <span class="expected-expr">${escapeHtml(expectedSubExpr)}</span></span></div>${subErrorHtml}</div>
+        <div class="assignment-row ${divCardClass}"><div class="assignment-header"><span class="assignment-title">➗ ЗАДАНИЕ 4: ДЕЛЕНИЕ</span><span class="assignment-badge ${divBadgeClass}">${divBadgeText}</span></div><div class="expression-line"><span><span style="font-weight:600;">Ваше выражение:</span> <span class="user-expr">${escapeHtml(userDivExpr)}</span></span><span><span style="font-weight:600;">Ожидалось:</span> <span class="expected-expr">${escapeHtml(expectedDivExpr)}</span></span></div>${divErrorHtml}</div>
+        <hr>${overallHtml}
+      `;
+      modalBodyContainer.innerHTML = finalHtml;
+      modal.style.display = 'flex';
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
+
+    // ---------- Обработчик отправки формы ----------
+    async function handleSubmit(event) {
+      event.preventDefault();
+
+      // Проверка ФИО
+      const fioInput = document.getElementById('fio');
+      const userFio = fioInput.value.trim();
+      if (!userFio) {
+        alert('Пожалуйста, введите ваше ФИО / имя!');
+        return;
+      }
+
+      // Остановить таймер, если ещё не остановлен
+      if (!isTestFinished) {
+        const spent = stopTimerAndGetSeconds();
+        document.getElementById('time_input').value = spent;
+        isTestFinished = true;
+      }
+      document.getElementById('tdate').value = getCurrentDateTime();
+
+      // Очистка и нормализация полей (как в исходном коде)
+      firstInput.value = firstInput.value.replace(/[^0-9]/g, '');
+      secondInput.value = secondInput.value.replace(/[^0-9]/g, '');
+      sumInput.value = sumInput.value.replace(/[^0-9]/g, '');
+      operInput.value = operInput.value.trim().slice(0,3);
+      factor1Input.value = factor1Input.value.replace(/[^0-9]/g, '');
+      factor2Input.value = factor2Input.value.replace(/[^0-9]/g, '');
+      productInput.value = productInput.value.replace(/[^0-9]/g, '');
+      let mulOp = operatorMulInput.value.trim();
+      if (mulOp === '*') operatorMulInput.value = '×';
+      operatorMulInput.value = operatorMulInput.value.trim().slice(0,3);
+      minuendInput.value = minuendInput.value.replace(/[^0-9]/g, '');
+      subtrahendInput.value = subtrahendInput.value.replace(/[^0-9]/g, '');
+      differenceInput.value = differenceInput.value.replace(/[^0-9]/g, '');
+      let subOp = operatorSubInput.value.trim();
+      subOp = normalizeSubOperator(subOp);
+      operatorSubInput.value = subOp === '-' ? '-' : (subOp.slice(0,1) || '');
+      dividendInput.value = dividendInput.value.replace(/[^0-9]/g, '');
+      divisorInput.value = divisorInput.value.replace(/[^0-9]/g, '');
+      quotientInput.value = quotientInput.value.replace(/[^0-9]/g, '');
+      let divOp = operatorDivInput.value.trim();
+      if (divOp === '/') operatorDivInput.value = '÷';
+      operatorDivInput.value = normalizeDivOperator(operatorDivInput.value.trim()).slice(0,3);
+
+      // Ограничение длины чисел
+      const limitLength = (field) => { if (field.value.length > 3) field.value = field.value.slice(0,3); };
+      [firstInput, secondInput, sumInput, factor1Input, factor2Input, productInput, 
+       minuendInput, subtrahendInput, differenceInput, dividendInput, divisorInput, quotientInput].forEach(limitLength);
+
+      // Вычисляем оценку и сохраняем в скрытое поле
+      const scoreObj = computeScore();
+      document.getElementById('grade_input').value = scoreObj.grade;
+
+      // Собираем FormData для отправки на сервер (все поля формы + fio)
+      const formData = new FormData(form);
+      formData.set('fio', userFio);
+      // Отправляем на save.php
+      await sendToServer(formData);
+
+      // Показываем модальное окно с результатами
+      renderModalWithAssignments();
+    }
+
+    // ---------- Просмотр данных ----------
+    document.getElementById('viewDataLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      const fioInput = document.getElementById('fio');
+      const fioValue = fioInput.value.trim();
+      if (!fioValue) {
+        alert('Введите имя, чтобы просмотреть свои результаты.');
+        return;
+      }
+      window.location.href = `show.php?fio=${encodeURIComponent(fioValue)}`;
+    });
+
+    // ---------- Закрытие модального окна ----------
+    if (closeBtn) closeBtn.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.style.display === 'flex') modal.style.display = 'none'; });
+
+    // Фильтры для операторов (как в исходном коде)
+    operInput.addEventListener('input', function() { this.value = this.value.replace(/\s/g, '').slice(0,3); });
+    operatorMulInput.addEventListener('input', function() { let v=this.value.trim(); if(v==='*') this.value='×'; else if(v.length>3) this.value=v.slice(0,3); this.value=this.value.replace(/\s/g,''); });
+    operatorSubInput.addEventListener('input', function() { let v=this.value.trim(); let norm=normalizeSubOperator(v); this.value=(norm==='-'?'-':norm.slice(0,1)).replace(/\s/g,''); });
+    operatorDivInput.addEventListener('input', function() { let v=this.value.trim(); if(v==='/') this.value='÷'; else if(v.length>3) this.value=v.slice(0,3); this.value=this.value.replace(/\s/g,''); });
+
+    // Защита числовых полей
+    const numericFields = [firstInput, secondInput, sumInput, factor1Input, factor2Input, productInput, 
+                           minuendInput, subtrahendInput, differenceInput, dividendInput, divisorInput, quotientInput];
+    numericFields.forEach(field => {
+      field.addEventListener('beforeinput', function(e) { if(e.inputType==='insertText' && !/^\d$/.test(e.data)) e.preventDefault(); });
+      field.addEventListener('paste', function(e) { e.preventDefault(); let pasted=(e.clipboardData||window.clipboardData).getData('text'); let digits=pasted.replace(/[^0-9]/g,''); if(digits.length>3) digits=digits.slice(0,3); const start=field.selectionStart, end=field.selectionEnd; const newVal=field.value.slice(0,start)+digits+field.value.slice(end); field.value=newVal.length<=3?newVal:newVal.slice(0,3); field.dispatchEvent(new Event('input',{bubbles:true})); });
+      field.addEventListener('blur', function() { this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length>3) this.value=this.value.slice(0,3); });
+    });
+
+    // Запуск таймера при загрузке
+    startTimer();
+    // Установка начальной даты в скрытое поле (на случай, если форма отправится без отправки)
+    document.getElementById('tdate').value = getCurrentDateTime();
+
+    // Назначение обработчика отправки
+    form.addEventListener('submit', handleSubmit);
+  })();
+</script>
+</body>
+</html>
